@@ -1,0 +1,36 @@
+/* Home.css */
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+.homepage-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+}
+
+.welcome-message-container {
+    margin-bottom: 12px;
+}
+
+.account-message-container {
+    margin-top: 12px;
+}
+
+.create-account-link {
+    text-decoration: none;
+    color: black;
+}
+
+.create-account-link:hover{
+    color: rgb(101, 238, 134) !important;
+}
+
+.create-account-link:visited{
+    color: black;
+}
+
+

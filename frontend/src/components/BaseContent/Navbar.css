@@ -1,0 +1,32 @@
+.nav-options {
+    background-color: white;
+    overflow: hidden;
+    width: 100%;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid rgb(101, 238, 134);
+    height: 54px;
+}
+
+.nav-options ul {
+    display: flex;
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+    width: 100%;
+}
+
+.nav-options li {
+    margin-left: 32px;
+    font-size: 16px;
+}
+
+.nav-options a {
+    color: black;
+    text-decoration: none;
+}
+
+.nav-options :hover {
+    color: rgb(101, 238, 134);
+}
