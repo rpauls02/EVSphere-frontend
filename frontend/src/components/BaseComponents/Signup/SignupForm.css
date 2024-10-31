@@ -1,5 +1,38 @@
-.user-type-selection-button {
-    background-color: #007bff; /* Set a default blue background color */
+.signup-container {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center items horizontally */
+    justify-content: center; /* Center items vertically */
+    height: 100vh; /* Full viewport height */
+    text-align: center;
+    background-color: rgb(240, 244, 248);
+}
+
+.form-group {
+    background-color: white;
+    padding: 32px;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%; /* Full width of its container */
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center items within form-group */
+}
+
+h2 {
+    margin-bottom: 16px;
+    font-size: 28px;
+    color: #333;
+    width: 100%; /* Make the title span the whole width */
+    text-align: center; /* Center the title text */
+}
+
+.user-type-toggle button {
+    background-color: #007bff;
     color: #fff;
     padding: 10px 20px;
     border: none;
@@ -10,59 +43,20 @@
     transition: background-color 0.3s ease;
 }
 
-.user-type-selection-button:hover {
-    background-color: #0056b3; /* Darker shade on hover */
-}
-
-.signup-container {
-    margin: 0;
-    margin-top: 20px;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    height: 100vh;
-    text-align: center;
-    background-color: rgb(240, 244, 248);
-}
-
-.signup-box {
-    background-color: white;
-    padding: 32px;
-    border-radius: 10px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    max-width: 400px;
-    width: 100%;
-    text-align: center;
-    box-sizing: border-box;
-}
-
-h2 {
-    margin-bottom: 16px;
-    font-size: 28px;
-    color: #333;
-}
-
-p {
-    font-size: 14px;
-    color: #666;
-}
-
-.form-group {
-    margin: 16px 0;
-    width: 100%;
+.user-type-toggle button:hover {
+    background-color: #0056b3;
 }
 
 .input-field,
 .mobile-input-field {
-    width: 100%;
+    width: 100%; /* Full width for inputs */
     padding: 12px;
     margin: 10px 0;
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 16px;
     box-sizing: border-box;
-    transition: border-color 0.3s ease;
+    transition: 0.3s ease;
 }
 
 .input-field:focus,
@@ -92,7 +86,7 @@ p {
     font-size: 14px;
     outline: none;
     width: 100px;
-    margin-right: 10px; /* Added spacing between select and input */
+    margin-right: 10px; /* Spacing between select and input */
 }
 
 .country-code-select:focus {
@@ -114,8 +108,4 @@ p {
 .signup-button:hover {
     background-color: #218838;
     transform: translateY(-1px);
-}
-
-.signup-button:active {
-    transform: translateY
 }

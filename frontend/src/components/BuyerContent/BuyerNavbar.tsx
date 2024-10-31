@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import '../BaseContent/Navbar.css';
+import '../BaseComponents/Navbar.css';
 
 function BuyerNavbar() {
     return (

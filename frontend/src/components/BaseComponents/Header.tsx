@@ -6,10 +6,10 @@ import { AccountCircle } from '@mui/icons-material';
 import { doc, getDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from '../../firebaseConfig';
+import logo from '../../assets/logo-name.png';
 
 interface User {
   fname: string;
-  type: string;
 }
 
 const Header: React.FC = () => {
@@ -18,15 +18,18 @@ const Header: React.FC = () => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
-        const userRef = doc(db, "users", currentUser.uid);
-        const userDoc = await getDoc(userRef);
+        try {
+          const userRef = doc(db, "users", currentUser.uid);
+          const userDoc = await getDoc(userRef);
 
-        if (userDoc.exists()) {
-          const userData = userDoc.data();
-          setUser({
-            fname: userData.fname,
-            type: userData.type,
-          });
+          if (userDoc.exists()) {
+            const userData = userDoc.data();
+            setUser({
+              fname: userData.fname
+            });
+          }
+        } catch (error) {
+          console.error("Error fetching user data: ", error);
         }
       } else {
         setUser(null);
@@ -34,13 +37,15 @@ const Header: React.FC = () => {
     });
 
     return () => unsubscribe();
-  });
+  }, []);
 
   return (
     <header>
       <nav className="nav-main">
         <div className="nav-main-logo">
-          <Link to="/"><img src="../../assets/logo-name.png" alt="logo" /></Link>
+          <Link to="/">
+            <img src={logo} alt="logo" />
+          </Link>
         </div>
         <div className="nav-main-util">
           <div className="nav-main-util-login">
@@ -48,7 +53,7 @@ const Header: React.FC = () => {
               <IconButton>
                 <AccountCircle style={{ fontSize: '32px', color: "black" }} />
               </IconButton>
-              <p>{user ? `${user.fname} (${user.type})` : 'Sign in'}</p>
+              <p>{user ? `${user.fname}` : 'Sign in'}</p>
             </Link>
           </div>
         </div>

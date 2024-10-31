@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { getFirestore, doc, getDoc } from "firebase/firestore";
-import './Login.css';
+import './LoginForm.css';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -24,7 +24,6 @@ const Login: React.FC = () => {
 
       if (userDoc.exists()) {
         const userData = userDoc.data();
-        // Determine user type
         if (userData.type === 'buyer') {
           alert('Login successful!');
           navigate('/buyer-dashboard');
@@ -33,7 +32,7 @@ const Login: React.FC = () => {
           navigate('/seller-dashboard');
         } else if (userData.type === 'both') {
           alert('Login successful!');
-          navigate('/seller-dashboard');
+          navigate('/user-dashboard');
         }
       }
     } catch (error) {

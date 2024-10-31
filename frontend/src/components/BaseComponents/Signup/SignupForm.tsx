@@ -1,69 +1,52 @@
 import React, { useState } from 'react';
-import './Signup.css';
 import CountryCodeSelect from './CountryCodeSelect';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { Link } from 'react-router-dom';
-import { auth, db } from '../../../firebaseConfig';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
-import onSignup from './onSignup';
+import { handleSignup } from './handleSignup';
+import './SignupForm.css';
 
-const SellerSignupForm = () => {
+const SignupForm = () => {
+    const [userType, setUserType] = useState('buyer');
     const [companyName, setCompanyName] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
-    const [password, setPassword] = useState(''); // Add password state
+    const [password, setPassword] = useState('');
     const [countryCode, setCountryCode] = useState('+44');
     const [mobile, setMobileNumber] = useState('');
 
-    const handleSignup = async (event) => {
-        event.preventDefault();
-        const mobileNumber = `${countryCode}${mobile}`;
-
-        try {
-            // Firebase Auth: Create user with email and password
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            const user = userCredential.user;
-
-            // Save additional user information to Firestore
-            await setDoc(doc(db, 'users', user.uid), {
-                companyName,
-                firstName,
-                lastName,
-                email,
-                mobile: mobileNumber,
-            });
-
-            onSignup && onSignup({ uid: user.uid, companyName, firstName, lastName, email, mobile: mobileNumber });
-            console.log("User created and data saved to Firestore");
-
-        } catch (error: unknown) {
-            if (error instanceof Error) {
-                console.error("Error signing up:", error);
-                alert(`Error: ${error.message}`);
-            } else {
-                console.error("Unexpected error:", error);
-                alert("An unexpected error occurred.");
-            }
-        }
+    const onSignup = (event: React.FormEvent<HTMLFormElement>) => {
+        handleSignup(event, email, password, firstName, lastName, mobile, countryCode, userType, companyName);
     };
 
     return (
-        <div className="form-group">
-            <button className="signup-return-role-select">
-                <Link to="/signup"><ArrowBackIcon /></Link>
-            </button>
-            <h2>Create your Buyer Account</h2>
-            <form onSubmit={handleSignup}>
-                <input
-                    type="text"
-                    placeholder="Company Name"
-                    value={companyName} // Fix: corrected to use companyName
-                    onChange={(e) => setCompanyName(e.target.value)}
-                    required
-                    className="input-field"
-                />
+        <div className="signup-container">
+            <h2>Create your {userType === 'seller' ? "Seller" : "Buyer"} Account</h2>
+            
+            <div className="user-type-toggle">
+                <button
+                    className={`toggle-button ${userType === 'buyer' ? 'active' : ''}`}
+                    onClick={() => setUserType('buyer')}
+                >
+                    Buyer
+                </button>
+                <button
+                    className={`toggle-button ${userType === 'seller' ? 'active' : ''}`}
+                    onClick={() => setUserType('seller')}
+                >
+                    Seller
+                </button>
+            </div>
+
+            <form className="signup-form" onSubmit={onSignup}>
+                {userType === 'seller' && (
+                    <input
+                        type="text"
+                        placeholder="Company Name"
+                        value={companyName}
+                        onChange={(e) => setCompanyName(e.target.value)}
+                        required
+                        className="input-field"
+                    />
+                )}
                 <input
                     type="text"
                     placeholder="First Name"
@@ -117,4 +100,4 @@ const SellerSignupForm = () => {
     );
 };
 
-export default SellerSignupForm;
+export default SignupForm;

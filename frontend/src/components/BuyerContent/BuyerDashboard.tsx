@@ -1,14 +1,14 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Header from '../BaseContent/Header';
-import Home from '../BaseContent/Home';
+import Header from '../BaseComponents/Header';
+import Home from '../BaseComponents/Home';
 import BuyerNavbar from './BuyerNavbar';
 import Vehicles from './Vehicles'
 import Chargers from './Chargers';
 import Reports from './Reports';
 import Invoices from './Invoices';
-import NotFound from '../BaseContent/NotFound';
-import Footer from '../BaseContent/Footer';
+import NotFound from '../BaseComponents/NotFound';
+import Footer from '../BaseComponents/Footer';
 
 const App: React.FC = () => {
   return (

@@ -10,7 +10,7 @@ const Home: React.FC = () => {
             </div>
             <div className="account-message-container">
                 <h3>Login to manage your account</h3>
-                <h3>Don't have an account? <Link className="create-account-link" to="/signupform">Create one now</Link></h3>
+                <h3>Don't have an account? <Link className="create-account-link" to="/signup">Create one now</Link></h3>
             </div>
 
         </div>
