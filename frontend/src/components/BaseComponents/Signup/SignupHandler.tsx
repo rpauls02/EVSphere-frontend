@@ -1,33 +1,33 @@
-// handleSignup.ts
 import { auth, db } from '../../../firebaseConfig';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 
 export const handleSignup = async (
     event: React.FormEvent,
-    userRole: string,
+    role: string,
     firstName: string,
     lastName: string,
     email: string,
     countryCode: string,
     mobile: string,
     password: string,
-    companyName: string
+    companyName: string,
+    setPopup: (message: string, type: 'success' | 'error') => void
 ) => {
     event.preventDefault();
     const mobileNumber = `${countryCode}${mobile}`;
 
     try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        const userDocId = `${userRole}_${firstName.charAt(0).toLowerCase()}${lastName.slice(0, 5).toLowerCase()}${mobile.slice(0, 3)}`;
+        const userDocId = `${role}_${firstName.charAt(0).toLowerCase()}${lastName.slice(0, 5).toLowerCase()}${mobile.slice(-4)}`;
 
         const userDocData: any = {};
 
-        if (userRole === 'seller') {
+        if (role === 'seller') {
             userDocData.companyName = companyName;
         }
         
-        userDocData.userRole = userRole;
+        userDocData.role = role;
         userDocData.firstName = firstName;
         userDocData.lastName = lastName;
         userDocData.email = email;
@@ -35,11 +35,11 @@ export const handleSignup = async (
 
         await setDoc(doc(db, 'users', userDocId), userDocData);
 
-        console.log("User created and data saved to Firestore");
-        alert("Signup successful!");
+        setPopup("Successfully signed up. Please log in.", "success");
+
     } catch (error) {
         const errorMessage = (error as Error).message || "An unknown error occurred.";
         console.error("Error signing up:", error);
-        alert(`Error: ${errorMessage}`);
+        setPopup(`Error: ${errorMessage}`, "error");
     }
 };
