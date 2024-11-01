@@ -4,7 +4,7 @@ import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { getFirestore, doc, getDoc } from "firebase/firestore";
 import './LoginForm.css';
 
-const Login: React.FC = () => {
+const LoginForm: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -19,7 +19,7 @@ const Login: React.FC = () => {
       const user = userCredential.user;
 
       const db = getFirestore();
-      const userDocRef = doc(db, 'users', user.uid); 
+      const userDocRef = doc(db, 'users', user.uid);
       const userDoc = await getDoc(userDocRef);
 
       if (userDoc.exists()) {
@@ -45,8 +45,8 @@ const Login: React.FC = () => {
     <div className="login-container">
       <div className="login-box">
         <h2>Sign in with your details</h2>
-        <p>
-          New user? <Link to="/signup">Create an account</Link>
+        <p className="new-user-option">
+          New to EVSphere? <Link className="react-link" to="/signup">Create an account</Link>
         </p>
 
         {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
@@ -70,6 +70,9 @@ const Login: React.FC = () => {
               required
             />
           </div>
+          <div className="form-group forgot-password">
+            <p><Link to="/reset-password">Forgot password?</Link></p>
+          </div>
           <div className="form-group remember-me">
             <label htmlFor="remember">Remember me</label>
             <input type="checkbox" id="remember" />
@@ -81,4 +84,4 @@ const Login: React.FC = () => {
   );
 };
 
-export default Login;
+export default LoginForm;
