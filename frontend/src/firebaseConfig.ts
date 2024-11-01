@@ -1,7 +1,8 @@
 import { initializeApp } from "firebase/app";
-//import { getAnalytics } from "firebase/analytics";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
+import { getPerformance } from "firebase/performance";
+
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -10,15 +11,18 @@ const firebaseConfig = {
   storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
   appId: process.env.REACT_APP_FIREBASE_APP_ID,
-  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID
-}
+};
 
-// Initialize Firebase
+// Initialise web app
 const app = initializeApp(firebaseConfig);
-//const analytics = getAnalytics(app);
 
-// Initialise services
+// Initialise authentication
 const auth = getAuth(app);
+
+// Initialise Firestore 
 const db = getFirestore(app);
 
-export { auth, db }
+// Initialise performance monitoring
+const perf = getPerformance(app);
+
+export { auth, db };
