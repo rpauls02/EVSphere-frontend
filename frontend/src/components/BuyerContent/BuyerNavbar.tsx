@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import '../BaseComponents/Navbar.css';
 
-function BuyerNavbar() {
+const BuyerNavbar: React.FC = () => {
     return (
         <nav className="nav-options">
             <ul>

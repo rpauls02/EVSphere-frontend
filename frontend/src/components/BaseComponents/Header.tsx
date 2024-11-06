@@ -1,19 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './Header.css';
-import { IconButton } from '@mui/material';
 import { AccountCircle } from '@mui/icons-material';
 import { doc, getDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from '../../firebaseConfig';
 import logo from '../../assets/logo-name.png';
+import LogoutHandler from '../../utils/LogoutHandler';
 
 interface User {
-  fname: string;
+  firstName: string;
 }
 
 const Header: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
@@ -25,7 +27,7 @@ const Header: React.FC = () => {
           if (userDoc.exists()) {
             const userData = userDoc.data();
             setUser({
-              fname: userData.fname
+              firstName: userData.firstName,
             });
           }
         } catch (error) {
@@ -39,6 +41,14 @@ const Header: React.FC = () => {
     return () => unsubscribe();
   }, []);
 
+  const toggleDropdown = () => {
+    setDropdownOpen((prev) => !prev);
+  };
+
+  const handleLogout = async () => {
+    await LogoutHandler();
+  };
+
   return (
     <header>
       <nav className="nav-main">
@@ -49,12 +59,19 @@ const Header: React.FC = () => {
         </div>
         <div className="nav-main-util">
           <div className="nav-main-util-login">
-            <Link to={user ? "/profile" : "/login"}>
-              <IconButton>
-                <AccountCircle style={{ fontSize: '32px', color: "black" }} />
-              </IconButton>
-              <p>{user ? `${user.fname}` : 'Sign in'}</p>
+            <Link to={user ? "/profile" : "/login"} onClick={toggleDropdown} style={{ display: 'flex', alignItems: 'center' }}>
+              <AccountCircle style={{ fontSize: '32px', color: "black" }} />
+              <p>{user ? `${user.firstName}` : 'Sign in'}</p>
             </Link>
+            {user && dropdownOpen && (
+              <div className="dropdown">
+                <ul className="dropdown-menu">
+                  <li onClick={() => { navigate("/profile"); setDropdownOpen(false); }}>Profile</li>
+                  <li onClick={() => { navigate("/settings"); setDropdownOpen(false); }}>Settings</li>
+                  <li onClick={() => { handleLogout(); setDropdownOpen(false); }}>Log out</li>
+                </ul>
+              </div>
+            )}
           </div>
         </div>
       </nav>

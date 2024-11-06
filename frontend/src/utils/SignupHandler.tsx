@@ -1,10 +1,10 @@
-import { auth, db } from '../../../firebaseConfig';
+import { auth, db } from '../firebaseConfig';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 
 export const handleSignup = async (
     event: React.FormEvent,
-    role: string,
+    role: 'buyer' | 'seller',
     firstName: string,
     lastName: string,
     email: string,
@@ -12,30 +12,32 @@ export const handleSignup = async (
     mobile: string,
     password: string,
     companyName: string,
-    setPopup: (message: string, type: 'success' | 'error') => void
+    setPopup: (message: string, type: 'success' | 'error') => void,
+    resetForm: () => void
 ) => {
     event.preventDefault();
     const mobileNumber = `${countryCode}${mobile}`;
 
     try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        const userDocId = `${role}_${firstName.charAt(0).toLowerCase()}${lastName.slice(0, 5).toLowerCase()}${mobile.slice(-4)}`;
 
-        const userDocData: any = {};
+        const userDocData: any = {
+            role,
+            userName: `${firstName.charAt(0).toLowerCase()}${lastName.slice(0, 5).toLowerCase()}${mobile.slice(-4)}`,
+            firstName,
+            lastName,
+            email,
+            mobile: mobileNumber,
+        };
 
         if (role === 'seller') {
             userDocData.companyName = companyName;
         }
-        
-        userDocData.role = role;
-        userDocData.firstName = firstName;
-        userDocData.lastName = lastName;
-        userDocData.email = email;
-        userDocData.mobile = mobileNumber;
 
-        await setDoc(doc(db, 'users', userDocId), userDocData);
+        await setDoc(doc(db, 'users', userCredential.user.uid), userDocData);
 
         setPopup("Successfully signed up. Please log in.", "success");
+        resetForm();
 
     } catch (error) {
         const errorMessage = (error as Error).message || "An unknown error occurred.";

@@ -1,36 +1,51 @@
-/* Home.css */
-html, body {
-    height: 100%;
-    margin: 0;
-}
-
 .homepage-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     height: 100vh;
     text-align: center;
+    background-image: url('../../assets/pexels-kindelmedia-9800036.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+    
 }
 
 .welcome-message-container {
     margin-bottom: 12px;
+    position: relative;
+    z-index: 2;
 }
 
 .account-message-container {
     margin-top: 12px;
+    position: relative;
+    z-index: 2;
 }
 
+.homepage-container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5); 
+    z-index: 1;
+}
+
+.login-link,
 .create-account-link {
     text-decoration: none;
-    color: black;
 }
 
-.create-account-link:hover{
+.login-link:hover,
+.create-account-link:hover {
     color: rgb(101, 238, 134) !important;
 }
 
-.create-account-link:visited{
-    color: black;
+.login-link:visited,
+.create-account-link:visited {
+    color: white;
 }
-
-

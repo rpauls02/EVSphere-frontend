@@ -9,10 +9,9 @@ const Home: React.FC = () => {
                 <h1>Welcome to EVSphere</h1>
             </div>
             <div className="account-message-container">
-                <h3>Login to manage your account</h3>
+                <h3><Link className="login-link" to="/signup">Login</Link> to manage your account</h3>
                 <h3>Don't have an account? <Link className="create-account-link" to="/signup">Create one now</Link></h3>
             </div>
-
         </div>
     );
 };

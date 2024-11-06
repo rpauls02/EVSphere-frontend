@@ -1,10 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import './Navbar.css';
+import '../Sidebar.css';
 
-const Navbar: React.FC = () => {
+const Sidebar: React.FC = () => {
     return (
-        <nav className="nav-options">
+        <nav className="sidebar-nav">
             <ul>
                 <li><Link to="">Tab 1</Link></li>
                 <li><Link to="">Tab 2</Link></li>
@@ -15,4 +15,4 @@ const Navbar: React.FC = () => {
     );
 };
 
-export default Navbar;
+export default Sidebar;

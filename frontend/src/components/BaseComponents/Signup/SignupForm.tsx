@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import CountryCodeSelect from './CountryCodeSelect';
-import { handleSignup } from './SignupHandler';
+import { handleSignup } from '../../../utils/SignupHandler';
 import ToggleUserRole from './ToggleUserRole';
 import './SignupForm.css';
 
-const SignupForm = () => {
+const SignupForm: React.FC = () => {
     const [role, setUserRole] = useState<'buyer' | 'seller'>('buyer');
     const [companyName, setCompanyName] = useState('');
     const [firstName, setFirstName] = useState('');
@@ -14,6 +14,16 @@ const SignupForm = () => {
     const [countryCode, setCountryCode] = useState('+44');
     const [mobile, setMobileNumber] = useState('');
     const [popup, setPopup] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+
+    const resetForm = () => {
+        setCompanyName('');
+        setFirstName('');
+        setLastName('');
+        setEmail('');
+        setPassword('');
+        setCountryCode('+44');
+        setMobileNumber('');
+    };
 
     const onSignup = async (event: React.FormEvent<HTMLFormElement>) => {
         await handleSignup(
@@ -26,7 +36,8 @@ const SignupForm = () => {
             mobile, 
             password, 
             companyName, 
-            (message, type) => setPopup({ message, type })
+            (message, type) => setPopup({ message, type }),
+            resetForm
         );
     };
 
@@ -103,10 +114,6 @@ const SignupForm = () => {
                         Continue
                     </button>
                 </form>
-
-                <p className="already-member">
-                    Already a member? <a href="/login" className="react-link">Sign in here</a>
-                </p>
             </div>
         </div>
     );

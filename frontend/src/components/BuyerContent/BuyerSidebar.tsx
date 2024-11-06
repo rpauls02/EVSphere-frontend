@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import '../BaseComponents/Navbar.css';
+import '../BaseComponents/Sidebar.css';
 
-const SellerNavbar: React.FC = () => {
+const BuyerSidebar: React.FC = () => {
     return (
         <nav className="sidebar-nav">
             <ul>
@@ -15,4 +15,4 @@ const SellerNavbar: React.FC = () => {
     );
 }
 
-export default SellerNavbar;
+export default BuyerSidebar;

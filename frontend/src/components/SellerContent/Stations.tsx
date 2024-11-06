@@ -5,7 +5,7 @@ import './Stations.css';
 
 const Stations: React.FC = () => {
     return(
-        
+        <p></p>
     );
 }
 
