@@ -9,7 +9,7 @@ export const handleResetPassword = async (
 
   try {
     await sendPasswordResetEmail(auth, email);
-    setSuccessMessage('Password reset link sent to your email!');
+    setSuccessMessage('If this email exists, an email will be sent. If you cannot find the email, check your junk folder.');
     setErrorMessage('');
   } catch (error) {
     setErrorMessage('Failed to send reset link. Please try again.');
