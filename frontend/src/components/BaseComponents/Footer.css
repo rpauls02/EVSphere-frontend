@@ -3,11 +3,9 @@ footer {
   padding: 10px 0;
   text-align: center;
   border-top: 1px solid rgb(101, 238, 134);
-  position: fixed;
-  left: 0;
-  bottom: 0;
+  position: relative;
   width: 100%;
-  z-index: 3;
+  margin-top: auto;
 }
 
 footer p {
@@ -15,10 +13,4 @@ footer p {
   font-size: 16px;
   color: black;
   padding: 10px; 
-}
-
-@media (max-width: 600px) {
-  footer p {
-      font-size: 14px;
-  }
 }

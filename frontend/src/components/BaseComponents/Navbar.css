@@ -1,15 +1,15 @@
-.nav-options {
+.main-nav {
     background-color: white;
-    overflow: hidden;
     width: 100%;
-    padding: 0;
+    padding: 15px;
     display: flex;
     align-items: center;
+    justify-content: center;
     border-bottom: 1px solid rgb(101, 238, 134);
-    height: 54px;
+    box-sizing: border-box;
 }
 
-.nav-options ul {
+.main-nav ul {
     display: flex;
     padding: 0;
     margin: 0;
@@ -17,16 +17,20 @@
     width: 100%;
 }
 
-.nav-options li {
+.main-nav li {
     margin-left: 32px;
     font-size: 16px;
 }
 
-.nav-options a {
+.main-nav a {
     color: black;
     text-decoration: none;
 }
 
-.nav-options :hover {
+.main-nav :hover {
+    color: rgb(101, 238, 134);
+}
+
+.main-nav .active{
     color: rgb(101, 238, 134);
 }

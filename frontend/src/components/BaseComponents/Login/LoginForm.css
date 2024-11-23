@@ -4,7 +4,6 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 100vh;
     text-align: center;
     background-color: rgb(240, 244, 248);
 }
@@ -26,7 +25,7 @@
 }
 
 .new-user-option{
-    font-size: 16px;
+    font-size: 18px;
 }
 
 .remember-me {
@@ -42,7 +41,7 @@
 .forgot-password-link {
     color: black;
     cursor: pointer;
-    text-decoration: none;
+
 }
 
 .forgot-password-link:hover {

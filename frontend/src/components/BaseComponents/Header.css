@@ -1,57 +1,52 @@
-.montserrat-mfont {
-    font-family: "Montserrat", sans-serif;
-    font-optical-sizing: auto;
-    font-weight: 400;
-    font-style: normal;
+header{
+    width: 100%;
 }
 
-.nav-main {
-    background-color: white;
-    width: 100%;
+.header-main {
+    background-color: #16b9cc;
     padding: 4px;
     display: flex;
     align-items: center;
-    border-bottom: 1px solid rgb(101, 238, 134);
     position: relative;
     z-index: 1000;
 }
 
-.nav-main img {
+.header-main img {
     height: 36px;
-    margin-left: 24px;
+    padding-left: 24px;
     padding-top: 5px;
 }
 
-.nav-main-util {
+.header-util {
     margin-left: auto;
     display: flex;
     align-items: center;
-    margin-right: 32px;
+    padding-right: 32px;
     height: 54px;
 }
 
-.nav-main-util-login {
+.header-util-login {
     position: relative;
     display: flex;
     align-items: center;
     z-index: 1000;
 }
 
-.nav-main-util-login a {
+.header-util-login a {
     display: flex;
     align-items: center;
     text-decoration: none;
-    color: black;
+    color: white;
 }
 
-.nav-main-util-login p {
+.header-util-login p {
     font-size: 20px;
     margin: 0;
     margin-left: 8px;
-    color: black;
+    color: white;
 }
 
-.nav-main-util-login p:hover {
+.header-util-login p:hover {
     color: rgb(101, 238, 134);
 }
 

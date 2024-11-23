@@ -1,37 +1,110 @@
-.sidebar-nav {
-    width: 200px;
-    background-color: white;
-    border-top: 1px solid rgb(101, 238, 134);
-    border-left: 1px solid rgb(101, 238, 134);
-    border-bottom: 1px solid rgb(101, 238, 134);
-    padding-top: 20px;
+.sidebar-nav-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 230px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    background-color: #16b9cc;
+    padding-top: 10px;
+}
+
+.sidebar-top-section {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    height: 100%;
-    float: left;
-    position: relative;
 }
-.sidebar-nav ul {
+
+.sidebar-nav-logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 0;
+}
+
+.sidebar-nav-logo img {
+    height: 50px;
+    width: auto;
+    margin: 0;
+    padding: 0;
+}
+
+.logo-divider{
+    display: flex;
+    align-items: flex-start;
+    border: none;
+    height: 1px;
+    width: 210px;
+    background-color: white;
+    margin-left: 10px;
+    margin-bottom: 10px;
+}
+
+/* Main Navigation Styles */
+.sidebar-main-nav {
+    width: 100%;
+    padding-left: 20px;
+}
+
+.sidebar-main-nav ul {
     list-style-type: none;
     padding: 0;
     margin: 0;
-    width: 100%;
 }
 
-.sidebar-nav li {
-    width: 100%;
-    padding: 15px 20px;
+.sidebar-main-nav li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
 }
 
-.sidebar-nav a {
-    color: black;
+.sidebar-main-nav li svg {
+    margin-right: 10px;
+    color: white;
+}
+
+.sidebar-main-nav a {
+    color: white;
     text-decoration: none;
-    font-size: 16px;
-    display: block;
+}
+
+.sidebar-main-nav .active-link {
+    background-color: rgba(12, 135, 154, 0.5);
+    border-right: 4px solid rgba(10, 125, 144, 1);
+    border-radius: 4px;
+    padding: 5px 10px;
+    transition: background-color 0.25s ease-in-out;
+}
+
+.sidebar-util-nav {
+    margin-top: auto;
+    margin-bottom: 20px;
+    padding-left: 20px;
     width: 100%;
 }
 
-.sidebar-nav a:hover {
-    color: rgb(101, 238, 134);
+.sidebar-util-nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-util-nav li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.sidebar-util-nav li svg {
+    margin-right: 10px;
+    color: white;
+}
+
+.sidebar-util-nav a {
+    color: white;
+    text-decoration: none;
 }

@@ -21,7 +21,7 @@ const SignupForm: React.FC = () => {
         setLastName('');
         setEmail('');
         setPassword('');
-        setCountryCode('+44');
+        setCountryCode('+1');
         setMobileNumber('');
     };
 

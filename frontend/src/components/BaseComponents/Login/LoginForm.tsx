@@ -47,12 +47,10 @@ const LoginForm: React.FC = () => {
                 required
               />
             </div>
+            <small><Link className="forgot-password-link" to="/reset-password">Forgot password?</Link></small>
             <div className="remember-me-checkbox">
               <label htmlFor="remember">Remember me</label>
               <input type="checkbox" id="remember" />
-            </div>
-            <div className="forgot-password-link">
-              <Link className="react-forgot-password-link" to="/reset-password">Forgot password?</Link>
             </div>
             <button className="login-button" type="submit">Login</button>
           </form>

@@ -22,6 +22,6 @@
     text-decoration: none;
 }
 
-.not-found-container a:hover {
+.not-found-container button:hover {
     text-decoration: underline;
 }
