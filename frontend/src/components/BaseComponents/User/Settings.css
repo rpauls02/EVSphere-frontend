@@ -1,0 +1,140 @@
+.settings-page-container {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    padding-left: 250px;
+}
+
+.settings-menu-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 1600px;
+    padding: 2rem;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+    height: auto;
+    justify-content: flex-start;
+}
+
+.settings-navbar{
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px; 
+}
+
+.settings-navbar ul {
+    display: flex;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.settings-navbar li {
+    padding: 15px 20px;
+    cursor: pointer;
+    text-align: center;
+    border-radius: 0;
+    transition: background-color 0.25s ease-in-out;
+}
+
+.settings-navbar li:hover {
+    background-color: rgba(101, 238, 134, 0.3);
+}
+
+.settings-navbar li.active {
+    border-top: 2px solid rgb(101, 238, 134);
+    border-right: 2px solid rgb(101, 238, 134);
+    border-left: 2px solid rgb(101, 238, 134);
+    border-radius: 0;
+    background-color: rgba(101, 238, 134, 0.3);
+}
+
+.account-menu-container,
+.profile-menu-container,
+.notifications-menu-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.settings-item {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.3rem;
+    width: 100%;
+    cursor: pointer;
+}
+
+.settings-item .right-arrow-icon,
+.settings-item .link-account-button,
+.settings-item .delete-account-button {
+    margin-left: auto;
+    cursor: pointer;
+}
+
+.item-text-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.item-text-container small {
+    margin-top: 0.2rem;
+    margin-left: 0.1rem;
+    font-size: 1.1rem;
+    color: #666;
+}
+
+.link-account-button {
+    border: none;
+    border-radius: 15px;
+    padding: 3px 8px;
+    font: inherit;
+    width: auto;
+    background: none;
+    transition: background-color 0.25s ease;
+}
+
+.link-account-button:hover{
+    background-color: lightgrey;
+}
+
+.delete-account-button {
+    border: none;
+    width: auto;
+    font: inherit;
+    color: red;
+    padding: 3px 8px;
+    background: none;
+    border-radius: 15px;
+    transition: background-color 0.25s ease;
+}
+
+.delete-account-button:hover{
+    background-color: lightgrey;
+}
+
+.item-select-container {
+    border: 1px solid black;
+    border-radius: 15px;
+    padding: 3px 8px;
+    font: inherit;
+    justify-content: flex-end;
+}
+
+.divider{
+    display: flex;
+    align-items: flex-start;
+    border: none;
+    height: 0.1px;
+    width: 1000px;
+    background-color: grey;
+    margin-bottom: 0.5rem;
+}
