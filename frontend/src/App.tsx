@@ -9,11 +9,9 @@ const App: React.FC = () => {
     return (
         <Router>
             <div className="App">
-                <Header />
                 <main className="content">
                     <AppRoutes />
                 </main>
-                <Footer />
             </div>
         </Router>
     );
