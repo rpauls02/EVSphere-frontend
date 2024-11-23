@@ -1,21 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { auth, db } from '../../firebaseConfig';
-import { doc, getDoc } from "firebase/firestore";
-import { collection, query, orderBy, limit, getDocs } from "firebase/firestore";
+import { doc, getDoc, collection, getDocs, query } from 'firebase/firestore';
 import BuyerSidebar from '../BuyerContent/BuyerSidebar';
-import './BuyerDashboard.css';
+import './Sessions.css';
 
-const BuyerDashboard: React.FC = () => {
-    const [currentFname, setCurrentFname] = useState<string>('');
+const Sessions: React.FC = () => {
+    const [selectedButton, setSelectedButton] = useState(null);
     const [currentPBalance, setCurrentPBalance] = useState<string>('');
     const [currentCBalance, setCurrentCBalance] = useState<string>('');
-    const [userMessages, setUserMessages] = useState<string[]>([]);
-    const [userSessions, setUserSessions] = useState<any[]>([]);
-    const [selectedButton, setSelectedButton] = useState(null);
-
+    const [sessions, setSessions] = useState<any[]>([]);
+    const [selectedSession, setSelectedSession] = useState<any | null>(null);
 
     useEffect(() => {
-        const fetchUserBalance = async () => {
+        const fetchUserDetails = async () => {
             const user = auth.currentUser;
             if (user) {
                 try {
@@ -23,7 +20,6 @@ const BuyerDashboard: React.FC = () => {
                     const userDoc = await getDoc(userDocRef);
                     if (userDoc.exists()) {
                         const userData = userDoc.data();
-                        setCurrentFname(userData.firstName || '');
                         setCurrentPBalance(userData.points_balance || '')
                         setCurrentCBalance(userData.credits_balance || '')
                     } else {
@@ -35,70 +31,26 @@ const BuyerDashboard: React.FC = () => {
             }
         };
 
-        fetchUserBalance();
-    }, []);
-
-    useEffect(() => {
-        const fetchUserMessages = async () => {
-            const user = auth.currentUser;
-
-            if (user) {
-                try {
-                    const userMessagesRef = collection(db, "users", user.uid, "user_messages");
-
-                    const messagesQuery = query(
-                        userMessagesRef,
-                        orderBy("sent", "desc"),
-                        limit(5)
-                    );
-
-                    const querySnapshot = await getDocs(messagesQuery);
-
-                    const messagesContent: string[] = querySnapshot.docs.map(doc => {
-                        const data = doc.data();
-                        return data.content;
-                    });
-
-                    console.log("Retrieved message contents:", messagesContent);
-                    setUserMessages(messagesContent);
-                } catch (error) {
-                    console.error("Error fetching user messages from Firestore:", error);
-                }
-            }
-        };
-
-        fetchUserMessages();
+        fetchUserDetails();
     }, []);
 
     useEffect(() => {
         const fetchUserSessions = async () => {
             const user = auth.currentUser;
-
             if (user) {
                 try {
-                    const userSessionsRef = collection(db, "users", user.uid, "user_sessions");
+                    const sessionsRef = collection(db, 'users', user.uid, 'user_sessions');
+                    const q = query(sessionsRef);
+                    const querySnapshot = await getDocs(q);
 
-                    const sessionsQuery = query(
-                        userSessionsRef,
-                        orderBy("sessionBookedAt", "desc"),
-                        limit(5)
-                    );
-
-                    const querySnapshot = await getDocs(sessionsQuery);
-
-                    const sessionsData = querySnapshot.docs.map(doc => {
-                        const data = doc.data();
-                        return {
-                            sessionBookedAt: data.sessionBookedAt,
-                            duration: data.duration,
-                            energyConsumed: data.energy_consumed,
-                        };
+                    const sessionsData: any[] = [];
+                    querySnapshot.forEach((doc) => {
+                        sessionsData.push({ id: doc.id, ...doc.data() });
                     });
 
-                    console.log("Retrieved session data:", sessionsData);
-                    setUserSessions(sessionsData);
+                    setSessions(sessionsData);
                 } catch (error) {
-                    console.error("Error fetching user sessions from Firestore:", error);
+                    console.error('Error fetching sessions from Firestore:', error);
                 }
             }
         };
@@ -110,36 +62,51 @@ const BuyerDashboard: React.FC = () => {
         setSelectedButton(buttonType);
     };
 
+    const handleSessionSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        const sessionId = event.target.value;
+        const selectedSessionData = sessions.find((session) => session.id === sessionId);
+        setSelectedSession(selectedSessionData || null);
+    };
+
     return (
-        <div className="dashboard-page-container">
-            <div className="sidebar-container">
-                <BuyerSidebar />
-            </div>
+        <div className="sessions-page-container">
+            <BuyerSidebar />
             <div className="user-options-container">
-                <h1>Welcome back, {currentFname}</h1>
-                <div className="hr-div"></div>
+                <h1>Sessions</h1>
+                <hr className="hr-div"></hr>
                 <div className="user-options-columns">
-                    <div className="user-options-left-column">
-                        <div className="user-messages-container">
-                            <h2>Messages</h2>
-                            <ul>
-                                {userMessages.map((message, index) => (
-                                    <li key={index}>{message}</li>
-                                ))}
-                            </ul>
-                        </div>
+                    <div className="options-left-column">
+
+                        <h2>Book Charging Session</h2>
+
                         <hr className="hr-div"></hr>
-                        <div className="user-sessions-container">
-                            <h2>Recent sessions</h2>
-                            <ul>
-                                {userSessions.map((session, index) => (
-                                    <li key={index} className="session-item">
-                                        <span>{session.sessionBookedAt.toDate().toLocaleString()} |</span>
-                                        <span> {session.duration} minutes |</span>
-                                        <span> {session.energyConsumed} kWh</span>
-                                    </li>
+
+                        <h2>Past Charging Sessions</h2>
+                        <div className="previous-sessions-container">
+                            <select
+                                className="previous-session-select"
+                                onChange={handleSessionSelect}
+                            >
+                                <option value="">Select a session</option>
+                                {sessions.map((session) => (
+                                    <option key={session.id} value={session.id}>
+                                        {`${session.date} ${session.time}`}
+                                    </option>
                                 ))}
-                            </ul>
+                            </select>
+                            <div className="previous-session-info-container">
+                                {selectedSession ? (
+                                    <div>
+                                        <p><strong>Session Date:</strong> {selectedSession.date}</p>
+                                        <p><strong>Session Time:</strong> {selectedSession.time}</p>
+                                        <p><strong>Energy Consumed:</strong> {selectedSession.energy_consumed} kWh</p>
+                                        <p><strong>Duration:</strong> {selectedSession.duration} minutes</p>
+                                        <p><strong>Total:</strong> {selectedSession.total}</p>
+                                    </div>
+                                ) : (
+                                    <p>Select a session to view details</p>
+                                )}
+                            </div>
                         </div>
                     </div>
 
@@ -213,4 +180,4 @@ const BuyerDashboard: React.FC = () => {
     );
 };
 
-export default BuyerDashboard;
+export default Sessions;

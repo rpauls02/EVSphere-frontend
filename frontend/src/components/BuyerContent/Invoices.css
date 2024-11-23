@@ -1,0 +1,15 @@
+.invoices-page-container {
+    display: flex;
+    height: 100vh;
+    padding-left: 250px;
+    flex-direction: column;
+}
+
+.page-title-container {
+    margin-left: 20px;
+}
+
+.user-options-container {
+    margin-left: 20px;
+    font-size: 18px;
+}

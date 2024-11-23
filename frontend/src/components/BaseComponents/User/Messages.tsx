@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { auth, db } from '../../firebaseConfig';
+import { auth, db } from '../../../firebaseConfig';
 import { doc, getDoc } from "firebase/firestore";
-import SellerSidebar from '../SellerContent/SellerSidebar';
-import './SellerDashboard.css';
+import BuyerSidebar from '../../BuyerContent/BuyerSidebar'
+import SellerSidebar from '../../SellerContent/SellerSidebar'
 
-const SellerDashboard: React.FC = () => {
-    const [currentFname, setCurrentFname] = useState<string>('');
+const Messages: React.FC = () => {
+
+    const [userRole, setUserRole] = useState<string>('');
 
     useEffect(() => {
-        const fetchUserFirstName = async () => {
+        const fetchUserData = async () => {
             const user = auth.currentUser;
             if (user) {
                 try {
@@ -16,7 +17,7 @@ const SellerDashboard: React.FC = () => {
                     const userDoc = await getDoc(userDocRef);
                     if (userDoc.exists()) {
                         const userData = userDoc.data();
-                        setCurrentFname(userData.firstName || '');
+                        setUserRole(userData.role || '');
                     } else {
                         console.error("Could not find user record.");
                     }
@@ -26,20 +27,20 @@ const SellerDashboard: React.FC = () => {
             }
         };
 
-        fetchUserFirstName();
+        fetchUserData();
     }, []);
-
     return (
-        <div className="dashboard-container">
-            <SellerSidebar />
+        <div className="messages-page-container">
+            <div className="sidebar-container">
+                {userRole === 'buyer' && <BuyerSidebar />}
+                {userRole === 'seller' && <SellerSidebar />}
+            </div>
             <div className="page-title-container">
-                <h1>Welcome back, {currentFname}</h1>
+                <h1>Manage your Messages</h1>
             </div>
-            <div className="user-options-container">
-                <p>Select an option</p>
-            </div>
+            
         </div>
     );
 };
 
-export default SellerDashboard;
+export default Messages;

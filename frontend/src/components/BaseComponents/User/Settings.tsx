@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import { Modal } from '../Modal';
 import { handleEmailChange } from '../../../utils/ChangeEmailHandler';
 import { handleDeleteAccount } from '../../../utils/DeleteAccountHandler'
 import { auth, db } from '../../../firebaseConfig';

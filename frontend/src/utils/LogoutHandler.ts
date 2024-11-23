@@ -1,10 +1,8 @@
 import { auth } from '../firebaseConfig';
-import { useNavigate } from 'react-router-dom';
 
-const LogoutHandler = async (navigate: any) => {
+const LogoutHandler = async () => {
   try {
     await auth.signOut();
-    navigate('/login');
   } catch (error) {
     console.error("Error during logout:", error);
   }

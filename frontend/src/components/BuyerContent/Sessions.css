@@ -1,5 +1,5 @@
-button {
-    all: unset;
+button,
+select {
     display: inline-block;
     background: none;
     border: none;
@@ -9,44 +9,36 @@ button {
     cursor: pointer;
 }
 
-.dashboard-page-container {
+.sessions-page-container {
     width: 100%;
     height: 100vh;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     box-sizing: border-box;
+    padding-left: 250px;
 }
 
-.dashboard-page-container .sidebar-container {
-    width: 230px;
-    background-color: #f4f4f4;
-    box-sizing: border-box;
-    height: 100%;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 10;
-}
-
-.dashboard-page-container .user-options-container {
+.user-options-container {
     display: flex;
     flex-direction: column;
+    width: 100%;
     max-width: 1200px;
     padding: 2rem;
     background-color: #ffffff;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     box-sizing: border-box;
-    height: 100vh;
-    margin-left: 230px;
-    overflow-y: auto;
+    height: auto;
+    justify-content: space-between;
 }
 
-.dashboard-page-container .user-options-container h1 {
+.user-options-container h1 {
     margin: 0;
 }
 
-.dashboard-page-container .user-options-container .hr-div {
+.user-options-container .hr-div {
     border: none;
     width: 100%;
     background-color: #d6d6d6;
@@ -54,14 +46,14 @@ button {
     height: 1px;
 }
 
-.dashboard-page-container .user-options-container .vr-div {
+.user-options-container .vr-div {
     width: 1px;
     background-color: #d6d6d6;
     margin: 0 20px;
     height: 400px;
 }
 
-.dashboard-page-container .user-options-columns {
+.user-options-columns {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -89,17 +81,15 @@ button {
     flex-direction: column;
 }
 
-.session-item {
-    display: flex;
-    justify-content: flex-start;
-    /* Align items to the left */
-    margin-bottom: 10px;
-    /* Space between sessions */
+.previous-sessions-container {
+    border: 1px solid black;
+    border-radius: 8px;
 }
 
-.session-item span {
-    margin-right: 10px;
-    /* Space between date, duration, and energy */
+.previous-sessions-container select {
+    border: 1px solid black;
+    border-radius: 8px;
+    width: auto;
 }
 
 .session-container {
@@ -125,9 +115,7 @@ button {
 
 .session-button:hover {
     background-color: #1f8b97;
-    /* Darker shade for hover effect */
     border-color: #1f8b97;
-    /* Changes border color on hover */
 }
 
 .button-info-container {

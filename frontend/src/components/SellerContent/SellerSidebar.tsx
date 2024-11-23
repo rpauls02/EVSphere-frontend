@@ -1,17 +1,38 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import '../BaseComponents/Navbar.css';
+import { Link, NavLink } from 'react-router-dom';
+import HomeIcon from '@mui/icons-material/Home';
+import MessageIcon from '@mui/icons-material/Message';
+import SettingsIcon from '@mui/icons-material/Settings';
+import HelpIcon from '@mui/icons-material/Help';
+import EvStationIcon from '@mui/icons-material/EvStation';
+import LogoutIcon from '@mui/icons-material/Logout';
+import logo from 'P:/GitHub/EVSphere/frontend/src/assets/logo-name.png';
+import '../BaseComponents/Sidebar.css';
 
 const SellerSidebar: React.FC = () => {
     return (
-        <nav className="nav-options">
-            <ul>
-                <li><Link to="/stations">Stations</Link></li>
-                <li><Link to="">Tab 2</Link></li>
-                <li><Link to="">Tab 3</Link></li>
-                <li><Link to="">Tab 4</Link></li>
-            </ul>
-        </nav>
+        <div className="sidebar-nav-container">
+            <div className="sidebar-top-section">
+                <div className="sidebar-nav-logo">
+                        <img src={logo} alt="evsphere-logo" />
+                </div>
+                <div className="logo-divider"></div>
+                <nav className="sidebar-main-nav">
+                    <ul>
+                        <li><HomeIcon /><NavLink to="/seller-dashboard" className={({ isActive }) => isActive ? 'active-link' : ''}>Home</NavLink></li>
+                        <li><EvStationIcon /><NavLink to="/stations" className={({ isActive }) => isActive ? 'active-link' : ''}>Stations</NavLink></li>
+                    </ul>
+                </nav>
+            </div>
+            <nav className="sidebar-util-nav">
+                <ul>
+                    <li><HelpIcon /><NavLink to="/help" className={({ isActive }) => isActive ? 'active-link' : ''}>Help</NavLink></li>
+                    <li><MessageIcon /><NavLink to="/messages" className={({ isActive }) => isActive ? 'active-link' : ''}>Messages</NavLink></li>
+                    <li><SettingsIcon /><NavLink to="/settings" className={({ isActive }) => isActive ? 'active-link' : ''}>Settings</NavLink></li>
+                    <li><LogoutIcon /><NavLink to="/home" className={({ isActive }) => isActive ? 'active-link' : ''}>Log out</NavLink></li>
+                </ul>
+            </nav>
+        </div>
     );
 };
 

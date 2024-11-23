@@ -5,7 +5,6 @@ import LoginForm from './components/BaseComponents/Login/LoginForm';
 import SignupForm from './components/BaseComponents/Signup/SignupForm';
 import ResetPasswordForm from './components/BaseComponents/Login/ResetPasswordForm'
 import NotFound from './components/BaseComponents/NotFound';
-import UserDashboard from './components/BaseComponents/User/UserDashboard';
 import Help from './components/BaseComponents/User/Help';
 import Messages from './components/BaseComponents/User/Messages';
 import Settings from './components/BaseComponents/User/Settings';
@@ -31,7 +30,6 @@ const AppRoutes: React.FC = () => {
       <Route path="*" element={<NotFound />} />
 
       {/*User pages routing */}
-      <Route path="/user-dashboard" element={<UserDashboard />} />
       <Route path="/messages" element={<Messages />} />
       {/*<Route path="/help" element={<Help />} />*/}
       <Route path="/settings" element={<Settings />} />
