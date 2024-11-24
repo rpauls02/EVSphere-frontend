@@ -9,7 +9,7 @@ import ElectricalServicesIcon from '@mui/icons-material/ElectricalServices';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 import LogoutIcon from '@mui/icons-material/Logout';
-import logo from 'P:/GitHub/EVSphere/frontend/src/assets/logo-final.png';
+import logo from '../../assets/logo-final.png';
 import LogoutHandler from '../../utils/LogoutHandler';
 import '../BaseComponents/Sidebar.css';
 

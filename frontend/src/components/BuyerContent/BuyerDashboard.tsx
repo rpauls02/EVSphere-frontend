@@ -128,8 +128,8 @@ const BuyerDashboard: React.FC = () => {
                                 ))}
                             </ul>
                         </div>
-                        <hr className="hr-div"></hr>
-                        <div className="user-sessions-container">
+                        
+                        <div className="recent-sessions-container">
                             <h2>Recent sessions</h2>
                             <ul>
                                 {userSessions.map((session, index) => (
@@ -143,11 +143,9 @@ const BuyerDashboard: React.FC = () => {
                         </div>
                     </div>
 
-                    <div className="vr-div"></div>
-
                     <div className="user-options-right-column">
-                        <h2>Your balance</h2>
                         <div className="account-balance-container">
+                            <h2>Your balance</h2>
                             <div className="balance-pair">
                                 <p>Credits:</p>
                                 <label>€{currentCBalance}</label>
@@ -159,10 +157,8 @@ const BuyerDashboard: React.FC = () => {
                             </div>
                         </div>
 
-                        <hr className="hr-div"></hr>
-
-                        <h2>Start a charging session now</h2>
                         <div className="session-container">
+                            <h2>Start a charging session now</h2>
                             <div className="create-session-container">
                                 <button
                                     className="session-button card-payment-button"

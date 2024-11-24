@@ -10,102 +10,106 @@ select {
 }
 
 .sessions-page-container {
-    width: 100%;
+    width: 100vw;
     height: 100vh;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    box-sizing: border-box;
-    padding-left: 250px;
+    flex-direction: row;
 }
 
-.user-options-container {
+.sessions-page-container .sidebar-container {
+    width: 230px;
+    background-color: #f4f4f4;
+    box-sizing: border-box;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.sessions-page-container .user-options-container {
     display: flex;
     flex-direction: column;
     width: 100%;
-    max-width: 1200px;
     padding: 2rem;
     background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    box-sizing: border-box;
-    height: auto;
-    justify-content: space-between;
+    border-radius: 20px;
+    height: 100vh;
+    margin-left: 230px;
+    align-items: center;
 }
 
-.user-options-container h1 {
+.sessions-page-container .user-options-container h1 {
     margin: 0;
+    align-self: flex-start;
 }
 
-.user-options-container .hr-div {
+.sessions-page-container .user-options-container .hr-div {
     border: none;
     width: 100%;
     background-color: #d6d6d6;
-    margin: 10px 0;
+    margin: 20px 0;
     height: 1px;
 }
 
-.user-options-container .vr-div {
+.sessions-page-container .user-options-container .vr-div {
     width: 1px;
     background-color: #d6d6d6;
     margin: 0 20px;
     height: 400px;
 }
 
-.user-options-columns {
+.sessions-page-container .user-options-columns {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
     align-items: flex-start;
     width: 100%;
     gap: 20px;
 }
 
-.user-options-columns h2 {
+.sessions-page-container .user-options-columns h2 {
     margin: 0;
 }
 
-.user-options-left-column .hr-div {
+.sessions-page-container .user-options-left-column .hr-div {
     border: none;
     width: 100%;
     background-color: #d6d6d6;
     height: 1px;
 }
 
-.user-options-left-column,
-.user-options-right-column {
+.sessions-page-container .user-options-left-column,
+.session-page-container .user-options-right-column {
     flex: 1;
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
 }
 
-.previous-sessions-container {
+.sessions-page-container .previous-sessions-container {
     border: 1px solid black;
     border-radius: 8px;
 }
 
-.previous-sessions-container select {
+.sessions-page-container .previous-sessions-container select {
     border: 1px solid black;
     border-radius: 8px;
     width: auto;
 }
 
-.session-container {
+.sessions-page-container .session-container {
     display: flex;
     flex-direction: column;
     border: 1px solid black;
     border-radius: 8px;
 }
 
-.create-session-container {
+.sessions-page-container .create-session-container {
     display: flex;
     flex-direction: row;
     gap: 20px;
 }
 
-.session-button {
+.sessions-page-container .session-button {
     align-items: center;
     padding: 10px;
     border: none;
@@ -113,12 +117,12 @@ select {
     cursor: pointer;
 }
 
-.session-button:hover {
+.sessions-page-container .session-button:hover {
     background-color: #1f8b97;
     border-color: #1f8b97;
 }
 
-.button-info-container {
+.sessions-page-container .button-info-container {
     display: none;
     margin-top: 10px;
     background-color: #f1f1f1;
@@ -131,31 +135,31 @@ select {
     opacity: 0;
 }
 
-.button-info-container.expanded {
+.sessions-page-container .button-info-container.expanded {
     display: block;
     max-height: 300px;
     opacity: 1;
 }
 
-.button-info-container h3 {
+.sessions-page-container .button-info-container h3 {
     margin: 0;
     font-size: 1.2rem;
 }
 
-.account-balance-container {
+.sessions-page-container .account-balance-container {
     display: flex;
     flex-direction: row;
     align-items: center;
     gap: 20px;
 }
 
-.balance-pair {
+.sessions-page-container .balance-pair {
     display: flex;
     align-items: center;
     gap: 5px;
 }
 
-.account-balance-container label {
+.sessions-page-container .account-balance-container label {
     background-color: white;
     border: 1px solid black;
     padding: 8px;
@@ -166,13 +170,13 @@ select {
     margin-left: 5px;
 }
 
-.manage-session-buttons {
+.sessions-page-container .manage-session-buttons {
     display: flex;
     flex-direction: row;
     gap: 20px;
 }
 
-.manage-session-buttons button {
+.sessions-page-container .manage-session-buttons button {
     border: 2px solid blue;
     padding: 10px 20px;
     font-size: 16px;
@@ -181,20 +185,20 @@ select {
     transition: background-color 0.3s ease;
 }
 
-.manage-session-buttons .start-session-button {
+.sessions-page-container .manage-session-buttons .start-session-button {
     background-color: green;
     color: white;
 }
 
-.manage-session-buttons .end-session-button {
+.sessions-page-container .manage-session-buttons .end-session-button {
     background-color: red;
     color: white;
 }
 
-.manage-session-buttons .start-session-button:hover {
+.sessions-page-container .manage-session-buttons .start-session-button:hover {
     background-color: darkgreen;
 }
 
-.manage-session-buttons .end-session-button:hover {
+.sessions-page-container .manage-session-buttons .end-session-button:hover {
     background-color: darkred;
 }

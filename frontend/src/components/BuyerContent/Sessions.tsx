@@ -70,12 +70,14 @@ const Sessions: React.FC = () => {
 
     return (
         <div className="sessions-page-container">
-            <BuyerSidebar />
+            <div className="sidebar-container">
+                <BuyerSidebar />
+            </div>
             <div className="user-options-container">
                 <h1>Sessions</h1>
                 <hr className="hr-div"></hr>
                 <div className="user-options-columns">
-                    <div className="options-left-column">
+                    <div className="user-options-left-column">
 
                         <h2>Book Charging Session</h2>
 
