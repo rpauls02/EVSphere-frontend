@@ -44,15 +44,14 @@
 }
 
 .settings-navbar li:hover {
-    background-color: rgba(101, 238, 134, 0.3);
+    background-color: rgba(22, 185, 204, 0.3);
 }
 
 .settings-navbar li.active {
-    border-top: 2px solid rgb(101, 238, 134);
-    border-right: 2px solid rgb(101, 238, 134);
-    border-left: 2px solid rgb(101, 238, 134);
-    border-radius: 0;
-    background-color: rgba(101, 238, 134, 0.3);
+    border-bottom: 3px solid rgb(22, 185, 204);
+    border-left: 3px solid rgb(22, 185, 204);
+    border-right: 3px solid rgb(22, 185, 204);
+    background-color: rgba(22, 185, 204, 0.3);
 }
 
 .account-menu-container,
@@ -136,5 +135,4 @@
     height: 0.1px;
     width: 1000px;
     background-color: grey;
-    margin-bottom: 0.5rem;
 }

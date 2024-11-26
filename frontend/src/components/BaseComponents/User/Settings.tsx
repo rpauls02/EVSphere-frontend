@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import { handleEmailChange } from '../../../utils/ChangeEmailHandler';
-import { handleDeleteAccount } from '../../../utils/DeleteAccountHandler'
+import { handleEmailChange, handleDeleteAccount } from '../../../utils/UserDetailsFunctions';
 import { auth, db } from '../../../firebaseConfig';
 import { doc, getDoc } from "firebase/firestore";
 import { useNavigate } from 'react-router-dom';

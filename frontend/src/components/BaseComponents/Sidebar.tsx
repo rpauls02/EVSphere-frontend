@@ -75,10 +75,10 @@ const Sidebar: React.FC = () => {
             </div>
             <nav className="sidebar-util-nav">
                 <ul>
-                    <li><HelpIcon /><NavLink to="/help" className={({ isActive }) => isActive ? 'active-link' : ''}>Help</NavLink></li>
-                    <li><MessageIcon /><NavLink to="/messages" className={({ isActive }) => isActive ? 'active-link' : ''}>Messages</NavLink></li>
-                    <li><SettingsIcon /><NavLink to="/settings" className={({ isActive }) => isActive ? 'active-link' : ''}>Settings</NavLink></li>
-                    <li><LogoutIcon /><NavLink to="/home" className={({ isActive }) => isActive ? 'active-link' : ''}>Log out</NavLink></li>
+                    <li><span><HelpIcon /><NavLink to="/help" className={({ isActive }) => isActive ? 'active-link' : ''}>Help</NavLink></span></li>
+                    <li><span><MessageIcon /><NavLink to="/messages" className={({ isActive }) => isActive ? 'active-link' : ''}>Messages</NavLink></span></li>
+                    <li><span><SettingsIcon /><NavLink to="/settings" className={({ isActive }) => isActive ? 'active-link' : ''}>Settings</NavLink></span></li>
+                    <li><span><LogoutIcon /><NavLink to="/home" className={({ isActive }) => isActive ? 'active-link' : ''}>Log out</NavLink></span></li>
                 </ul>
             </nav>
         </div>

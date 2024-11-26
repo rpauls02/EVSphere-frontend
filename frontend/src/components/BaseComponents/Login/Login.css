@@ -1,16 +1,29 @@
-.login-container {
+.login-page-container {
     margin: 0;
-    margin-top: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     text-align: center;
     background-color: rgb(240, 244, 248);
+    height: 100vh;
 }
 
-.login-box {
+.login-logo-container {
+    margin-bottom: 10px;
+}
+
+.login-logo-container img {
+    height: 70px;
+    width: auto;
+    margin: 0;
+    padding: 0;
+}
+
+.login-form-container {
     display: flex;
-    background-color: white;
+    flex-direction: column;
+    background-color: rgb(22, 185, 204);
     padding: 32px;
     border-radius: 12px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -18,14 +31,18 @@
     width: 100%;
 }
 
-.login-section {
-    flex: 1;
-    padding: 0 20px;
-    font-family: 'Montserrat', sans-serif;
+.new-user-option-container{
+    font-size: 18px;
 }
 
-.new-user-option{
-    font-size: 18px;
+.login-options-container{
+    display: flex;
+    flex-direction: row;
+}
+
+.email-login-section {
+    flex: 1;
+    padding: 0 20px;
 }
 
 .remember-me {
@@ -35,7 +52,6 @@
     margin-bottom: 24px;
     font-size: 14px;
     color: #666;
-    font-family: 'Montserrat', sans-serif;
 }
 
 .forgot-password-link {
@@ -44,24 +60,20 @@
 
 }
 
-.forgot-password-link:hover {
-    
-}
-
 .login-button {
-    background-color: #28a745;
+    background-color: rgb(15, 129, 143);
     color: white;
     padding: 12px;
     border: none;
     border-radius: 5px;
-    width: 100%;
+    width: auto;
     font-size: 16px;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
 .login-button:hover {
-    background-color: #218838;
+    background-color: rgb(11, 92, 102);
 }
 
 .separator {
@@ -73,8 +85,6 @@
 .social-login-section{
     flex: 1;
     padding: 0 20px;
-    font-family: 'Montserrat', sans-serif;
-    padding-top: 40px;
 }
 
 .social-login-buttons {
@@ -94,7 +104,6 @@
     cursor: pointer;
     font-size: 16px;
     transition: background-color 0.3s ease;
-    font-family: 'Montserrat', sans-serif; 
     border: 1px solid rgba(0, 0, 0, 0.1); 
 }
 
@@ -120,7 +129,6 @@
     animation: fadeOut 3s forwards;
     z-index: 1000;
     font-size: 14px;
-    font-family: 'Montserrat', sans-serif;
 }
 
 .popup-error {

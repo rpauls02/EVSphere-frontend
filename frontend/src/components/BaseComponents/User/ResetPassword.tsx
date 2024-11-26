@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { handleResetPassword } from '../../../utils/ResetPasswordHandler';
-import './ResetPasswordForm.css';
+import { handleResetPassword } from '../../../utils/UserDetailsFunctions';
+import './ResetPassword.css';
 
 const ResetPasswordForm: React.FC = () => {
   const [email, setEmail] = useState('');

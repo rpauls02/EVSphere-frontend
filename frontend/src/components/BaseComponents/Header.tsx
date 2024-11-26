@@ -5,7 +5,7 @@ import { AccountCircle } from '@mui/icons-material';
 import { doc, getDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from '../../firebaseConfig';
-import logo from '../../assets/logo-final.png';
+import logo from '../../assets/logo.png';
 import LogoutHandler from '../../utils/LogoutHandler';
 
 interface User {
