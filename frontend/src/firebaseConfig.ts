@@ -1,7 +1,6 @@
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import { getAuth, setPersistence, browserLocalPersistence, onAuthStateChanged } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
-
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -12,13 +11,29 @@ const firebaseConfig = {
   appId: process.env.REACT_APP_FIREBASE_APP_ID,
 };
 
-// Initialise web app
+// Initialize Firebase app
 const app = initializeApp(firebaseConfig);
 
-// Initialise authentication
+// Initialize Firebase Auth and Firestore
 const auth = getAuth(app);
-
-// Initialise Firestore 
 const db = getFirestore(app);
+
+// Set session persistence for authentication
+setPersistence(auth, browserLocalPersistence)
+  .then(() => {
+    console.log("Session persistence set to local.");
+  })
+  .catch((error) => {
+    console.error("Error setting session persistence:", error);
+  });
+
+// Listen for auth state changes to ensure persistence is working
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    console.log("User is signed in: ", user);
+  } else {
+    console.log("No user is signed in.");
+  }
+});
 
 export { auth, db, app };
