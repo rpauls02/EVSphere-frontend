@@ -11,12 +11,18 @@ export const handleSignup = async (
     countryCode: string,
     mobile: string,
     password: string,
+    confirmPassword: string,
     companyName: string,
     setPopup: (message: string, type: 'success' | 'error') => void,
     resetForm: () => void
 ) => {
     event.preventDefault();
     const mobileNumber = `${countryCode}${mobile}`;
+
+    if (password !== confirmPassword) {
+        setPopup("Passwords do not match.", "error");
+        return;
+    }
 
     try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
