@@ -1,20 +1,15 @@
 {
-  "short_name": "EVSphere",
-  "name": "EV Charging Management System",
+  "short_name": "SEC",
+  "name": "SolarElectricClub",
   "icons": [
     {
       "src": "logo",
-      "sizes": "91x105",
+      "sizes": "1261x301",
       "type": "image/png"
-    },
-    {
-      "src": "logo-name.png",
-      "type": "image/png",
-      "sizes": "399x105"
     }
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "theme_color": "#16b9cc",
+  "background_color": "#f0f4f8"
 }
