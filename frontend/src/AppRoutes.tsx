@@ -1,9 +1,8 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
-import Home from './components/BaseComponents/Home';
-import LoginForm from './components/BaseComponents/Login/LoginForm';
-import SignupForm from './components/BaseComponents/Signup/SignupForm';
-import ResetPasswordForm from './components/BaseComponents/Login/ResetPasswordForm'
+import LoginForm from './components/BaseComponents/Login/Login';
+import SignupForm from './components/BaseComponents/Signup/Signup';
+import ResetPasswordForm from './components/BaseComponents/User/ResetPassword'
 import NotFound from './components/BaseComponents/NotFound';
 import Help from './components/BaseComponents/User/Help';
 import Messages from './components/BaseComponents/User/Messages';
@@ -20,8 +19,8 @@ import Stations from './components/SellerContent/Stations';
 const AppRoutes: React.FC = () => {
   return (
     <Routes>
-      {/*Home page*/}
-      <Route path="/" element={<Home />} />
+      {/*Entry page*/}
+      <Route path="/" element={<LoginForm />} />
 
       {/*Base pages routing*/}
       <Route path="/login" element={<LoginForm />} />
