@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import CountryCodeSelect from './CountryCodeSelect';
 import { handleSignup } from '../../../utils/SignupHandler';
+import CheckIcon from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close';
+import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
+
 import './Signup.css';
 
 const SignupForm: React.FC = () => {
@@ -14,6 +18,7 @@ const SignupForm: React.FC = () => {
     const [countryCode, setCountryCode] = useState('+44');
     const [mobile, setMobileNumber] = useState('');
     const [popup, setPopup] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+    const passwordsMatch = password === confirmPassword;
 
     const resetForm = () => {
         setCompanyName('');
@@ -26,7 +31,34 @@ const SignupForm: React.FC = () => {
         setMobileNumber('');
     };
 
-    const passwordsMatch = password === confirmPassword;
+    const requirements = {
+        uppercase: /[A-Z]/.test(password),
+        lowercase: /[a-z]/.test(password),
+        specialCharacter: /[-/\\!@£'€#$%^;&*(),.?":{}|<>]/.test(password),
+        numerics: /\d/.test(password),
+        minLength: password.length >= 12,
+        maxLength: password.length <= 64
+    };
+
+    const renderIcon = (condition: any) => {
+        if (condition) {
+            return <CheckIcon style={{ color: 'green' }} />;
+        }
+        return <CloseIcon style={{ color: 'red' }} />;
+    };
+
+    const renderOptionalIcon = (condition: any) => {
+        if (condition) {
+            return <RadioButtonUncheckedIcon style={{ color: 'gray' }} />;
+        }
+        return <CheckIcon style={{ color: 'green' }} />;
+    };
+
+    const handlePassowrdEntry = async () => {
+        if (!passwordsMatch) {
+            // make password boxes red and show passwords dont match
+        }
+    }
 
     const handleSignupSubmission = async (event: React.FormEvent<HTMLFormElement>) => {
         await handleSignup(
@@ -106,22 +138,6 @@ const SignupForm: React.FC = () => {
                         required
                         className="input-field email-input"
                     />
-                    <input
-                        type="password"
-                        placeholder="Password*"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                        className={`input-field password-input ${!passwordsMatch && confirmPassword ? 'error' : ''}`}
-                    />
-                    <input
-                        type="password"
-                        placeholder="Confirm password*"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        required
-                        className={`input-field confirm-password-input ${!passwordsMatch && confirmPassword ? 'error' : ''}`}
-                    />
                     <div className="mobile-input-container">
                         <div className="input-group">
                             <CountryCodeSelect countryCode={countryCode} setCountryCode={setCountryCode} />
@@ -135,6 +151,37 @@ const SignupForm: React.FC = () => {
                             />
                         </div>
                     </div>
+                    <div className="password-input-container">
+                        <input
+                            type="password"
+                            placeholder="Password*"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                            className={`input-field password-input ${!passwordsMatch && confirmPassword ? 'error' : ''}`}
+                        />
+                        <input
+                            type="password"
+                            placeholder="Confirm password*"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            required
+                            className={`input-field confirm-password-input ${!passwordsMatch && confirmPassword ? 'error' : ''}`}
+                        />
+                        <div className="password-requirements-container">
+                            <div className="left-col">
+                                <p className="password-requirements-item">{renderIcon(requirements.uppercase)}One uppercase letter</p>
+                                <p className="password-requirements-item">{renderIcon(requirements.lowercase)}One lowercase letter</p>
+                                <p className="password-requirements-item">{renderIcon(requirements.specialCharacter)}One special character</p>
+                            </div>
+                            <div className="right-col">
+                                <p className="password-requirements-item">{renderIcon(requirements.numerics)}One numeric character</p>
+                                <p className="password-requirements-item">{renderIcon(requirements.minLength)} Minimum length: 12 characters</p>
+                                <p className="password-requirements-item">{renderOptionalIcon(requirements.maxLength)} Maximum length: 64 characters</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="recaptcha-container"></div>
                     <button className="submit-signup-button" type="submit">
                         Submit
                     </button>

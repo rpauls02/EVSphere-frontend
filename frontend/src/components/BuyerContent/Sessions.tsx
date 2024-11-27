@@ -1,61 +1,49 @@
 import React, { useState, useEffect } from 'react';
-import { auth, db } from '../../firebaseConfig';
-import { doc, getDoc, collection, getDocs, query } from 'firebase/firestore';
+import { fetchUpcomingChargingSessions, fetchRecentChargingSessions, fetchUserBalance, } from "../../utils/UserFetchFunctions";
 import BuyerSidebar from '../BuyerContent/BuyerSidebar';
 import './Sessions.css';
 
+interface UserBalance {
+    pointsBalance: number;
+    creditsBalance: number;
+}
+
 const Sessions: React.FC = () => {
     const [selectedButton, setSelectedButton] = useState(null);
-    const [currentPBalance, setCurrentPBalance] = useState<string>('');
-    const [currentCBalance, setCurrentCBalance] = useState<string>('');
-    const [sessions, setSessions] = useState<any[]>([]);
+    const [currentPBalance, setCurrentPBalance] = useState<number>(0);
+    const [currentCBalance, setCurrentCBalance] = useState<number>(0);
+    const [recentChargingSessions, setRecentChargingSessions] = useState<any[]>([]);
+    const [upcomingChargingSessions, setUpcomingChargingSessions] = useState<any[]>([]);
     const [selectedSession, setSelectedSession] = useState<any | null>(null);
 
     useEffect(() => {
-        const fetchUserDetails = async () => {
-            const user = auth.currentUser;
-            if (user) {
-                try {
-                    const userDocRef = doc(db, "users", user.uid);
-                    const userDoc = await getDoc(userDocRef);
-                    if (userDoc.exists()) {
-                        const userData = userDoc.data();
-                        setCurrentPBalance(userData.points_balance || '')
-                        setCurrentCBalance(userData.credits_balance || '')
-                    } else {
-                        console.error("Could not find user record.");
-                    }
-                } catch (error) {
-                    console.error("Error fetching user data from Firestore:", error);
-                }
+        const loadUserBalance = async () => {
+            const balance: UserBalance | null = await fetchUserBalance();
+            if (balance) {
+                setCurrentPBalance(balance.pointsBalance);
+                setCurrentCBalance(balance.creditsBalance);
             }
         };
 
-        fetchUserDetails();
+        loadUserBalance();
     }, []);
 
     useEffect(() => {
-        const fetchUserSessions = async () => {
-            const user = auth.currentUser;
-            if (user) {
-                try {
-                    const sessionsRef = collection(db, 'users', user.uid, 'user_sessions');
-                    const q = query(sessionsRef);
-                    const querySnapshot = await getDocs(q);
-
-                    const sessionsData: any[] = [];
-                    querySnapshot.forEach((doc) => {
-                        sessionsData.push({ id: doc.id, ...doc.data() });
-                    });
-
-                    setSessions(sessionsData);
-                } catch (error) {
-                    console.error('Error fetching sessions from Firestore:', error);
-                }
-            }
+        const loadRecentChargingSessions = async () => {
+            const sessions = await fetchRecentChargingSessions();
+            setRecentChargingSessions(sessions);
         };
 
-        fetchUserSessions();
+        loadRecentChargingSessions();
+    }, []);
+
+    useEffect(() => {
+        const loadUpcomingChargingSessions = async () => {
+            const sessions = await fetchUpcomingChargingSessions();
+            setUpcomingChargingSessions(sessions);
+        };
+
+        loadUpcomingChargingSessions();
     }, []);
 
     const handleButtonClick = (buttonType: any) => {
@@ -64,7 +52,7 @@ const Sessions: React.FC = () => {
 
     const handleSessionSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const sessionId = event.target.value;
-        const selectedSessionData = sessions.find((session) => session.id === sessionId);
+        const selectedSessionData = recentChargingSessions.find((session) => session.id === sessionId);
         setSelectedSession(selectedSessionData || null);
     };
 
@@ -75,73 +63,89 @@ const Sessions: React.FC = () => {
             </div>
             <div className="user-options-container">
                 <h1>Sessions</h1>
-                <hr className="hr-div"></hr>
-                <div className="user-options-columns">
-                    <div className="user-options-left-column">
+                <p>Book a charging session, or view your previous sessions</p>
+                <div className="hr-div"></div>
+                <div className="user-options-grid">
 
-                        <h2>Book Charging Session</h2>
+                    <div className="account-balance-container">
+                        <h2>Your balance</h2>
+                        <div className="hr-div"></div>
+                        <div className="balance-pairs-container">
+                            <div className="balance-pair-container">
+                                <p>Credit:</p>
+                                <label>€{currentCBalance}</label>
+                            </div>
 
-                        <hr className="hr-div"></hr>
+                            <div className="balance-pair-container">
+                                <p>Points:</p>
+                                <label>{currentPBalance}</label>
+                            </div>
 
-                        <h2>Past Charging Sessions</h2>
-                        <div className="previous-sessions-container">
-                            <select
-                                className="previous-session-select"
-                                onChange={handleSessionSelect}
-                            >
-                                <option value="">Select a session</option>
-                                {sessions.map((session) => (
-                                    <option key={session.id} value={session.id}>
-                                        {`${session.date} ${session.time}`}
-                                    </option>
-                                ))}
-                            </select>
-                            <div className="previous-session-info-container">
-                                {selectedSession ? (
-                                    <div>
-                                        <p><strong>Session Date:</strong> {selectedSession.date}</p>
-                                        <p><strong>Session Time:</strong> {selectedSession.time}</p>
-                                        <p><strong>Energy Consumed:</strong> {selectedSession.energy_consumed} kWh</p>
-                                        <p><strong>Duration:</strong> {selectedSession.duration} minutes</p>
-                                        <p><strong>Total:</strong> {selectedSession.total}</p>
-                                    </div>
-                                ) : (
-                                    <p>Select a session to view details</p>
-                                )}
+                            <div className="manage-balance-buttons">
+                                <button className="add-credit-button" type="button">Add credit</button>
+                                <button className="balance-history-button" type="button">View history</button>
                             </div>
                         </div>
                     </div>
 
-                    <div className="vr-div"></div>
+                    <div className="upcoming-sessions-container">
+                        <h2>Upcoming Sessions</h2>
+                        <div className="hr-div"></div>
+                        <ul>
+                            {upcomingChargingSessions.map((session, index) => {
+                                const date = session.bookedAt.toDate();
+                                const formattedDate = `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`;
+                                return (
+                                    <li key={index} className="session-item">
+                                        {formattedDate} | {session.duration} minutes | {session.energyConsumed} kWh
+                                    </li>
+                                );
+                            })}
+                        </ul>
+                    </div>
 
-                    <div className="user-options-right-column">
-                        <h2>Your balance</h2>
-                        <div className="account-balance-container">
-                            <div className="balance-pair">
-                                <p>Credits:</p>
-                                <label>€{currentCBalance}</label>
+                    <div className="book-session-container">
+                        <h2>Book Charging Session</h2>
+                        <div className="hr-div"></div>
+                        <form className="booking-form">
+                            <div className="form-group">
+                                <label htmlFor="session-date">Date</label>
+                                <input
+                                    type="date"
+                                    id="session-date"
+                                    name="session-date"
+                                    required
+                                />
                             </div>
 
-                            <div className="balance-pair">
-                                <p>Points:</p>
-                                <label>{currentPBalance}</label>
+                            <div className="form-group">
+                                <label htmlFor="session-time">Time</label>
+                                <input
+                                    type="time"
+                                    id="session-time"
+                                    name="session-time"
+                                    required
+                                />
                             </div>
-                        </div>
 
-                        <hr className="hr-div"></hr>
+                            <button type="submit" className="submit-button">Book Session</button>
+                        </form>
+                    </div>
 
+                    <div className="quick-session-container">
                         <h2>Start a charging session now</h2>
-                        <div className="session-container">
-                            <div className="create-session-container">
+                        <div className="hr-div"></div>
+                        <div className="create-session-container">
+                            <div className="choose-session-type-container">
                                 <button
-                                    className="session-button card-payment-button"
+                                    className="session-payment-type-button"
                                     type="button"
                                     onClick={() => handleButtonClick('cardPayment')}
                                 >
                                     Card Payment
                                 </button>
                                 <button
-                                    className="session-button exchange-payment-button"
+                                    className="session-payment-type-button"
                                     type="button"
                                     onClick={() => handleButtonClick('exchangePayment')}
                                 >
@@ -149,7 +153,7 @@ const Sessions: React.FC = () => {
                                 </button>
                             </div>
 
-                            <div className={`button-info-container ${selectedButton ? 'expanded' : ''}`}>
+                            <div className={`session-type-info-container ${selectedButton ? 'expanded' : ''}`}>
                                 {selectedButton === 'cardPayment' && (
                                     <div>
                                         <h3>Card Payment</h3>
@@ -173,6 +177,37 @@ const Sessions: React.FC = () => {
                                     <button className="start-session-button">Start Session</button>
                                     <button className="end-session-button">End Session</button>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="past-sessions-container">
+                        <h2>Past Sessions</h2>
+                        <div className="hr-div"></div>
+                        <div className="previous-sessions-container">
+                            <select
+                                className="previous-session-select"
+                                onChange={handleSessionSelect}
+                            >
+                                <option value="">Select a session</option>
+                                {recentChargingSessions.map((session) => (
+                                    <option key={session.id} value={session.id}>
+                                        {`${session.date} ${session.time}`}
+                                    </option>
+                                ))}
+                            </select>
+                            <div className="previous-session-info-container">
+                                {selectedSession ? (
+                                    <div>
+                                        <p><strong>Session Date:</strong> {selectedSession.date}</p>
+                                        <p><strong>Session Time:</strong> {selectedSession.time}</p>
+                                        <p><strong>Energy Consumed:</strong> {selectedSession.energy_consumed} kWh</p>
+                                        <p><strong>Duration:</strong> {selectedSession.duration} minutes</p>
+                                        <p><strong>Total:</strong> {selectedSession.total}</p>
+                                    </div>
+                                ) : (
+                                    <p>Select a session to view details</p>
+                                )}
                             </div>
                         </div>
                     </div>

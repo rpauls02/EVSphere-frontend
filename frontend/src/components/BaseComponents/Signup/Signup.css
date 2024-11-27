@@ -75,6 +75,16 @@
     justify-content: center;
 }
 
+.password-requirements-container{
+    display: flex;
+    gap: 15px;
+}
+
+.password-requirements-item{
+    display: flex;
+    align-items: center;
+}
+
 .input-group {
     width: 100%;
     display: flex;
@@ -87,7 +97,6 @@
     padding: 5px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    font-family: 'Montserrat', sans-serif;
     font-size: 14px;
     outline: none;
     width: auto;

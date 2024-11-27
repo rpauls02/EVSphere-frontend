@@ -7,10 +7,18 @@ export interface UserBalance {
 }
 
 export interface UserDetails {
+    userName: string;
     firstName: string;
     lastName: string;
     email: string;
     mobile: string;
+    role: string;
+}
+
+export interface UserChargersData {
+    userID: string;
+    address: string;
+    charger_count: number;
 }
 
 export interface RecentSessionData {
@@ -37,10 +45,12 @@ export const fetchUserDetails = async (): Promise<UserDetails | null> => {
         if (userDoc.exists()) {
             const userData = userDoc.data();
             return {
+                userName: userData.userName || '',
                 firstName: userData.firstName || '',
                 lastName: userData.lastName || '',
                 email: userData.email || '',
-                mobile: userData.mobile || ''
+                mobile: userData.mobile || '',
+                role: userData.role || '',
             };
         } else {
             console.error("Could not find user record.");
@@ -126,7 +136,7 @@ export const fetchRecentChargingSessions = async (): Promise<RecentSessionData[]
         const sessionsQuery = query(
             userSessionsRef,
             where("userID", "==", user.uid),
-            where ("status", "==", "complete"),
+            where("status", "==", "complete"),
             orderBy("bookedAt", "desc"),
             limit(5)
         );
@@ -162,7 +172,7 @@ export const fetchUpcomingChargingSessions = async (): Promise<UpcomingSessionDa
         const sessionsQuery = query(
             userSessionsRef,
             where("userID", "==", user.uid),
-            where ("status", "==", "waiting"),
+            where("status", "==", "waiting"),
             orderBy("bookedAt", "desc"),
             limit(5)
         );
@@ -179,5 +189,33 @@ export const fetchUpcomingChargingSessions = async (): Promise<UpcomingSessionDa
     } catch (error) {
         console.error("Error fetching data from Firestore:", error);
         throw error;
+    }
+};
+
+export const fetchUserChargers = async (): Promise<UserChargersData | null> => {
+    const user = auth.currentUser;
+    if (!user) {
+        console.error("No authenticated user found.");
+        return null;
+    }
+
+    try {
+        const userChargersRef = doc(db, "chargers");
+        const userDoc = await getDoc(userChargersRef);
+
+        if (userDoc.exists()) {
+            const userData = userDoc.data();
+            return {
+                userID: userData.userID || '',
+                address: userData.address || '',
+                charger_count: userData.charger_count || '',
+            };
+        } else {
+            console.error("Could not find user record.");
+            return null;
+        }
+    } catch (error) {
+        console.error("Error fetching user data from Firestore:", error);
+        return null;
     }
 };

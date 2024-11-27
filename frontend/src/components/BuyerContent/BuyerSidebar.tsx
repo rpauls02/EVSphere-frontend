@@ -5,9 +5,10 @@ import MessageIcon from '@mui/icons-material/Message';
 import SettingsIcon from '@mui/icons-material/Settings';
 import HelpIcon from '@mui/icons-material/Help';
 import EvStationIcon from '@mui/icons-material/EvStation';
-import ElectricalServicesIcon from '@mui/icons-material/ElectricalServices';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
+import FirstPageIcon from '@mui/icons-material/FirstPage';
 import LogoutIcon from '@mui/icons-material/Logout';
 import logo from '../../assets/logo.png';
 import LogoutHandler from '../../utils/LogoutHandler';
@@ -16,7 +17,7 @@ import '../BaseComponents/Sidebar.css';
 const BuyerSidebar: React.FC = () => {
     const navigate = useNavigate();
 
-    const handleLogout = (e: React.MouseEvent) => {
+    const handleLogoutSubmission = (e: React.MouseEvent) => {
         e.preventDefault();
         LogoutHandler();
         navigate('/');
@@ -31,34 +32,34 @@ const BuyerSidebar: React.FC = () => {
                 <div className="logo-divider"></div>
                 <nav className="sidebar-main-nav">
                     <ul>
-                        <li>
+                        <li className="sidebar-nav-item">
                             <NavLink to="/buyer-dashboard" className={({ isActive }) => (isActive ? 'active-link' : '')}>
                                 <HomeIcon />
                                 Home
                             </NavLink>
                         </li>
-                        <li>
+                        <li className="sidebar-nav-item">
                             <NavLink to="/sessions" className={({ isActive }) => (isActive ? 'active-link' : '')}>
-                                <AssessmentIcon />
+                                <AccessTimeIcon />
                                 Sessions
                             </NavLink>
                         </li>
-                        <li>
+                        <li className="sidebar-nav-item">
                             <NavLink to="/host-services" className={({ isActive }) => (isActive ? 'active-link' : '')}>
                                 <EvStationIcon />
                                 Host Services
                             </NavLink>
                         </li>
-                        <li>
-                            <NavLink to="/reports" className={({ isActive }) => (isActive ? 'active-link' : '')}>
-                                <AssessmentIcon />
-                                Reports
-                            </NavLink>
-                        </li>
-                        <li>
+                        <li className="sidebar-nav-item">
                             <NavLink to="/invoices" className={({ isActive }) => (isActive ? 'active-link' : '')}>
                                 <ReceiptLongIcon />
                                 Invoices
+                            </NavLink>
+                        </li>
+                        <li className="sidebar-nav-item">
+                            <NavLink to="/reports" className={({ isActive }) => (isActive ? 'active-link' : '')}>
+                                <AssessmentIcon />
+                                Reports
                             </NavLink>
                         </li>
                     </ul>
@@ -66,26 +67,26 @@ const BuyerSidebar: React.FC = () => {
             </div>
             <nav className="sidebar-util-nav">
                 <ul>
-                    <li>
+                    <li className="sidebar-nav-item">
                         <NavLink to="/help" className={({ isActive }) => (isActive ? 'active-link' : '')}>
                             <HelpIcon />
                             Help
                         </NavLink>
                     </li>
-                    <li>
+                    <li className="sidebar-nav-item">
                         <NavLink to="/messages" className={({ isActive }) => (isActive ? 'active-link' : '')}>
                             <MessageIcon />
                             Messages
                         </NavLink>
                     </li>
-                    <li>
+                    <li className="sidebar-nav-item">
                         <NavLink to="/settings" className={({ isActive }) => (isActive ? 'active-link' : '')}>
                             <SettingsIcon />
                             Settings
                         </NavLink>
                     </li>
-                    <li>
-                        <NavLink to="/" onClick={handleLogout} className="logout-link">
+                    <li className="sidebar-nav-item">
+                        <NavLink to="/" onClick={handleLogoutSubmission} className="logout-link">
                             <LogoutIcon />
                             Log out
                         </NavLink>

@@ -1,5 +1,5 @@
 import { auth, db } from '../firebaseConfig';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 
 export const handleSignup = async (
@@ -42,7 +42,13 @@ export const handleSignup = async (
 
         await setDoc(doc(db, 'users', userCredential.user.uid), userDocData);
 
-        setPopup("Successfully signed up. Please log in.", "success");
+        await sendEmailVerification(userCredential.user);
+
+        setPopup(
+            "Successfully signed up. A verification email has been sent to your email address. Please verify your email before logging in.",
+            "success"
+        );
+
         resetForm();
 
     } catch (error) {

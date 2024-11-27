@@ -1,113 +1,95 @@
 import React, { useState, useEffect } from 'react';
-import { auth, db } from '../../firebaseConfig';
-import { doc, getDoc } from "firebase/firestore";
-import { collection, query, orderBy, limit, getDocs } from "firebase/firestore";
 import BuyerSidebar from '../BuyerContent/BuyerSidebar';
+import { fetchUpcomingChargingSessions, fetchUserMessages, fetchUserBalance, fetchUserDetails } from "../../utils/UserFetchFunctions";
 import './BuyerDashboard.css';
+
+interface UserBalance {
+    pointsBalance: number;
+    creditsBalance: number;
+}
 
 const BuyerDashboard: React.FC = () => {
     const [currentFname, setCurrentFname] = useState<string>('');
-    const [currentPBalance, setCurrentPBalance] = useState<string>('');
-    const [currentCBalance, setCurrentCBalance] = useState<string>('');
+    const [currentPBalance, setCurrentPBalance] = useState<number>(0);
+    const [currentCBalance, setCurrentCBalance] = useState<number>(0);
     const [userMessages, setUserMessages] = useState<string[]>([]);
-    const [userSessions, setUserSessions] = useState<any[]>([]);
+    const [upcomingChargingSessions, setUpcomingChargingSessions] = useState<any[]>([]);
     const [selectedButton, setSelectedButton] = useState(null);
+    const [isSessionStarted, setIsSessionStarted] = useState(false)
+    const [sessionTime, setSessionTime] = useState(0);
 
 
     useEffect(() => {
-        const fetchUserBalance = async () => {
-            const user = auth.currentUser;
-            if (user) {
-                try {
-                    const userDocRef = doc(db, "users", user.uid);
-                    const userDoc = await getDoc(userDocRef);
-                    if (userDoc.exists()) {
-                        const userData = userDoc.data();
-                        setCurrentFname(userData.firstName || '');
-                        setCurrentPBalance(userData.points_balance || '')
-                        setCurrentCBalance(userData.credits_balance || '')
-                    } else {
-                        console.error("Could not find user record.");
-                    }
-                } catch (error) {
-                    console.error("Error fetching user data from Firestore:", error);
-                }
+        const loadUserDetails = async () => {
+            const details = await fetchUserDetails();
+            if (details) {
+                setCurrentFname(details.firstName);
             }
         };
 
-        fetchUserBalance();
+        loadUserDetails();
     }, []);
 
     useEffect(() => {
-        const fetchUserMessages = async () => {
-            const user = auth.currentUser;
-
-            if (user) {
-                try {
-                    const userMessagesRef = collection(db, "users", user.uid, "user_messages");
-
-                    const messagesQuery = query(
-                        userMessagesRef,
-                        orderBy("sent", "desc"),
-                        limit(5)
-                    );
-
-                    const querySnapshot = await getDocs(messagesQuery);
-
-                    const messagesContent: string[] = querySnapshot.docs.map(doc => {
-                        const data = doc.data();
-                        return data.content;
-                    });
-
-                    console.log("Retrieved message contents:", messagesContent);
-                    setUserMessages(messagesContent);
-                } catch (error) {
-                    console.error("Error fetching user messages from Firestore:", error);
-                }
+        const loadUserBalance = async () => {
+            const balance: UserBalance | null = await fetchUserBalance();
+            if (balance) {
+                setCurrentPBalance(balance.pointsBalance);
+                setCurrentCBalance(balance.creditsBalance);
             }
         };
 
-        fetchUserMessages();
+        loadUserBalance();
     }, []);
 
     useEffect(() => {
-        const fetchUserSessions = async () => {
-            const user = auth.currentUser;
-
-            if (user) {
-                try {
-                    const userSessionsRef = collection(db, "users", user.uid, "user_sessions");
-
-                    const sessionsQuery = query(
-                        userSessionsRef,
-                        orderBy("sessionBookedAt", "desc"),
-                        limit(5)
-                    );
-
-                    const querySnapshot = await getDocs(sessionsQuery);
-
-                    const sessionsData = querySnapshot.docs.map(doc => {
-                        const data = doc.data();
-                        return {
-                            sessionBookedAt: data.sessionBookedAt,
-                            duration: data.duration,
-                            energyConsumed: data.energy_consumed,
-                        };
-                    });
-
-                    console.log("Retrieved session data:", sessionsData);
-                    setUserSessions(sessionsData);
-                } catch (error) {
-                    console.error("Error fetching user sessions from Firestore:", error);
-                }
-            }
+        const loadUserMessages = async () => {
+            const messages = await fetchUserMessages();
+            setUserMessages(messages);
         };
 
-        fetchUserSessions();
+        loadUserMessages();
+    }, []);
+
+    useEffect(() => {
+        const loadUpcomingChargingSessions = async () => {
+            const sessions = await fetchUpcomingChargingSessions();
+            setUpcomingChargingSessions(sessions);
+        };
+
+        loadUpcomingChargingSessions();
     }, []);
 
     const handleButtonClick = (buttonType: any) => {
         setSelectedButton(buttonType);
+    };
+
+    const handleSessionToggle = () => {
+        setIsSessionStarted((prev) => !prev);
+        if (isSessionStarted) {
+            setSessionTime(0);
+        }
+    };
+
+    useEffect(() => {
+        let timer: NodeJS.Timeout;
+
+        if (isSessionStarted) {
+            timer = setInterval(() => {
+                setSessionTime((prev) => prev + 1);
+            }, 1000);
+        }
+
+        return () => {
+            clearInterval(timer);
+        };
+    }, [isSessionStarted]);
+
+    const formatTime = (seconds: number) => {
+        const hours = Math.floor(seconds / 3600);   
+        const minutes = Math.floor((seconds % 3600) / 60);
+        const secs = seconds % 60;
+        return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
     };
 
     return (
@@ -117,88 +99,103 @@ const BuyerDashboard: React.FC = () => {
             </div>
             <div className="user-options-container">
                 <h1>Welcome back, {currentFname}</h1>
+                <p>Use the sidebar to navigate through your options, or view a quick summary here</p>
                 <div className="hr-div"></div>
-                <div className="user-options-columns">
-                    <div className="user-options-left-column">
-                        <div className="user-messages-container">
-                            <h2>Messages</h2>
-                            <ul>
-                                {userMessages.map((message, index) => (
-                                    <li key={index}>{message}</li>
-                                ))}
-                            </ul>
-                        </div>
-                        
-                        <div className="recent-sessions-container">
-                            <h2>Recent sessions</h2>
-                            <ul>
-                                {userSessions.map((session, index) => (
-                                    <li key={index} className="session-item">
-                                        <span>{session.sessionBookedAt.toDate().toLocaleString()} |</span>
-                                        <span> {session.duration} minutes |</span>
-                                        <span> {session.energyConsumed} kWh</span>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
+                <div className="user-options-grid">
+                    <div className="user-messages-container">
+                        <h2>Messages</h2>
+                        <div className="hr-div"></div>
+                        <ul>
+                            {userMessages.map((message, index) => (
+                                <li key={index}>{message}</li>
+                            ))}
+
+                        </ul>
                     </div>
 
-                    <div className="user-options-right-column">
-                        <div className="account-balance-container">
-                            <h2>Your balance</h2>
-                            <div className="balance-pair">
-                                <p>Credits:</p>
+                    <div className="account-balance-container">
+                        <h2>Your balance</h2>
+                        <div className="hr-div"></div>
+                        <div className="balance-pairs-container">
+                            <div className="balance-pair-container">
+                                <p>Credit:</p>
                                 <label>€{currentCBalance}</label>
                             </div>
 
-                            <div className="balance-pair">
+                            <div className="balance-pair-container">
                                 <p>Points:</p>
                                 <label>{currentPBalance}</label>
                             </div>
-                        </div>
 
-                        <div className="session-container">
-                            <h2>Start a charging session now</h2>
-                            <div className="create-session-container">
+                            <div className="manage-balance-buttons">
+                                <button className="add-credit-button" type="button">Add credit</button>
+                                <button className="balance-history-button" type="button">View history</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="upcoming-sessions-container">
+                        <h2>Upcoming sessions</h2>
+                        <div className="hr-div"></div>
+                        <ul>
+                            {upcomingChargingSessions.map((session, index) => {
+                                const date = session.bookedAt.toDate();
+                                const formattedDate = `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`;
+                                return (
+                                    <li key={index} className="session-item">
+                                        {formattedDate} | {session.duration} minutes | {session.energyConsumed} kWh
+                                    </li>
+                                );
+                            })}
+                        </ul>
+                    </div>
+
+                    <div className="quick-session-container">
+                        <h2>Start session now</h2>
+                        <div className="hr-div"></div>
+                        <div className="create-session-container">
+                            <div className="session-payment-type-container">
                                 <button
-                                    className="session-button card-payment-button"
-                                    type="button"
-                                    onClick={() => handleButtonClick('cardPayment')}
+                                    className={`session-payment-type-button card-payment-type ${selectedButton === "cardPayment" ? "active" : ""}`}
+                                    onClick={() => handleButtonClick("cardPayment")}
                                 >
                                     Card Payment
                                 </button>
                                 <button
-                                    className="session-button exchange-payment-button"
-                                    type="button"
-                                    onClick={() => handleButtonClick('exchangePayment')}
+                                    className={`session-payment-type-button exchange-payment-type ${selectedButton === "exchangePayment" ? "active" : ""}`}
+                                    onClick={() => handleButtonClick("exchangePayment")}
                                 >
                                     Exchange Payment
                                 </button>
                             </div>
 
-                            <div className={`button-info-container ${selectedButton ? 'expanded' : ''}`}>
-                                {selectedButton === 'cardPayment' && (
+                            <div className={`session-type-info-container ${selectedButton ? "expanded" : ""}`}>
+                                {selectedButton === "cardPayment" && (
                                     <div>
                                         <h3>Card Payment</h3>
                                         <p>Price per kWh: </p><label></label>
                                         <p>Current Consumption: </p><label></label>
-                                        <p>Session Time: </p><label></label>
+                                        <p>Session Time: {formatTime(sessionTime)}</p>
                                         <p>Price: </p><label></label>
                                     </div>
                                 )}
-                                {selectedButton === 'exchangePayment' && (
+                                {selectedButton === "exchangePayment" && (
                                     <div>
                                         <h3>Exchange Payment</h3>
                                         <p>Points per kWh: </p><label></label>
                                         <p>Current Consumption: </p><label></label>
-                                        <p>Session Time: </p><label></label>
+                                        <p>Session Time: {formatTime(sessionTime)}</p>
                                         <p>Points: </p><label></label>
                                     </div>
                                 )}
 
-                                <div className="manage-session-buttons">
-                                    <button className="start-session-button">Start Session</button>
-                                    <button className="end-session-button">End Session</button>
+                                <div className="manage-quick-session-button">
+                                    <button
+                                        className={`session-button ${isSessionStarted ? "end-session" : "start-session"}`}
+                                        onClick={handleSessionToggle}
+                                    >
+                                        {isSessionStarted ? "End Session" : "Start Session"}
+                                    </button>
                                 </div>
                             </div>
                         </div>

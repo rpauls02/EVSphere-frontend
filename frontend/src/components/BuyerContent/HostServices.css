@@ -1,5 +1,5 @@
-button,
-select {
+button {
+    all: unset;
     display: inline-block;
     background: none;
     border: none;
@@ -10,74 +10,75 @@ select {
 }
 
 .host-services-page-container {
-    width: 100%;
+    width: 100vw;
     height: 100vh;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    flex-direction: row;
+}
+
+.host-services-page-container .sidebar-container {
+    width: 230px;
+    background-color: #f4f4f4;
     box-sizing: border-box;
-    padding-left: 250px;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
 }
 
 .host-services-page-container .user-options-container {
     display: flex;
     flex-direction: column;
-    width: 100%;
-    max-width: 1200px;
     padding: 2rem;
     background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    box-sizing: border-box;
-    height: auto;
-    justify-content: space-between;
+    border-radius: 20px;
+    height: 100vh;
+    max-height: 100vh;
+    margin-left: 230px;
+    align-items: center;
+    gap: 20px;
+    width: 100vw;
 }
 
-.host-services-page-container .user-options-container h1 {
+.host-services-page-container .user-options-container h1,
+.host-services-page-container .user-options-container p {
     margin: 0;
+    align-self: flex-start;
 }
 
 .host-services-page-container .user-options-container .hr-div {
     border: none;
     width: 100%;
     background-color: #d6d6d6;
-    margin: 10px 0;
+    margin-bottom: 20px;
     height: 1px;
 }
 
-.host-services-page-container .user-options-container .vr-div {
-    width: 1px;
-    background-color: #d6d6d6;
-    margin: 0 20px;
-    height: 400px;
+.host-services-page-container .user-options-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 20px;
+    align-items: start;
 }
 
-.host-services-page-container .user-options-columns {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: flex-start;
-    width: 100%;
-    gap: 20px;
-}
-
-.host-services-page-container .user-options-columns h2 {
-    margin: 0;
-}
-
-.host-services-page-container .user-options-left-column .hr-div {
+.host-services-page-container .user-options-grid .hr-div {
     border: none;
     width: 100%;
     background-color: #d6d6d6;
+    margin-top: 5px;
+    margin-bottom: 20px;
     height: 1px;
 }
 
-.host-services-page-container .user-options-left-column,
-.host-services-page-container .user-options-right-column {
-    flex: 1;
-    flex-shrink: 0;
-    display: flex;
-    flex-direction: column;
+.host-services-page-container .user-options-grid h2 {
+    margin: 0;
 }
 
+.host-services-page-container .host-services-container,
+.host-services-page-container .current-host-services-container{
+    border: 1px solid #16b9cc;
+    border-radius: 12px;
+    padding: 20px 20px;
+    box-sizing: border-box;
+    width: auto;
+}

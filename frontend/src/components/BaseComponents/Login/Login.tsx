@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { handleLogin, handleGoogleAuth } from '../../../utils/LoginHandler';
 import { FaGoogle, FaFacebook, FaMicrosoft } from 'react-icons/fa';
 import logo from '../../../assets/logo.png'
-import Footer from '../Footer';
 import './Login.css';
 
 const LoginForm: React.FC = () => {
@@ -105,10 +104,6 @@ const LoginForm: React.FC = () => {
           {popupMessage}
         </div>
       )}
-
-      <div className="footer-container">
-        <Footer />
-      </div>
     </div>
   );
 };

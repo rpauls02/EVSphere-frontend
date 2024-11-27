@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import { handleEmailChange, handleDeleteAccount } from '../../../utils/UserDetailsFunctions';
-import { auth, db } from '../../../firebaseConfig';
-import { doc, getDoc } from "firebase/firestore";
+import { fetchUserDetails } from '../../../utils/UserFetchFunctions';
 import { useNavigate } from 'react-router-dom';
 import BuyerSidebar from '../../BuyerContent/BuyerSidebar'
 import SellerSidebar from '../../SellerContent/SellerSidebar'
@@ -11,54 +10,46 @@ import './Settings.css';
 const Settings: React.FC = () => {
     const navigate = useNavigate();
 
-    // State for determining user role 
     const [userRole, setUserRole] = useState<string>('');
+    const [currentEmail, setCurrentEmail] = useState<string>('');
+    const [newEmail, setNewEmail] = useState<string>('');
+    const [currentUname, setCurrentUname] = useState<string>('');
+    const [currentFname, setCurrentFname] = useState<string>('');
+    const [currentLname, setCurrentLname] = useState<string>('');
+    const [currentMobile, setCurrentMobile] = useState<string>('');
+    const [errorMessage, setErrorMessage] = useState<string>('');
+    const [loading, setLoading] = useState<boolean>(false);
 
-    // State and handler for settings navigation
+
+    // Handler for settings navigation
     const [selectedOption, setSelectedOption] = useState<string>('account');
     const handleMenuClick = (option: string) => {
         setSelectedOption(option);
     };
 
-    // States and handler for retrieving current user details
-    const [currentEmail, setCurrentEmail] = useState<string>('');
-    const [currentUname, setCurrentUname] = useState<string>('');
-    const [currentFname, setCurrentFname] = useState<string>('');
-    const [currentLname, setCurrentLname] = useState<string>('');
-    const [currentMobile, setCurrentMobile] = useState<string>('');
-
     useEffect(() => {
-        const fetchUserData = async () => {
-            const user = auth.currentUser;
-            if (user) {
-                setCurrentEmail(user.email || '');
-                try {
-                    const userDocRef = doc(db, "users", user.uid);
-                    const userDoc = await getDoc(userDocRef);
-                    if (userDoc.exists()) {
-                        const userData = userDoc.data();
-                        setCurrentFname(userData.firstName || '');
-                        setCurrentLname(userData.lastName || '');
-                        setCurrentMobile(userData.mobile || '');
-                        setCurrentUname(userData.userName || '');
-                        setUserRole(userData.role || '');
-                    } else {
-                        console.error("Could not find user record.");
-                    }
-                } catch (error) {
-                    console.error("Error fetching user data from Firestore:", error);
-                }
+        const loadUserDetails = async () => {
+            const details = await fetchUserDetails();
+            if (details) {
+                setCurrentUname(details.userName);
+                setCurrentFname(details.firstName);
+                setCurrentLname(details.lastName);
+                setCurrentMobile(details.mobile);
+                setCurrentEmail(details.email);
+                setUserRole(details.role);
             }
         };
 
-        fetchUserData();
+        loadUserDetails();
     }, []);
 
-    // States for handling account deletion
-    const [errorMessage, setErrorMessage] = useState<string>('');
-    const [loading, setLoading] = useState<boolean>(false);
+    const handleEmailChangeSubmission = () => {
+        handleEmailChange(currentEmail, newEmail, setErrorMessage, setLoading, () => {
+            console.log("Email changed successfully!");
+        });
+    };
 
-    const handleDeleteAccountSubmit = () => {
+    const handleDeleteAccountSubmission = () => {
         handleDeleteAccount(setErrorMessage, setLoading, () => {
             console.log("Account deleted successfully!");
             navigate('/');
@@ -148,7 +139,7 @@ const Settings: React.FC = () => {
                                 Delete account
                                 <small>Delete your account</small>
                             </div>
-                            <button className="delete-account-button">
+                            <button className="delete-account-button" onClick={handleDeleteAccountSubmission}>
                                 Delete
                             </button>
                         </span>
@@ -160,6 +151,27 @@ const Settings: React.FC = () => {
 
                 {selectedOption === 'profile' && (
                     <div className="profile-menu-container">
+                        <h2>Appearance</h2>
+                        <span className="settings-item appearance-avatar-item">
+                            <div className="item-text-container">
+                                Avatar
+                                <small>Change your avatar</small>
+                            </div>
+                            <KeyboardArrowRightIcon
+                                className="right-arrow-icon"
+                            />
+                        </span>
+
+                        <span className="settings-item appearance-dname-item">
+                            <div className="item-text-container">
+                                Display Name
+                                <small>{currentUname}</small>
+                            </div>
+                            <KeyboardArrowRightIcon
+                                className="right-arrow-icon"
+                            />
+                        </span>
+
                         <h2>Personal Details</h2>
                         <span className="settings-item profile-fname-item">
                             <div className="item-text-container">
@@ -185,27 +197,6 @@ const Settings: React.FC = () => {
                             <div className="item-text-container">
                                 Mobile Number
                                 <small>{currentMobile}</small>
-                            </div>
-                            <KeyboardArrowRightIcon
-                                className="right-arrow-icon"
-                            />
-                        </span>
-
-                        <h2>Appearance</h2>
-                        <span className="settings-item appearance-avatar-item">
-                            <div className="item-text-container">
-                                Avatar
-                                <small>Change your avatar</small>
-                            </div>
-                            <KeyboardArrowRightIcon
-                                className="right-arrow-icon"
-                            />
-                        </span>
-
-                        <span className="settings-item appearance-dname-item">
-                            <div className="item-text-container">
-                                Display Name
-                                <small>{currentUname}</small>
                             </div>
                             <KeyboardArrowRightIcon
                                 className="right-arrow-icon"

@@ -29,17 +29,19 @@ button {
 .dashboard-page-container .user-options-container {
     display: flex;
     flex-direction: column;
-    width: 100%;
     padding: 2rem;
     background-color: #ffffff;
     border-radius: 20px;
     height: 100vh;
+    max-height: 100vh;
     margin-left: 230px;
     align-items: center;
     gap: 20px;
+    width: 100vw;
 }
 
-.dashboard-page-container .user-options-container h1 {
+.dashboard-page-container .user-options-container h1,
+.dashboard-page-container .user-options-container p {
     margin: 0;
     align-self: flex-start;
 }
@@ -48,54 +50,105 @@ button {
     border: none;
     width: 100%;
     background-color: #d6d6d6;
-    margin: 20px 0;
+    margin-bottom: 20px;
     height: 1px;
 }
 
 .dashboard-page-container .user-options-container .vr-div {
+    border: none;
     width: 1px;
     background-color: #d6d6d6;
-    margin: 0 20px;
-    height: 400px;
-}
-
-.dashboard-page-container .user-options-columns {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    width: 100%;
-    gap: 20px;
-}
-
-.dashboard-page-container .user-options-columns h2 {
-    margin: 0;
-}
-
-.dashboard-page-container .user-messages-container,
-.dashboard-page-container .recent-sessions-container,
-.dashboard-page-container .account-balance-container,
-.dashboard-page-container .session-container
-{
-    border: 1px solid #16b9cc;
-    border-radius: 12px;
-    padding: 10px 10px;
     margin-bottom: 20px;
-    box-sizing: border-box;
+    height: 100%;
 }
 
-.dashboard-page-container .user-options-left-column .hr-div {
+.dashboard-page-container .user-options-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 20px;
+    align-items: start;
+}
+
+.dashboard-page-container .user-options-grid .hr-div {
     border: none;
     width: 100%;
     background-color: #d6d6d6;
+    margin-top: 5px;
+    margin-bottom: 20px;
     height: 1px;
 }
 
-.dashboard-page-container .user-options-left-column,
-.dashboard-page-container .user-options-right-column {
-    flex: 1;
-    flex-shrink: 0;
+.dashboard-page-container .user-options-grid h2 {
+    margin: 0;
+}
+
+.dashboard-page-container .account-balance-container,
+.dashboard-page-container .user-messages-container,
+.dashboard-page-container .upcoming-sessions-container,
+.dashboard-page-container .quick-session-container {
+    border: 1px solid #16b9cc;
+    border-radius: 12px;
+    padding: 20px 20px;
+    box-sizing: border-box;
+    width: auto;
+}
+
+.dashboard-page-container .account-balance-container,
+.dashboard-page-container .user-messages-container,
+.dashboard-page-container .upcoming-sessions-container {
+    height: auto;
+}
+
+.dashboard-page-container .account-balance-container {
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
+}
+
+.dashboard-page-container .balance-pairs-container {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+
+}
+
+.dashboard-page-container .balance-pair-container {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.dashboard-page-container .account-balance-container label {
+    background-color: white;
+    border: 1px solid #16b9cc;
+    padding: 8px;
+    border-radius: 4px;
+    width: 80px;
+    height: 20px;
+    margin-left: 5px;
+    font-size: 20px;
+    text-align: center;
+    line-height: 20px;
+}
+
+.dashboard-page-container .manage-balance-buttons button {
+    background-color: white;
+    border: 1px solid #16b9cc;
+    padding: 8px;
+    border-radius: 4px;
+    font-size: 1rem;
+    margin-left: 5px;
+    font-size: 20px;
+    text-align: center;
+    line-height: 20px;
+}
+
+.dashboard-page-container .user-messages-container ul{
+    list-style-type: square;
+}
+
+.dashboard-page-container .quick-session-container {
+    height: auto;
 }
 
 .dashboard-page-container .session-item {
@@ -108,32 +161,59 @@ button {
     margin-right: 10px;
 }
 
-
 .dashboard-page-container .create-session-container {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     gap: 20px;
+    border: 1px solid #16b9cc;
+    border-radius: 0 0 12px 12px;
+    box-sizing: border-box;
 }
 
-.dashboard-page-container .session-button {
-    align-items: center;
-    padding: 10px;
-    border: none;
-    border-radius: 8px;
+.dashboard-page-container .session-payment-type-container {
+    display: flex;
+    text-align: center;
+    justify-content: center;
     cursor: pointer;
 }
 
-.dashboard-page-container .session-button:hover {
+.dashboard-page-container .session-payment-type-container button:hover {
     background-color: #1f8b97;
     border-color: #1f8b97;
 }
 
-.dashboard-page-container .button-info-container {
+.session-payment-type-container .session-payment-type-button {
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    background-color: #f0f0f0;
+    color: #000;
+    font-size: 16px;
+    border-radius: 0 0 12px 12px;
+}
+
+.session-payment-type-container .session-payment-type-button .card-payment-type {
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    background-color: #f0f0f0;
+    color: #000;
+    font-size: 16px;
+    border-radius: 0 0 12px 12px;
+}
+
+.session-payment-type-container .session-payment-type-button.active {
+    background-color: #16b9cc;
+    color: #fff;
+}
+
+.dashboard-page-container .session-type-info-container {
     display: none;
-    margin-top: 10px;
     background-color: #f1f1f1;
     padding: 10px;
-    border-radius: 8px;
+    border-radius: 10px;
     width: auto;
     transition: height 0.3s ease, opacity 0.3s ease;
     max-height: 0;
@@ -141,49 +221,26 @@ button {
     opacity: 0;
 }
 
-.dashboard-page-container .button-info-container.expanded {
+.dashboard-page-container .session-type-info-container.expanded {
     display: block;
     max-height: 300px;
     opacity: 1;
 }
 
-.dashboard-page-container .button-info-container h3 {
+.dashboard-page-container .session-type-info-container h3 {
     margin: 0;
-    font-size: 1.2rem;
-}
-
-.dashboard-page-container .account-balance-container {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 20px;
-}
-
-.dashboard-page-container .balance-pair {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.dashboard-page-container .account-balance-container label {
-    background-color: white;
-    border: 1px solid #16b9cc;
-    padding: 8px;
-    border-radius: 4px;
     font-size: 1rem;
-    width: 80px;
-    height: 20px;
-    margin-left: 5px;
 }
 
-.dashboard-page-container .manage-session-buttons {
+.dashboard-page-container .manage-quick-session-button{
     display: flex;
-    flex-direction: row;
-    gap: 20px;
+    justify-content: center;
+    align-items: center;
 }
 
-.dashboard-page-container .manage-session-buttons button {
+.dashboard-page-container .manage-quick-session-button button {
     border: 2px solid #16b9cc;
+    background-color: rgb(175, 209, 68);
     padding: 10px 20px;
     font-size: 16px;
     border-radius: 4px;
@@ -191,20 +248,12 @@ button {
     transition: background-color 0.3s ease;
 }
 
-.dashboard-page-container .manage-session-buttons .start-session-button {
+.dashboard-page-container .manage-quick-session-button .start-session {
     background-color: green;
     color: white;
 }
 
-.dashboard-page-container .manage-session-buttons .end-session-button {
+.dashboard-page-container .manage-quick-session-button .end-session {
     background-color: red;
     color: white;
-}
-
-.dashboard-page-container .manage-session-buttons .start-session-button:hover {
-    background-color: darkgreen;
-}
-
-.dashboard-page-container .manage-session-buttons .end-session-button:hover {
-    background-color: darkred;
 }

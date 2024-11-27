@@ -1,5 +1,5 @@
-button,
-select {
+button {
+    all: unset;
     display: inline-block;
     background: none;
     border: none;
@@ -29,16 +29,19 @@ select {
 .sessions-page-container .user-options-container {
     display: flex;
     flex-direction: column;
-    width: 100%;
     padding: 2rem;
     background-color: #ffffff;
     border-radius: 20px;
     height: 100vh;
+    max-height: 100vh;
     margin-left: 230px;
     align-items: center;
+    gap: 20px;
+    width: 100vw;
 }
 
-.sessions-page-container .user-options-container h1 {
+.sessions-page-container .user-options-container h1,
+.sessions-page-container .user-options-container p {
     margin: 0;
     align-self: flex-start;
 }
@@ -47,113 +50,56 @@ select {
     border: none;
     width: 100%;
     background-color: #d6d6d6;
-    margin: 20px 0;
+    margin-bottom: 20px;
     height: 1px;
 }
 
-.sessions-page-container .user-options-container .vr-div {
-    width: 1px;
-    background-color: #d6d6d6;
-    margin: 0 20px;
-    height: 400px;
+.sessions-page-container .user-options-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 20px;
+    align-items: start;
 }
 
-.sessions-page-container .user-options-columns {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    width: 100%;
-    gap: 20px;
-}
-
-.sessions-page-container .user-options-columns h2 {
-    margin: 0;
-}
-
-.sessions-page-container .user-options-left-column .hr-div {
+.sessions-page-container .user-options-grid .hr-div {
     border: none;
     width: 100%;
     background-color: #d6d6d6;
+    margin-bottom: 20px;
+    margin-top: 5px;
     height: 1px;
 }
 
-.sessions-page-container .user-options-left-column,
-.session-page-container .user-options-right-column {
-    flex: 1;
-    flex-shrink: 0;
-    display: flex;
-    flex-direction: column;
-}
-
-.sessions-page-container .previous-sessions-container {
-    border: 1px solid black;
-    border-radius: 8px;
-}
-
-.sessions-page-container .previous-sessions-container select {
-    border: 1px solid black;
-    border-radius: 8px;
-    width: auto;
-}
-
-.sessions-page-container .session-container {
-    display: flex;
-    flex-direction: column;
-    border: 1px solid black;
-    border-radius: 8px;
-}
-
-.sessions-page-container .create-session-container {
-    display: flex;
-    flex-direction: row;
-    gap: 20px;
-}
-
-.sessions-page-container .session-button {
-    align-items: center;
-    padding: 10px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-}
-
-.sessions-page-container .session-button:hover {
-    background-color: #1f8b97;
-    border-color: #1f8b97;
-}
-
-.sessions-page-container .button-info-container {
-    display: none;
-    margin-top: 10px;
-    background-color: #f1f1f1;
-    padding: 10px;
-    border-radius: 8px;
-    width: auto;
-    transition: height 0.3s ease, opacity 0.3s ease;
-    max-height: 0;
-    overflow: hidden;
-    opacity: 0;
-}
-
-.sessions-page-container .button-info-container.expanded {
-    display: block;
-    max-height: 300px;
-    opacity: 1;
-}
-
-.sessions-page-container .button-info-container h3 {
+.sessions-page-container .user-options-grid h2 {
     margin: 0;
-    font-size: 1.2rem;
+}
+
+.sessions-page-container .book-session-container,
+.sessions-page-container .upcoming-sessions-container,
+.sessions-page-container .past-sessions-container,
+.sessions-page-container .account-balance-container,
+.sessions-page-container .quick-session-container {
+    border: 1px solid #16b9cc;
+    border-radius: 12px;
+    padding: 10px 10px;
+    box-sizing: border-box;
+    width: auto;
 }
 
 .sessions-page-container .account-balance-container {
     display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 20px;
+    flex-direction: column;
+    align-items: flex-start;
 }
 
-.sessions-page-container .balance-pair {
+.sessions-page-container .balance-pairs-container {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+
+}
+
+.sessions-page-container .balance-pair-container {
     display: flex;
     align-items: center;
     gap: 5px;
@@ -161,13 +107,92 @@ select {
 
 .sessions-page-container .account-balance-container label {
     background-color: white;
-    border: 1px solid black;
+    border: 1px solid #16b9cc;
     padding: 8px;
     border-radius: 4px;
-    font-size: 1rem;
     width: 80px;
     height: 20px;
     margin-left: 5px;
+    font-size: 20px;
+    text-align: center;
+    line-height: 20px;
+}
+
+.sessions-page-container .manage-balance-buttons button {
+    background-color: white;
+    border: 1px solid #16b9cc;
+    padding: 8px;
+    border-radius: 4px;
+    font-size: 1rem;
+    margin-left: 5px;
+    font-size: 20px;
+    text-align: center;
+    line-height: 20px;
+}
+
+
+.sessions-page-container .past-sessions-container {
+    height: 215px;
+}
+
+.sessions-page-container .quick-session-container {
+    height: auto;
+}
+
+.sessions-page-container .session-item {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 10px;
+}
+
+.sessions-page-container .session-item span {
+    margin-right: 10px;
+}
+
+.sessions-page-container .create-session-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    border: 1px solid #16b9cc;
+    border-radius: 12px;
+    box-sizing: border-box;
+    margin-top: 10px;
+}
+
+.sessions-page-container .session-payment-type-button {
+    align-items: center;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.sessions-page-container .session-payment-type-button:hover {
+    background-color: #1f8b97;
+    border-color: #1f8b97;
+}
+
+.sessions-page-container .session-type-info-container {
+    display: none;
+    background-color: #f1f1f1;
+    padding: 10px;
+    border-radius: 10px;
+    width: auto;
+    transition: height 0.3s ease, opacity 0.3s ease;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+}
+
+.sessions-page-container .session-type-info-container.expanded {
+    display: block;
+    max-height: 300px;
+    opacity: 1;
+}
+
+.sessions-page-container .session-type-info-container h3 {
+    margin: 0;
+    font-size: 1.2rem;
 }
 
 .sessions-page-container .manage-session-buttons {
@@ -177,7 +202,7 @@ select {
 }
 
 .sessions-page-container .manage-session-buttons button {
-    border: 2px solid blue;
+    border: 2px solid #16b9cc;
     padding: 10px 20px;
     font-size: 16px;
     border-radius: 4px;

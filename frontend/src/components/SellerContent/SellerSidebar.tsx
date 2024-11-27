@@ -1,10 +1,11 @@
 import React from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import HomeIcon from '@mui/icons-material/Home';
 import MessageIcon from '@mui/icons-material/Message';
 import SettingsIcon from '@mui/icons-material/Settings';
 import HelpIcon from '@mui/icons-material/Help';
 import EvStationIcon from '@mui/icons-material/EvStation';
+import AnalyticsIcon from '@mui/icons-material/Analytics';
 import LogoutIcon from '@mui/icons-material/Logout';
 import logo from '../../assets/logo.png';
 import '../BaseComponents/Sidebar.css';
@@ -14,13 +15,14 @@ const SellerSidebar: React.FC = () => {
         <div className="sidebar-nav-container">
             <div className="sidebar-top-section">
                 <div className="sidebar-nav-logo">
-                        <img src={logo} alt="evsphere-logo" />
+                    <img src={logo} alt="evsphere-logo" />
                 </div>
                 <div className="logo-divider"></div>
                 <nav className="sidebar-main-nav">
                     <ul>
                         <li><HomeIcon /><NavLink to="/seller-dashboard" className={({ isActive }) => isActive ? 'active-link' : ''}>Home</NavLink></li>
                         <li><EvStationIcon /><NavLink to="/stations" className={({ isActive }) => isActive ? 'active-link' : ''}>Stations</NavLink></li>
+                        <li><AnalyticsIcon /><NavLink to="/stations" className={({ isActive }) => isActive ? 'active-link' : ''}>Analytics</NavLink></li>
                     </ul>
                 </nav>
             </div>
