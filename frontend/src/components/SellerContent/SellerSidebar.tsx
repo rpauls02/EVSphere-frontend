@@ -6,7 +6,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import HelpIcon from '@mui/icons-material/Help';
 import EvStationIcon from '@mui/icons-material/EvStation';
 import LogoutIcon from '@mui/icons-material/Logout';
-import logo from '../../assets/logo-final.png';
+import logo from '../../assets/logo.png';
 import '../BaseComponents/Sidebar.css';
 
 const SellerSidebar: React.FC = () => {

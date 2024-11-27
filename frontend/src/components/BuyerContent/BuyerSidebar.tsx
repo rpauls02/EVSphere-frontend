@@ -9,7 +9,7 @@ import ElectricalServicesIcon from '@mui/icons-material/ElectricalServices';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 import LogoutIcon from '@mui/icons-material/Logout';
-import logo from '../../assets/logo-final.png';
+import logo from '../../assets/logo.png';
 import LogoutHandler from '../../utils/LogoutHandler';
 import '../BaseComponents/Sidebar.css';
 
@@ -32,32 +32,32 @@ const BuyerSidebar: React.FC = () => {
                 <nav className="sidebar-main-nav">
                     <ul>
                         <li>
-                            <HomeIcon />
                             <NavLink to="/buyer-dashboard" className={({ isActive }) => (isActive ? 'active-link' : '')}>
+                                <HomeIcon />
                                 Home
                             </NavLink>
                         </li>
                         <li>
-                            <AssessmentIcon />
                             <NavLink to="/sessions" className={({ isActive }) => (isActive ? 'active-link' : '')}>
+                                <AssessmentIcon />
                                 Sessions
                             </NavLink>
                         </li>
                         <li>
-                            <EvStationIcon />
                             <NavLink to="/host-services" className={({ isActive }) => (isActive ? 'active-link' : '')}>
+                                <EvStationIcon />
                                 Host Services
                             </NavLink>
                         </li>
                         <li>
-                            <AssessmentIcon />
                             <NavLink to="/reports" className={({ isActive }) => (isActive ? 'active-link' : '')}>
+                                <AssessmentIcon />
                                 Reports
                             </NavLink>
                         </li>
                         <li>
-                            <ReceiptLongIcon />
                             <NavLink to="/invoices" className={({ isActive }) => (isActive ? 'active-link' : '')}>
+                                <ReceiptLongIcon />
                                 Invoices
                             </NavLink>
                         </li>
@@ -67,26 +67,26 @@ const BuyerSidebar: React.FC = () => {
             <nav className="sidebar-util-nav">
                 <ul>
                     <li>
-                        <HelpIcon />
                         <NavLink to="/help" className={({ isActive }) => (isActive ? 'active-link' : '')}>
+                            <HelpIcon />
                             Help
                         </NavLink>
                     </li>
                     <li>
-                        <MessageIcon />
                         <NavLink to="/messages" className={({ isActive }) => (isActive ? 'active-link' : '')}>
+                            <MessageIcon />
                             Messages
                         </NavLink>
                     </li>
                     <li>
-                        <SettingsIcon />
                         <NavLink to="/settings" className={({ isActive }) => (isActive ? 'active-link' : '')}>
+                            <SettingsIcon />
                             Settings
                         </NavLink>
                     </li>
                     <li>
-                        <LogoutIcon />
                         <NavLink to="/" onClick={handleLogout} className="logout-link">
+                            <LogoutIcon />
                             Log out
                         </NavLink>
                     </li>
