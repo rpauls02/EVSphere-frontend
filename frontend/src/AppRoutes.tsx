@@ -4,7 +4,8 @@ import LoginForm from './components/BaseComponents/Login/Login';
 import SignupForm from './components/BaseComponents/Signup/Signup';
 import ResetPasswordForm from './components/BaseComponents/User/ResetPassword'
 import NotFound from './components/BaseComponents/NotFound';
-import Help from './components/BaseComponents/User/Help';
+/*import Help from './components/BaseComponents/User/Help';*/
+import Balance from './components/BuyerContent/Balance';
 import Messages from './components/BaseComponents/User/Messages';
 import Settings from './components/BaseComponents/User/Settings';
 import BuyerDashboard from './components/BuyerContent/BuyerDashboard';
@@ -37,6 +38,7 @@ const AppRoutes: React.FC = () => {
       <Route path="/buyer-dashboard" element={<BuyerDashboard />} />
       <Route path="/sessions" element={<Sessions />} />
       <Route path="/host-services" element={<HostServices />} />
+      <Route path="/balances" element={<Balance />} />
       <Route path="/reports" element={<Reports />} />
       <Route path="/invoices" element={<Invoices />} />
 

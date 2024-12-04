@@ -32,7 +32,13 @@
 }
 
 .new-user-option-container{
-    font-size: 18px;
+    font-size: 22px;
+    color: white;
+}
+
+.new-user-option-container a{
+    font-size: 22px;
+    color: white;
 }
 
 .login-options-container{
@@ -40,24 +46,23 @@
     flex-direction: row;
 }
 
-.email-login-section {
+.email-login-container,
+.social-login-container {
     flex: 1;
     padding: 0 20px;
 }
 
-.remember-me {
+.remember-me-option-container {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    margin-bottom: 24px;
-    font-size: 14px;
-    color: #666;
+    font-size: 18px;
+    margin-bottom: 12px;
+    color: white;
 }
 
-.forgot-password-link {
-    color: black;
-    cursor: pointer;
-
+.remember-me-option-container input {
+    width: 18px;
+    height: 18px;
 }
 
 .login-button {
@@ -66,14 +71,25 @@
     padding: 12px;
     border: none;
     border-radius: 5px;
-    width: auto;
+    width: 93%;
     font-size: 16px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    margin-bottom: 12px;
 }
 
 .login-button:hover {
-    background-color: rgb(11, 92, 102);
+    background-color: rgb(11, 110, 132);
+}
+
+.forgot-password-option-container{
+    display: flex;
+    align-items: center;
+    font-size: 18px;
+}
+
+.forgot-password-option-container .forgot-password-link{
+    color: white;
 }
 
 .separator {
@@ -82,16 +98,12 @@
     margin: 0 20px; 
 }
 
-.social-login-section{
-    flex: 1;
-    padding: 0 20px;
-}
-
 .social-login-buttons {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 10px;
+    margin-top: 8px;
 }
 
 .social-button {

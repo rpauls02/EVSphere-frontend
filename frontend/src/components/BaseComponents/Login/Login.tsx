@@ -41,11 +41,13 @@ const LoginForm: React.FC = () => {
         <div className="login-logo-container">
           <img src={logo} alt="evsphere-logo" />
         </div>
-        <p className="new-user-option-container">
-          New to us? <Link className="react-link" to="/signup">Create an account</Link>
-        </p>
+        <div className="new-user-option-container">
+          <p>
+            <strong>New to us?</strong> <Link className="react-link" to="/signup"><strong>Create an account</strong> </Link>
+          </p>
+        </div>
         <div className="login-options-container">
-          <div className="email-login-section">
+          <div className="email-login-container">
             <form onSubmit={handleLoginSubmission}>
               <div className="form-group">
                 <input
@@ -65,22 +67,24 @@ const LoginForm: React.FC = () => {
                   required
                 />
               </div>
-              <div className="forgot-password-link">
-                <Link className="forgot-password-link" to="/reset-password">Forgot password?</Link>
+
+              <div className="remember-me-option-container">
+                <input type="checkbox" id="remember" />
+                <label htmlFor="remember">Remember me</label>
               </div>
 
               <button className="login-button" type="submit">Login</button>
 
-              <div className="remember-me-checkbox">
-                <label htmlFor="remember">Remember me</label>
-                <input type="checkbox" id="remember" />
+              <div className="forgot-password-option-container">
+                <Link className="forgot-password-link" to="/reset-password">Forgot password?</Link>
               </div>
+
             </form>
           </div>
 
           <div className="separator"></div>
 
-          <div className="social-login-section">
+          <div className="social-login-container">
             <div className="social-login-buttons">
               <button className="social-button google-auth-button" onClick={handleGoogleAuthSubmission} disabled={loading}>
                 <div className="social-icon"><FaGoogle size={24} /></div>

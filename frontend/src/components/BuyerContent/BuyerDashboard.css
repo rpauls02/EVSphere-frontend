@@ -10,7 +10,6 @@ button {
 }
 
 .dashboard-page-container {
-    width: 100vw;
     height: 100vh;
     display: flex;
     flex-direction: row;
@@ -54,12 +53,12 @@ button {
     height: 1px;
 }
 
-.dashboard-page-container .user-options-container .vr-div {
+.dashboard-page-container .user-options-container .user-options-hr-div {
     border: none;
-    width: 1px;
+    width: 70%;
     background-color: #d6d6d6;
-    margin-bottom: 20px;
-    height: 100%;
+    margin: 20px;
+    height: 1px;
 }
 
 .dashboard-page-container .user-options-grid {
@@ -93,58 +92,55 @@ button {
     width: auto;
 }
 
-.dashboard-page-container .account-balance-container,
 .dashboard-page-container .user-messages-container,
 .dashboard-page-container .upcoming-sessions-container {
     height: auto;
+    width: 395px;
 }
 
-.dashboard-page-container .account-balance-container {
+.dashboard-page-container .user-messages-container ul{
+    list-style-type: square;
+}
+
+.dashboard-page-container .account-balance-container .balance-pairs-container {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    gap: 15px;
+    margin-bottom: 15px;
 }
 
-.dashboard-page-container .balance-pairs-container {
+.dashboard-page-container .account-balance-container .balance-pair-container {
     display: flex;
-    flex-direction: column;
-    gap: 5px;
-
+    gap: 7px;
 }
 
-.dashboard-page-container .balance-pair-container {
-    display: flex;
+.dashboard-page-container .account-balance-container .balance-pairs-container .balance-pair-container p {
+    padding: 8px 0;
+    width: 70px;
+    font-size: 20px;
     align-items: center;
-    gap: 5px;
 }
 
-.dashboard-page-container .account-balance-container label {
+
+.dashboard-page-container .account-balance-container .balance-pairs-container .balance-pair-container label {
     background-color: white;
     border: 1px solid #16b9cc;
     padding: 8px;
     border-radius: 4px;
-    width: 80px;
-    height: 20px;
-    margin-left: 5px;
+    width: 70px;
     font-size: 20px;
-    text-align: center;
-    line-height: 20px;
+    align-items: center;
 }
 
-.dashboard-page-container .manage-balance-buttons button {
+.dashboard-page-container .manage-balance-buttons-container button {
     background-color: white;
     border: 1px solid #16b9cc;
     padding: 8px;
     border-radius: 4px;
     font-size: 1rem;
-    margin-left: 5px;
     font-size: 20px;
     text-align: center;
-    line-height: 20px;
-}
-
-.dashboard-page-container .user-messages-container ul{
-    list-style-type: square;
+    margin-right: 20px
 }
 
 .dashboard-page-container .quick-session-container {
@@ -152,9 +148,9 @@ button {
 }
 
 .dashboard-page-container .session-item {
-    display: flex;
     justify-content: flex-start;
     margin-bottom: 10px;
+    list-style-type: square;
 }
 
 .dashboard-page-container .session-item span {
@@ -164,10 +160,7 @@ button {
 .dashboard-page-container .create-session-container {
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    border: 1px solid #16b9cc;
-    border-radius: 0 0 12px 12px;
-    box-sizing: border-box;
+    border: 1px solid rgb(22, 185, 204);
 }
 
 .dashboard-page-container .session-payment-type-container {
@@ -178,8 +171,7 @@ button {
 }
 
 .dashboard-page-container .session-payment-type-container button:hover {
-    background-color: #1f8b97;
-    border-color: #1f8b97;
+    background-color: rgba(22, 185, 204, 0.3);
 }
 
 .session-payment-type-container .session-payment-type-button {
@@ -187,38 +179,21 @@ button {
     border: none;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    background-color: #f0f0f0;
     color: #000;
     font-size: 16px;
-    border-radius: 0 0 12px 12px;
-}
-
-.session-payment-type-container .session-payment-type-button .card-payment-type {
-    padding: 10px 20px;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    background-color: #f0f0f0;
-    color: #000;
-    font-size: 16px;
-    border-radius: 0 0 12px 12px;
 }
 
 .session-payment-type-container .session-payment-type-button.active {
-    background-color: #16b9cc;
-    color: #fff;
+    border-bottom: 3px solid rgb(22, 185, 204);
+    background-color: rgba(22, 185, 204, 0.3);
 }
 
 .dashboard-page-container .session-type-info-container {
-    display: none;
-    background-color: #f1f1f1;
+    display: flex;
     padding: 10px;
-    border-radius: 10px;
     width: auto;
     transition: height 0.3s ease, opacity 0.3s ease;
-    max-height: 0;
-    overflow: hidden;
-    opacity: 0;
+    background-color: rgba(22, 185, 204, 0.1);
 }
 
 .dashboard-page-container .session-type-info-container.expanded {
@@ -227,10 +202,10 @@ button {
     opacity: 1;
 }
 
-.dashboard-page-container .session-type-info-container h3 {
-    margin: 0;
-    font-size: 1rem;
+.dashboard-page-container .session-type-info-container .session-info-container p{
+    margin-bottom: 10px;
 }
+
 
 .dashboard-page-container .manage-quick-session-button{
     display: flex;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate, Link } from 'react-router-dom';
 import HomeIcon from '@mui/icons-material/Home';
 import MessageIcon from '@mui/icons-material/Message';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -8,7 +8,7 @@ import EvStationIcon from '@mui/icons-material/EvStation';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
-import FirstPageIcon from '@mui/icons-material/FirstPage';
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import LogoutIcon from '@mui/icons-material/Logout';
 import logo from '../../assets/logo.png';
 import LogoutHandler from '../../utils/LogoutHandler';
@@ -27,7 +27,9 @@ const BuyerSidebar: React.FC = () => {
         <div className="sidebar-nav-container">
             <div className="sidebar-top-section">
                 <div className="sidebar-nav-logo">
+                    <Link to="/buyer-dashboard">
                     <img src={logo} alt="evsphere-logo" />
+                    </Link>
                 </div>
                 <div className="logo-divider"></div>
                 <nav className="sidebar-main-nav">
@@ -39,15 +41,21 @@ const BuyerSidebar: React.FC = () => {
                             </NavLink>
                         </li>
                         <li className="sidebar-nav-item">
+                            <NavLink to="/host-services" className={({ isActive }) => (isActive ? 'active-link' : '')}>
+                                <EvStationIcon />
+                                Host
+                            </NavLink>
+                        </li>
+                        <li className="sidebar-nav-item">
                             <NavLink to="/sessions" className={({ isActive }) => (isActive ? 'active-link' : '')}>
                                 <AccessTimeIcon />
                                 Sessions
                             </NavLink>
                         </li>
                         <li className="sidebar-nav-item">
-                            <NavLink to="/host-services" className={({ isActive }) => (isActive ? 'active-link' : '')}>
-                                <EvStationIcon />
-                                Host Services
+                            <NavLink to="/balances" className={({ isActive }) => (isActive ? 'active-link' : '')}>
+                                <AccountBalanceWalletIcon />
+                                Balance
                             </NavLink>
                         </li>
                         <li className="sidebar-nav-item">

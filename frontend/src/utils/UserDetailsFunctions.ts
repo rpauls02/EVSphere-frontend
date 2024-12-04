@@ -1,16 +1,15 @@
 import { getAuth, updateEmail, updatePassword, reauthenticateWithCredential, EmailAuthProvider, sendPasswordResetEmail } from 'firebase/auth';
-import { doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { doc, setDoc, updateDoc, deleteDoc, collection } from 'firebase/firestore';
 import { auth, db } from '../firebaseConfig';
 import { deleteUser } from 'firebase/auth';
 
-export const handleEmailChange = async (
+export const handleUpdateEmail = async (
     currentEmail: string,
     newEmail: string,
     setError: React.Dispatch<React.SetStateAction<string>>,
     setLoading: React.Dispatch<React.SetStateAction<boolean>>,
     onClose: () => void
 ) => {
-    const auth = getAuth();
     const user = auth.currentUser;
 
     if (user && newEmail !== currentEmail) {
@@ -35,7 +34,7 @@ export const handleEmailChange = async (
     }
 };
 
-export const handlePasswordChange = async (
+export const handleUpdatePassword = async (
     currentPassword: string,
     newPassword: string,
     confirmPassword: string,
@@ -43,7 +42,6 @@ export const handlePasswordChange = async (
     setLoading: React.Dispatch<React.SetStateAction<boolean>>,
     onClose: () => void
 ) => {
-    const auth = getAuth();
     const user = auth.currentUser;
 
     if (newPassword !== confirmPassword) {
@@ -82,11 +80,9 @@ export const handleResetPassword = async (
     setErrorMessage: React.Dispatch<React.SetStateAction<string>>,
     setSuccessMessage: React.Dispatch<React.SetStateAction<string>>
 ) => {
-    const auth = getAuth();
-
     try {
         await sendPasswordResetEmail(auth, email);
-        setSuccessMessage('If this email exists, an email will be sent. If you cannot find the email, check your junk folder.');
+        setSuccessMessage('If this email exists, an email will be sent. Check your junk folder.');
         setErrorMessage('');
     } catch (error) {
         setErrorMessage('Failed to send reset link. Please try again.');
@@ -95,7 +91,77 @@ export const handleResetPassword = async (
     }
 };
 
-export const handleDeleteAccount = (
+export const handleUpdateCredits = async (
+    newCreditBalance: number,
+    setError: React.Dispatch<React.SetStateAction<string>>,
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>,
+    onClose: () => void
+) => {
+    const user = auth.currentUser;
+
+    if (user) {
+        try {
+            setLoading(true);
+            const balanceRef = doc(db, 'balance', user.uid);
+            await updateDoc(balanceRef, {
+                credits_balance: newCreditBalance
+            });
+
+            onClose();
+        } catch (error) {
+            setError('Failed to update credit balance. Please try again.');
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
+    } else {
+        setError('User not authenticated. Please log in and try again.');
+    }
+};
+
+export const handleAddChargers = async (
+    address: string,
+    addressAccess: string,
+    chargerCount: number,
+    chargerTypes: string,
+    setError: React.Dispatch<React.SetStateAction<string>>,
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>,
+    onSuccess: () => void
+) => {
+    const user = auth.currentUser;
+
+    if (user) {
+        try {
+            setLoading(true);
+
+            const chargersPromises = Array.from({ length: chargerCount }, (_, index) => {
+                const chargerData = {
+                    userID: user.uid,
+                    address,
+                    addressAccess,
+                    charger_id: `charger_00${index + 1}`,
+                    type: chargerTypes.split(',')[index % chargerTypes.split(',').length],
+                    status: 'available',
+                };
+
+                return setDoc(doc(db, 'charging_points', `charger_${index + 1}`), chargerData);
+            });
+
+            await Promise.all(chargersPromises);
+
+            onSuccess();
+        } catch (error) {
+            setError('Failed to add charging points. Please try again.');
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
+    } else {
+        setError('User not authenticated. Please log in and try again.');
+    }
+};
+
+export const handleDeleteAccount = async (
     setError: React.Dispatch<React.SetStateAction<string>>,
     setLoading: React.Dispatch<React.SetStateAction<boolean>>,
     onSuccess: () => void

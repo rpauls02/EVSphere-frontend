@@ -65,10 +65,10 @@ const BuyerDashboard: React.FC = () => {
     };
 
     const handleSessionToggle = () => {
-        setIsSessionStarted((prev) => !prev);
-        if (isSessionStarted) {
+        if (!isSessionStarted) {
             setSessionTime(0);
         }
+        setIsSessionStarted((prev) => !prev);
     };
 
     useEffect(() => {
@@ -81,12 +81,12 @@ const BuyerDashboard: React.FC = () => {
         }
 
         return () => {
-            clearInterval(timer);
+            if (timer) clearInterval(timer);
         };
     }, [isSessionStarted]);
 
     const formatTime = (seconds: number) => {
-        const hours = Math.floor(seconds / 3600);   
+        const hours = Math.floor(seconds / 3600);
         const minutes = Math.floor((seconds % 3600) / 60);
         const secs = seconds % 60;
         return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
@@ -113,6 +113,35 @@ const BuyerDashboard: React.FC = () => {
                         </ul>
                     </div>
 
+                    <div className="upcoming-sessions-container">
+                        <h2>Upcoming Sessions</h2>
+                        <div className="hr-div"></div>
+                        <ul>
+                            {upcomingChargingSessions.map((session, index) => {
+                                const date = session.bookedAt.toDate();
+                                const formattedDate = `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`;
+
+                                // Extract time with AM/PM
+                                let hours = date.getHours();
+                                const minutes = date.getMinutes().toString().padStart(2, '0');
+                                const ampm = hours >= 12 ? 'PM' : 'AM';
+                                hours = hours % 12 || 12; // Convert to 12-hour format, replacing 0 with 12
+
+                                const formattedTime = `${hours}:${minutes}${ampm}`;
+
+                                return (
+                                    <li key={index} className="session-item">
+                                        {formattedDate} @ {formattedTime}
+                                    </li>
+                                );
+                            })}
+                        </ul>
+                    </div>
+                </div>
+
+                <div className="user-options-hr-div"></div>
+
+                <div className="user-options-grid">
                     <div className="account-balance-container">
                         <h2>Your balance</h2>
                         <div className="hr-div"></div>
@@ -126,28 +155,11 @@ const BuyerDashboard: React.FC = () => {
                                 <p>Points:</p>
                                 <label>{currentPBalance}</label>
                             </div>
-
-                            <div className="manage-balance-buttons">
-                                <button className="add-credit-button" type="button">Add credit</button>
-                                <button className="balance-history-button" type="button">View history</button>
-                            </div>
                         </div>
-                    </div>
-
-                    <div className="upcoming-sessions-container">
-                        <h2>Upcoming sessions</h2>
-                        <div className="hr-div"></div>
-                        <ul>
-                            {upcomingChargingSessions.map((session, index) => {
-                                const date = session.bookedAt.toDate();
-                                const formattedDate = `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`;
-                                return (
-                                    <li key={index} className="session-item">
-                                        {formattedDate} | {session.duration} minutes | {session.energyConsumed} kWh
-                                    </li>
-                                );
-                            })}
-                        </ul>
+                        <div className="manage-balance-buttons-container">
+                            <button className="add-credit-button" type="button">Add credit</button>
+                            <button className="balance-history-button" type="button">View history</button>
+                        </div>
                     </div>
 
                     <div className="quick-session-container">
@@ -171,21 +183,19 @@ const BuyerDashboard: React.FC = () => {
 
                             <div className={`session-type-info-container ${selectedButton ? "expanded" : ""}`}>
                                 {selectedButton === "cardPayment" && (
-                                    <div>
-                                        <h3>Card Payment</h3>
-                                        <p>Price per kWh: </p><label></label>
-                                        <p>Current Consumption: </p><label></label>
-                                        <p>Session Time: {formatTime(sessionTime)}</p>
-                                        <p>Price: </p><label></label>
+                                    <div className="session-info-container">
+                                        <p className="quick-charge-item">Price per kWh: €</p>
+                                        <p className="quick-charge-item">Current Consumption: </p>
+                                        <p className="quick-charge-item">Session Time: {formatTime(sessionTime)}</p>
+                                        <p className="quick-charge-item">Price: €</p>
                                     </div>
                                 )}
                                 {selectedButton === "exchangePayment" && (
-                                    <div>
-                                        <h3>Exchange Payment</h3>
-                                        <p>Points per kWh: </p><label></label>
-                                        <p>Current Consumption: </p><label></label>
-                                        <p>Session Time: {formatTime(sessionTime)}</p>
-                                        <p>Points: </p><label></label>
+                                    <div className="session-info-container">
+                                        <p className="quick-charge-item">Points per kWh: </p>
+                                        <p className="quick-charge-item">Current Consumption: </p>
+                                        <p className="quick-charge-item">Session Time: {formatTime(sessionTime)}</p>
+                                        <p className="quick-charge-item">Points: </p>
                                     </div>
                                 )}
 

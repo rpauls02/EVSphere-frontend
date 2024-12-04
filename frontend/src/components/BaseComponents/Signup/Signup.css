@@ -135,7 +135,6 @@
     box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
     font-size: 16px;
     z-index: 1000;
-    font-family: 'Montserrat', sans-serif;
     animation: fadeOut 4s forwards;
 }
 
@@ -150,7 +149,6 @@
     box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
     font-size: 16px;
     z-index: 1000;
-    font-family: 'Montserrat', sans-serif;
     animation: fadeOut 4s forwards;
 }
 
