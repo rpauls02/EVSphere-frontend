@@ -11,19 +11,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Install dependencies
-        run: npm install
-        working-directory: ./frontend
-
-      - name: Build project
-        run: npm run build
-        working-directory: ./frontend
-
-      - name: Deploy to Firebase Hosting
-        uses: FirebaseExtended/action-hosting-deploy@v0
+      - run: npm ci && npm run build
+      - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_EV_CHARGING_MANAGEMENT_S_74390 }}
+          firebaseServiceAccount: ${{
+            secrets.FIREBASE_SERVICE_ACCOUNT_EV_CHARGING_MANAGEMENT_S_74390 }}
           channelId: live
           projectId: ev-charging-management-s-74390
