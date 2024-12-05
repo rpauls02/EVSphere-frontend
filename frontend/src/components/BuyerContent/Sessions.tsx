@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { fetchUpcomingChargingSessions, fetchPastChargingSessions } from "../../utils/UserFetchFunctions";
-import { addChargingSession } from '../../utils/UserActionsFunctions';
+import { addChargingSession, cancelChargingSession } from '../../utils/UserActionsFunctions';
 import BuyerSidebar from '../BuyerContent/BuyerSidebar';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
@@ -13,6 +13,51 @@ const Sessions: React.FC = () => {
     const [sessionTimer, setSessionTimer] = useState(0);
     const [expandedSessionIDs, setExpandedSessionIDs] = useState<Set<string>>(new Set());
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [popupVisible, setPopupVisible] = React.useState(false);
+    const [popupMessage, setPopupMessage] = React.useState({ title: '', message: '', type: 'error' });
+
+
+    const handleAddSession = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        setIsSubmitting(true);
+
+        const formData = new FormData(event.currentTarget);
+        const sessionDate = formData.get('session-date') as string;
+        const sessionTime = formData.get('session-time') as string;
+
+        try {
+            const response = await addChargingSession(sessionDate, sessionTime);
+            if (response) {
+                setPopupMessage({ title: 'Success', message: response.message, type: 'success' });
+                setPopupVisible(true);
+            } else {
+                throw new Error('Unexpected error: No response received.');
+            }
+        } catch (error) {
+            setPopupMessage({ title: 'Error', message: (error as Error).message, type: 'error' });
+            setPopupVisible(true);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    const handleCancelSession = async (sessionId: string) => {
+        try {
+            const session = upcomingChargingSessions.find(session => session.id === sessionId);
+            if (session) {
+                const { formattedDate, formattedTime } = formatDateAndTime(session.bookedAt);
+                await cancelChargingSession(formattedDate, formattedTime);
+                setUpcomingChargingSessions(upcomingChargingSessions.filter(session => session.id !== sessionId));
+                alert('Session cancelled successfully.');
+            } else {
+                alert('Session not found.');
+            }
+        } catch (error) {
+            alert((error as Error).message);
+        }
+    };
+
+    const handleRescheduleSession = async (sessionId: string) => {};
 
     const formatDateAndTime = (bookedAt: any) => {
         const date = bookedAt.toDate();
@@ -28,46 +73,28 @@ const Sessions: React.FC = () => {
         return { formattedDate, formattedTime };
     };
 
+    useEffect(() => {
+        const loadUpcomingChargingSessions = async () => {
+            const sessions = await fetchUpcomingChargingSessions();
+            setUpcomingChargingSessions(sessions);
+        };
+
+        loadUpcomingChargingSessions();
+    }, []);
+
+
+
     const toggleSession = (sessionID: string) => {
         setExpandedSessionIDs((prevExpanded) => {
             const newExpanded = new Set(prevExpanded);
             if (newExpanded.has(sessionID)) {
-                newExpanded.delete(sessionID); // Collapse session
+                newExpanded.delete(sessionID);
             } else {
-                newExpanded.add(sessionID); // Expand session
+                newExpanded.add(sessionID);
             }
             return newExpanded;
         });
     };
-
-    const handleInvoice = (sessionId: any) => {
-        console.log(`Viewing invoice for session ID: ${sessionId}`);
-        // Add logic for displaying the invoice here
-    };
-
-    const handleReport = (sessionId: any) => {
-        console.log(`Viewing report for session ID: ${sessionId}`);
-        // Add logic for displaying the report here
-    };
-
-    const handleBookingSubmission = async (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        setIsSubmitting(true);
-
-        const formData = new FormData(event.currentTarget);
-        const sessionDate = formData.get('session-date') as string;
-        const sessionTime = formData.get('session-time') as string;
-
-        try {
-            const response = await addChargingSession(sessionDate, sessionTime);
-            alert(response.message);
-        } catch (error) {
-            alert((error as Error).message);
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
-
 
     useEffect(() => {
         const loadPastChargingSessions = async () => {
@@ -78,61 +105,34 @@ const Sessions: React.FC = () => {
         loadPastChargingSessions();
     }, []);
 
-    useEffect(() => {
-        const loadUpcomingChargingSessions = async () => {
-            const sessions = await fetchUpcomingChargingSessions();
-            setUpcomingChargingSessions(sessions);
-        };
+    const handleViewInvoice = (sessionId: any) => {
+        console.log(`Viewing invoice for session ID: ${sessionId}`);
+    };
 
-        loadUpcomingChargingSessions();
-    }, []);
+    const handleViewReport = (sessionId: any) => {
+        console.log(`Viewing report for session ID: ${sessionId}`);
+    };
 
-    useEffect(() => {
-        let timer: NodeJS.Timeout;
-
-        if (isSessionStarted) {
-            timer = setInterval(() => {
-                setSessionTimer((prev) => prev + 1);
-            }, 1000);
-        }
-
-        return () => {
-            clearInterval(timer);
-        };
-    }, [isSessionStarted]);
 
     return (
         <div className="sessions-page-container">
             <div className="sidebar-container">
                 <BuyerSidebar />
             </div>
+
+
             <div className="user-options-container">
                 <h1>Sessions</h1>
                 <p>Book a charging session, or view your previous sessions</p>
                 <div className="hr-div"></div>
+
                 <div className="user-options-grid">
-                    <div className="upcoming-sessions-container">
-                        <h2>Upcoming Sessions</h2>
-                        <div className="hr-div"></div>
-                        <ul>
-                            {upcomingChargingSessions.map((session, index) => {
-                                const { formattedDate, formattedTime } = formatDateAndTime(session.bookedAt);
-
-                                return (
-                                    <li key={index} className="session-item">
-                                        {formattedDate} @ {formattedTime}
-                                    </li>
-                                );
-                            })}
-                        </ul>
-                    </div>
-
                     <div className="book-session-container">
                         <h2>Book Charging Session</h2>
                         <div className="hr-div"></div>
-                        <form className="book-session-form" onSubmit={handleBookingSubmission}>
-                            <div className="form-group">
-                                <label htmlFor="session-date">Date</label>
+                        <form className="book-session-form" onSubmit={handleAddSession}>
+                            <div className="form-item">
+                                <label htmlFor="session-date">Date:</label>
                                 <input
                                     type="date"
                                     id="session-date"
@@ -141,8 +141,8 @@ const Sessions: React.FC = () => {
                                 />
                             </div>
 
-                            <div className="form-group">
-                                <label htmlFor="session-time">Time</label>
+                            <div className="form-item">
+                                <label htmlFor="session-time">Time:</label>
                                 <input
                                     type="time"
                                     id="session-time"
@@ -153,6 +153,48 @@ const Sessions: React.FC = () => {
 
                             <button type="submit" className="submit-button">Book Session</button>
                         </form>
+                    </div>
+                </div>
+
+                <div className="hr-div"></div>
+
+                <div className="user-options-grid">
+                    <div className="upcoming-sessions-container">
+                        <h2>Upcoming Sessions</h2>
+                        <div className="hr-div"></div>
+                        <div className="view-upcoming-sessions-container">
+                            {upcomingChargingSessions.map((session, index) => {
+                                const { formattedDate, formattedTime } = formatDateAndTime(session.bookedAt);
+
+                                return (
+                                    <div key={index} className="session-wrapper">
+                                        <div className="session-tab-container">
+                                            <div
+                                                className="session-header-container"
+                                                onClick={() => toggleSession(session.id)}
+                                            >
+                                                <h3><strong>{formattedDate} @ {formattedTime}</strong></h3>
+                                            </div>
+                                            <div className="session-actions-buttons-container">
+                                                <button
+                                                    className="cancel-session-button"
+                                                    onClick={() => handleCancelSession(session.id)}
+                                                >
+                                                    Cancel
+                                                </button>
+                                                <button
+                                                    className="reschedule-session-button"
+                                                    onClick={() => handleRescheduleSession(session.id)}
+                                                >
+                                                    Reschedule
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div className="hr-div"></div>
+                                    </div>
+                                );
+                            })}
+                        </div>
                     </div>
                 </div>
 
@@ -187,8 +229,8 @@ const Sessions: React.FC = () => {
                                                     <p><strong>Duration:</strong> {session.duration} minutes</p>
                                                     <p><strong>Total:</strong> {session.total}</p>
                                                     <div className="session-actions-buttons-container">
-                                                        <button onClick={() => handleInvoice(session.id)}>View Invoice</button>
-                                                        <button onClick={() => handleReport(session.id)}>View Report</button>
+                                                        <button onClick={() => handleViewInvoice(session.id)}>View Invoice</button>
+                                                        <button onClick={() => handleViewReport(session.id)}>View Report</button>
                                                     </div>
                                                 </div>
                                             )}

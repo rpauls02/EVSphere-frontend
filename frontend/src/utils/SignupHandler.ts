@@ -25,8 +25,11 @@ export const handleSignup = async (
     }
 
     try {
+        // Create user with email and password
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const userId = userCredential.user.uid;
 
+        // Prepare user document data
         const userDocData: any = {
             role,
             userName: `${firstName.charAt(0).toLowerCase()}${lastName.slice(0, 5).toLowerCase()}${mobile.slice(-4)}`,
@@ -40,14 +43,16 @@ export const handleSignup = async (
             userDocData.companyName = companyName;
         }
 
-        await setDoc(doc(db, 'users', userCredential.user.uid), userDocData);
+        // Set user document in 'users' collection
+        await setDoc(doc(db, 'users', userId), userDocData);
 
-        await sendEmailVerification(userCredential.user);
-
-        setPopup(
-            "Successfully signed up. A verification email has been sent to your email address. Please verify your email before logging in.",
-            "success"
-        );
+        // Set user balance to 0 in 'balances' collection
+        const userBalanceData = {
+            userID: userId,
+            points_balance: 0,
+            credit_balance: 0
+        };
+        await setDoc(doc(db, 'balances'), userBalanceData);
 
         resetForm();
 
@@ -57,3 +62,4 @@ export const handleSignup = async (
         setPopup(`Error: ${errorMessage}`, "error");
     }
 };
+

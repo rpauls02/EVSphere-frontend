@@ -10,7 +10,6 @@ button {
 }
 
 .dashboard-page-container {
-    height: 100vh;
     display: flex;
     flex-direction: row;
 }
@@ -31,7 +30,6 @@ button {
     padding: 2rem;
     background-color: #ffffff;
     border-radius: 20px;
-    height: 100vh;
     max-height: 100vh;
     margin-left: 230px;
     align-items: center;
@@ -127,9 +125,10 @@ button {
     border: 1px solid #16b9cc;
     padding: 8px;
     border-radius: 4px;
-    width: 70px;
+    width: 65px;
     font-size: 20px;
     align-items: center;
+    text-align: right;
 }
 
 .dashboard-page-container .manage-balance-buttons-container button {
@@ -203,9 +202,8 @@ button {
 }
 
 .dashboard-page-container .session-type-info-container .session-info-container p{
-    margin-bottom: 10px;
+    margin-bottom: 20px;
 }
-
 
 .dashboard-page-container .manage-quick-session-button{
     display: flex;
@@ -231,4 +229,16 @@ button {
 .dashboard-page-container .manage-quick-session-button .end-session {
     background-color: red;
     color: white;
+}
+
+.popup {
+    position: fixed;
+    top: 10px; /* Adjust as needed */
+    right: 10px; /* Adjust as needed */
+    background-color: white; /* Or your desired background */
+    border: 1px solid #16b9cc; /* Border color */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional for shadow */
+    padding: 10px 20px; /* Adjust padding as needed */
+    z-index: 1000; /* Ensure it appears on top of other elements */
 }

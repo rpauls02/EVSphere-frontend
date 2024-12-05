@@ -83,7 +83,6 @@
     display: flex;
     flex-direction: row;
     gap: 15px;
-    margin-bottom: 15px;
 }
 
 .balances-page-container .account-balance-container .balance-pairs-container .vr-div{
@@ -116,7 +115,7 @@
     text-align: right;
 }
 
-.balances-page-container .manage-balance-buttons-container button {
+.balances-page-container .account-balance-container .balance-pairs-container .balance-pair-container button {
     background-color: white;
     border: 1px solid #16b9cc;
     padding: 8px;
@@ -124,16 +123,15 @@
     font-size: 1rem;
     font-size: 20px;
     text-align: center;
-    margin-right: 20px
 }
 
-.balances-page-container .session-tab-container {
+.balances-page-container .transaction-tab-container {
     display: flex;
     flex-direction: column;
     margin-bottom: 10px;
 }
 
-.balances-page-container .session-tab-container .hr-div {
+.balances-page-container .transaction-tab-container .hr-div {
     border: none;
     width: 100%;
     background-color: #d6d6d6;
@@ -142,34 +140,34 @@
     height: 1px;
 }
 
-.balances-page-container .session-tab-container .session-header-container {
+.balances-page-container .transaction-tab-container .transaction-header-container {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
 }
 
-.balances-page-container .session-tab-container .session-header-container h3 {
+.balances-page-container .transaction-tab-container .transaction-header-container h3 {
     margin: 0;
 }
 
-.balances-page-container .session-tab-container .session-header-container h3 {
+.balances-page-container .transaction-tab-container .transaction-header-container h3 {
     margin: 0;
 }
 
-.balances-page-container .session-tab-container .session-header-container h3 {
+.balances-page-container .transaction-tab-container .transaction-header-container h3 {
     margin: 0;
 }
 
-.balances-page-container .session-tab-container .session-details-container p{
+.balances-page-container .transaction-tab-container .transaction-details-container p{
     margin-bottom: 10px;
 }
 
-.balances-page-container .session-tab-container .session-details-container .session-actions-buttons-container{
+.balances-page-container .transaction-tab-container .transaction-details-container .transaction-actions-buttons-container{
     margin-top: 10px;
     margin-bottom: 5px;
 }
 
-.balances-page-container .session-tab-container .session-details-container .session-actions-buttons-container button{
+.balances-page-container .transaction-tab-container .transaction-details-container .transaction-actions-buttons-container button{
     background-color: white;
     border: 1px solid #16b9cc;
     padding: 8px;

@@ -1,5 +1,5 @@
 import { getAuth, updateEmail, updatePassword, reauthenticateWithCredential, EmailAuthProvider, sendPasswordResetEmail } from 'firebase/auth';
-import { doc, setDoc, updateDoc, deleteDoc, collection } from 'firebase/firestore';
+import { doc, updateDoc, deleteDoc} from 'firebase/firestore';
 import { auth, db } from '../firebaseConfig';
 import { deleteUser } from 'firebase/auth';
 
@@ -110,48 +110,6 @@ export const handleUpdateCredits = async (
             onClose();
         } catch (error) {
             setError('Failed to update credit balance. Please try again.');
-            console.error(error);
-        } finally {
-            setLoading(false);
-        }
-    } else {
-        setError('User not authenticated. Please log in and try again.');
-    }
-};
-
-export const handleAddChargers = async (
-    address: string,
-    addressAccess: string,
-    chargerCount: number,
-    chargerTypes: string,
-    setError: React.Dispatch<React.SetStateAction<string>>,
-    setLoading: React.Dispatch<React.SetStateAction<boolean>>,
-    onSuccess: () => void
-) => {
-    const user = auth.currentUser;
-
-    if (user) {
-        try {
-            setLoading(true);
-
-            const chargersPromises = Array.from({ length: chargerCount }, (_, index) => {
-                const chargerData = {
-                    userID: user.uid,
-                    address,
-                    addressAccess,
-                    charger_id: `charger_00${index + 1}`,
-                    type: chargerTypes.split(',')[index % chargerTypes.split(',').length],
-                    status: 'available',
-                };
-
-                return setDoc(doc(db, 'charging_points', `charger_${index + 1}`), chargerData);
-            });
-
-            await Promise.all(chargersPromises);
-
-            onSuccess();
-        } catch (error) {
-            setError('Failed to add charging points. Please try again.');
             console.error(error);
         } finally {
             setLoading(false);

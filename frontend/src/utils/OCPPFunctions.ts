@@ -1,24 +1,43 @@
-// Start a charging session
+import { ChargingPoint } from "./types";
+
+/* Start a charging session */
 export const startChargingSession = async (
-    chargingPoint: any,
+    chargingPoint: ChargingPoint,
     connectorId: number,
-    idTag: string,
     reservationId?: number
-): Promise<void> => {
+): Promise<{ pricePerKwh: number; status: string }> => {
     try {
+        // Fetch the price per kWh from the charging point
+        const { pricePerKwh } = chargingPoint;
+
+        // Check the current status of the charging point
+        const status = await handleStatusNotification(chargingPoint);
+
+        // Log the price per kWh and the status of the charger
+        console.log(`Price per kWh: $${pricePerKwh.toFixed(2)}`);
+        console.log(`Charger Status: ${status === 'Charging' ? 'Charging' : 'Not charging'}`);
+
+        // Send the StartTransaction message
         const startSessionResponse = await chargingPoint.sendMessage('StartTransaction', {
             connectorId: connectorId,
-            idTag: idTag,
             timestamp: new Date().toISOString(),
             reservationId: reservationId,
             serviceType: 'Charging',
         });
 
         console.log('Charging Session Started:', startSessionResponse);
+
+        // Return the required information
+        return {
+            pricePerKwh: pricePerKwh,
+            status: status === 'Charging' ? 'Charging' : 'Not charging',
+        };
     } catch (error) {
         console.error('Error starting charging session:', error);
+        throw error; // Re-throw the error so the caller is informed of it
     }
 };
+
 
 // End charging session
 export const endChargingSession = async (
@@ -26,7 +45,7 @@ export const endChargingSession = async (
     transactionId: number
 ): Promise<void> => {
     try {
-        const endSessionResponse = await chargingPoint.sendMessage('EndTransaction', {
+        const endSessionResponse = await chargingPoint.sendMessage('StopTransaction', {
             transactionId: transactionId,
             timestamp: new Date().toISOString(),
         });

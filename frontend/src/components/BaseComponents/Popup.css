@@ -1,63 +1,88 @@
 .popup-container {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: rgba(0, 0, 0, 0.5);
+    top: 20px;
+    right: 20px;
     z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* For spacing between multiple popups */
+    pointer-events: none; /* Prevent interaction during animation */
 }
 
 .popup-content {
     background-color: #fff;
     border-radius: 8px;
-    padding: 20px;
+    padding: 15px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     text-align: left;
-    max-width: 400px;
+    max-width: 300px;
     width: 100%;
+    border-left: 4px solid transparent;
+    animation: fade-in-out 5s ease-in-out forwards; /* Ensure animation completes smoothly */
+    opacity: 0;
 }
 
 .popup-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 10px;
     margin-bottom: 10px;
 }
 
 .popup-title {
     margin: 0;
-    font-size: 1.5rem;
+    font-size: 1rem;
+    font-weight: bold;
 }
 
 .popup-close {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.popup-close:hover {
+    color: #000;
 }
 
 .popup-message {
-    font-size: 1.2rem;
+    font-size: 0.9rem;
     margin: 0;
 }
 
 /* Success and error styling */
-.popup-container.success .popup-content {
-    border: 2px solid #4caf50;
+.popup-content.success {
+    border-left-color: #4caf50;
 }
 
-.popup-container.error .popup-content {
-    border: 2px solid #f44336;
+.popup-content.error {
+    border-left-color: #f44336;
 }
 
-.popup-container.success .popup-message {
+.popup-message.success {
     color: #4caf50;
 }
 
-.popup-container.error .popup-message {
+.popup-message.error {
     color: #f44336;
+}
+
+/* Fade-in and fade-out animation */
+@keyframes fade-in-out {
+    0% {
+        opacity: 0;
+        transform: translateY(0); /* Slight movement for fade-in */
+    }
+    10% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    90% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(0); /* Slight movement for fade-out */
+    }
 }

@@ -1,20 +1,22 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import CountryCodeSelect from './CountryCodeSelect';
 import { handleSignup } from '../../../utils/SignupHandler';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
-
+import logo from '../../../assets/logo.png';
 import './Signup.css';
 
 const SignupForm: React.FC = () => {
+    const [currentPhase, setCurrentPhase] = useState<'roleSelection' | 'form'>('roleSelection');
     const [role, setUserRole] = useState<'buyer' | 'seller'>('buyer');
     const [companyName, setCompanyName] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('')
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [countryCode, setCountryCode] = useState('+44');
     const [mobile, setMobileNumber] = useState('');
     const [popup, setPopup] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
@@ -27,38 +29,26 @@ const SignupForm: React.FC = () => {
         setEmail('');
         setPassword('');
         setConfirmPassword('');
-        setCountryCode('+1');
+        setCountryCode('+44');
         setMobileNumber('');
     };
 
     const requirements = {
         uppercase: /[A-Z]/.test(password),
         lowercase: /[a-z]/.test(password),
-        specialCharacter: /[-/\\!@£'€#$%^;&*(),.?":{}|<>]/.test(password),
+        specialCharacter: /[-/\\!@\u00a3\'\u20ac#$%^;&*(),.?":{}|<>]/.test(password),
         numerics: /\d/.test(password),
         minLength: password.length >= 12,
-        maxLength: password.length <= 64
+        maxLength: password.length <= 64,
     };
 
-    const renderIcon = (condition: any) => {
-        if (condition) {
-            return <CheckIcon style={{ color: 'green' }} />;
-        }
-        return <CloseIcon style={{ color: 'red' }} />;
+    const renderIcon = (condition: boolean) => {
+        return condition ? <CheckIcon style={{ color: 'green' }} /> : <CloseIcon style={{ color: 'red' }} />;
     };
 
-    const renderOptionalIcon = (condition: any) => {
-        if (condition) {
-            return <RadioButtonUncheckedIcon style={{ color: 'gray' }} />;
-        }
-        return <CheckIcon style={{ color: 'green' }} />;
+    const renderOptionalIcon = (condition: boolean) => {
+        return condition ? <RadioButtonUncheckedIcon style={{ color: 'gray' }} /> : <CheckIcon style={{ color: 'green' }} />;
     };
-
-    const handlePassowrdEntry = async () => {
-        if (!passwordsMatch) {
-            // make password boxes red and show passwords dont match
-        }
-    }
 
     const handleSignupSubmission = async (event: React.FormEvent<HTMLFormElement>) => {
         await handleSignup(
@@ -77,31 +67,60 @@ const SignupForm: React.FC = () => {
         );
     };
 
+    if (currentPhase === 'roleSelection') {
+        return (
+            <div className="signup-page-container">
+                <div className="signup-form-container">
+                    <div className="logo-container">
+                        <img src={logo} alt="sec-logo" />
+                    </div>
+                    <h1>Select your role</h1>
+                    <div className="user-role-select-container">
+                        <button
+                            className="role-button"
+                            onClick={() => {
+                                setUserRole('buyer');
+                                setCurrentPhase('form');
+                            }}
+                        >
+                            Buyer
+                        </button>
+                        <button
+                            className="role-button"
+                            onClick={() => {
+                                setUserRole('seller');
+                                setCurrentPhase('form');
+                            }}
+                        >
+                            Seller
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="signup-page-container">
             <div className="signup-form-container">
-                <h1>Create your {role === 'seller' ? "Seller" : "Buyer"} Account</h1>
+                <div className="logo-container">
+                    <img src={logo} alt="sec-logo" />
+                </div>
+                <div className="existing-user-option-container">
+                    <p>
+                        <strong>Already have an account?</strong>{' '}
+                        <Link className="react-link" to="/login">
+                            <strong>Login</strong>
+                        </Link>
+                    </p>
+                </div>
+                <h1>Create your {role === 'seller' ? 'Seller' : 'Buyer'} Account</h1>
 
                 {popup && (
                     <div className={`popup ${popup.type}`}>
                         {popup.message}
                     </div>
                 )}
-
-                <div className="user-role-select-container">
-                    <button
-                        className={role === 'buyer' ? 'active-role-button' : ''}
-                        onClick={() => setUserRole('buyer')}
-                    >
-                        Buyer
-                    </button>
-                    <button
-                        className={role === 'seller' ? 'active-role-button' : ''}
-                        onClick={() => setUserRole('seller')}
-                    >
-                        Seller
-                    </button>
-                </div>
 
                 <form onSubmit={handleSignupSubmission} className="signup-form">
                     {role === 'seller' && (

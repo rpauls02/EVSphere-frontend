@@ -118,10 +118,16 @@ select{
 }
 
 .host-services-page-container .host-services-form button{
+    background-color: white;
     border: 1px solid #16b9cc;
-    border-radius: 15px;
-    padding: 3px 8px;
-    font: inherit;
+    padding: 8px;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-size: 20px;
+    text-align: center;
+    width: auto;
+    justify-content: center;
+    align-items: center;
 }
 
 .host-services-form-item label {

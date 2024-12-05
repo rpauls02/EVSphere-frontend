@@ -9,7 +9,7 @@
     height: 100vh;
 }
 
-.signup-form-container {
+.signup-page-container .signup-form-container {
     background-color: rgb(22, 185, 204);
     padding: 32px;
     border-radius: 12px;
@@ -20,12 +20,34 @@
     margin: 0;
 }
 
-.signup-form-container h1 {
+.signup-page-container .signup-form-container h1 {
     margin-bottom: 16px;
     color: white;
 }
 
-.user-role-select-container {
+.signup-page-container .logo-container {
+    margin-bottom: 10px;
+}
+
+.signup-page-container .logo-container img {
+    height: 70px;
+    width: auto;
+    margin: 0;
+    padding: 0;
+}
+
+.signup-page-container .existing-user-option-container{
+    font-size: 20px;
+    color: white;
+}
+
+.signup-page-container .existing-user-option-container a{
+    font-size: 20px;
+    color: white;
+}
+
+
+.signup-page-container .user-role-select-container {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -33,7 +55,7 @@
     gap: 30px;
 }
 
-.user-role-select-container button {
+.signup-page-container .user-role-select-container button {
     background-color: rgb(15, 129, 143);
     color: white;
     padding: 12px;
@@ -45,12 +67,12 @@
     transition: background-color 0.3s ease;
 }
 
-.user-role-select-container button:hover {
+.signup-page-container .user-role-select-container button:hover {
     background-color: rgb(11, 92, 102);
 }
 
-.input-field,
-.mobile-input-field {
+.signup-page-container .input-field,
+.signup-page-container .mobile-input-field {
     width: 100%;
     padding: 12px;
     margin: 10px 0;
@@ -62,30 +84,34 @@
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.input-field:focus,
-.mobile-input-field:focus {
-    border-color: #28a745;
-    box-shadow: 0 0 4px rgba(40, 167, 69, 0.3);
+.signup-page-container .input-field:focus,
+.signup-page-container .mobile-input-field:focus {
+    border-color: rgb(12, 101, 112);
+    box-shadow: 0 0 6px rgba(12, 101, 112, 0.3);
     outline: none;
 }
 
-.mobile-input-container {
+.signup-page-container .mobile-input-container {
     width: 100%;
     display: flex;
     justify-content: center;
 }
 
-.password-requirements-container{
+.signup-page-container .password-requirements-container{
     display: flex;
     gap: 15px;
 }
 
-.password-requirements-item{
+.signup-page-container .password-requirements-item{
     display: flex;
     align-items: center;
 }
 
-.input-group {
+.signup-page-container .password-requirements-item svg{
+    font-size: 18px;
+}
+
+.signup-page-container .input-group {
     width: 100%;
     display: flex;
     align-items: center;
@@ -93,7 +119,7 @@
     overflow: hidden;
 }
 
-.country-code-select {
+.signup-page-container .country-code-select {
     padding: 5px;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -101,14 +127,14 @@
     outline: none;
     width: auto;
     height: 44px;
-    color: white;
+    background-color: white;
 }
 
-.country-code-select:focus {
+.signup-page-container .country-code-select:focus {
     border-color: rgb(11, 92, 102);
 }
 
-.submit-signup-button {
+.signup-page-container .submit-signup-button {
     background-color: rgb(15, 129, 143);
     color: white;
     padding: 12px;
@@ -120,11 +146,11 @@
     transition: background-color 0.3s ease;
 }
 
-.submit-signup-button:hover {
+.signup-page-container .submit-signup-button:hover {
     background-color: rgb(11, 92, 102);
 }
 
-.success-popup {
+.signup-page-container .success-popup {
     position: fixed;
     top: 20px;
     right: 20px;
@@ -138,7 +164,7 @@
     animation: fadeOut 4s forwards;
 }
 
-.error-popup {
+.signup-page-container .error-popup {
     position: fixed;
     top: 80px;
     right: 20px;

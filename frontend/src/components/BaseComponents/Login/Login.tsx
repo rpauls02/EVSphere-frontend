@@ -1,49 +1,70 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { handleLogin, handleGoogleAuth } from '../../../utils/LoginHandler';
-import { FaGoogle, FaFacebook, FaMicrosoft } from 'react-icons/fa';
-import logo from '../../../assets/logo.png'
+import { FaGoogle } from 'react-icons/fa';
+import Popup from '../../BaseComponents/Popup';
+import logo from '../../../assets/logo.png';
 import './Login.css';
 
 const LoginForm: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [popupMessage, setPopupMessage] = useState('');
-  const [showPopup, setShowPopup] = useState(false);
-  const [isErrorPopup, setIsErrorPopup] = useState(false);
+  const [popupData, setPopupData] = useState<{ title: string; message: string; type: 'error' | 'success'; visible: boolean }>({
+    title: '',
+    message: '',
+    type: 'success',
+    visible: false,
+  });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  const showPopup = (title: string, message: string, type: 'error' | 'success') => {
+    setPopupData({ title, message, type, visible: true });
+    setTimeout(() => {
+      setPopupData((prev) => ({ ...prev, visible: false }));
+    }, 3000);
+  };
+
   const handleLoginSubmission = async (event: React.FormEvent) => {
     event.preventDefault();
-    await handleLogin(email, password, setPopupMessage, setShowPopup, setIsErrorPopup, navigate);
+    const result = await handleLogin(email, password);
 
-    setTimeout(() => {
-      setShowPopup(false);
-    }, 3000);
+    if (result.success) {
+      if (result.role === 'buyer') {
+        navigate('/buyer-dashboard');
+      } else if (result.role === 'seller') {
+        navigate('/seller-dashboard');
+      } else {
+        navigate('/user-dashboard');
+      }
+    } else {
+      showPopup('Login Error', result.message, 'error');
+    }
   };
 
   const handleGoogleAuthSubmission = async () => {
     setLoading(true);
-    await handleGoogleAuth(setPopupMessage, setLoading, () => {
-      setShowPopup(true);
-      setIsErrorPopup(false);
-    }, navigate);
-    setTimeout(() => {
-      setShowPopup(false);
-    }, 3000);
-  };
+    const response = await handleGoogleAuth();
 
+    if (response.success) {
+      showPopup('Login Success', response.message, 'success');
+      navigate('/signup');
+    } else {
+      showPopup('Login Error', response.message, 'error');
+    }
+
+    setLoading(false);
+  };
 
   return (
     <div className="login-page-container">
       <div className="login-form-container">
-        <div className="login-logo-container">
-          <img src={logo} alt="evsphere-logo" />
+        <div className="logo-container">
+          <img src={logo} alt="sec-logo" />
         </div>
         <div className="new-user-option-container">
           <p>
-            <strong>New to us?</strong> <Link className="react-link" to="/signup"><strong>Create an account</strong> </Link>
+            <strong>New to us?</strong> <Link className="react-link" to="/signup"><strong>Create an account</strong></Link>
           </p>
         </div>
         <div className="login-options-container">
@@ -78,7 +99,6 @@ const LoginForm: React.FC = () => {
               <div className="forgot-password-option-container">
                 <Link className="forgot-password-link" to="/reset-password">Forgot password?</Link>
               </div>
-
             </form>
           </div>
 
@@ -88,25 +108,20 @@ const LoginForm: React.FC = () => {
             <div className="social-login-buttons">
               <button className="social-button google-auth-button" onClick={handleGoogleAuthSubmission} disabled={loading}>
                 <div className="social-icon"><FaGoogle size={24} /></div>
-                <span>{loading ? 'Loading...' : 'Continue with Google'}</span>
-              </button>
-              <button className="social-button facebook-auth-button">
-                <div className="social-icon"><FaFacebook size={24} /></div>
-                <span>Continue with Facebook</span>
-              </button>
-              <button className="social-button microsoft-auth-button">
-                <div className="social-icon"><FaMicrosoft size={24} /></div>
-                <span>Continue with Microsoft</span>
+                <span>{loading ? 'Loading...' : 'Login with Google'}</span>
               </button>
             </div>
           </div>
         </div>
       </div>
 
-      {showPopup && (
-        <div className={`popup ${isErrorPopup ? 'popup-error' : ''}`}>
-          {popupMessage}
-        </div>
+      {popupData.visible && (
+        <Popup
+          title={popupData.title}
+          message={popupData.message}
+          type={popupData.type}
+          onClose={() => setPopupData((prev) => ({ ...prev, visible: false }))}
+        />
       )}
     </div>
   );

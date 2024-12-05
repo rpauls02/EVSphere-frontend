@@ -23,12 +23,12 @@ export interface UserAddress {
     primary: boolean;
 }
 
-export interface UserChargers {
+export interface UserCharger {
     id: string;
     userID: string;
     address: string;
     chargerCount: number;
-    chargerType: string;
+    connector: string;
 }
 
 export interface PastSessionData {
@@ -45,9 +45,34 @@ export interface ChargerDetails {
     type: string;
 }
 
-export interface UserTransactions {
+export interface UserTransaction {
+    id: string;
+    sessionID: string;
     userID: string;
     createdAt: any;
     invoiceID: string;
     total: number;
+}
+
+export interface UserInvoice {
+    id: string;
+    userID: string;
+    customerID: string;
+    customerEmail: string;
+    createdAt: any;
+    currency: string;
+    status: string;
+    amount_due: number;
+    total: number;
+    energyConsumed: number;
+    pricePerKwh: number;
+    invoicePDF: string;
+}
+
+export interface ChargingPoint {
+    id: string;
+    connector: string;
+    pricePerKwh: number;
+    status: 'charging' | 'not charging';
+    sendMessage: (messageType: string, data: any) => Promise<any>;
 }

@@ -55,7 +55,7 @@ button {
 
 .sessions-page-container .user-options-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(1, 1fr);
     grid-gap: 20px;
     align-items: start;
 }
@@ -80,18 +80,81 @@ button {
     border-radius: 12px;
     padding: 20px 20px;
     box-sizing: border-box;
-    width: auto;
+    width: 800px;
 }
 
 .sessions-page-container .book-session-form{
     background-color: white;
     border: 1px solid #16b9cc;
+    padding: 10px;
+}
+
+.sessions-page-container .book-session-form .form-item{
+    margin-bottom: 10px;
+}
+
+.sessions-page-container .book-session-form .form-item label{
+    padding: 8px 0;
+    width: 70px;
+    font-size: 20px;
+    align-items: center;
+}
+
+.sessions-page-container .book-session-form .form-item input {
+    background-color: white;
+    border: 1px solid #16b9cc;
+    padding: 8px;
+    border-radius: 4px;
+    font-size: 16px;
+    align-items: center;
+}
+.sessions-page-container .book-session-form button{
+    background-color: white;
+    border: 1px solid #16b9cc;
+    padding: 8px;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-size: 20px;
+    text-align: center;
+    margin-right: 20px
+}
+
+.sessions-page-container .upcoming-sessions-container {
+    height: auto;
+}
+
+.sessions-page-container .upcoming-sessions-container .session-tab-container {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 10px;
+    justify-content: space-between;
+}
+
+.sessions-page-container .upcoming-sessions-container .session-tab-container .hr-div {
+    border: none;
+    width: 100%;
+    background-color: #d6d6d6;
+    margin-bottom: 20px;
+    margin-top: 5px;
+    height: 1px;
+}
+
+.sessions-page-container .upcoming-sessions-container .session-tab-container .session-header-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.sessions-page-container .upcoming-sessions-container .session-tab-container .session-header-container h3 {
+    margin: 0;
+}
+
+.sessions-page-container .upcoming-sessions-container .session-tab-container .session-details-container p{
+    margin-bottom: 10px;
 }
 
 .sessions-page-container .past-sessions-container {
     height: auto;
-    width: 690px;
-    grid-column: span 2;
 }
 
 .sessions-page-container .past-sessions-container .session-tab-container {

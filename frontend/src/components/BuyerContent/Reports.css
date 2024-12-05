@@ -10,7 +10,6 @@ button {
 }
 
 .reports-page-container {
-    width: 100vw;
     height: 100vh;
     display: flex;
     flex-direction: row;
@@ -21,7 +20,7 @@ button {
     background-color: #f4f4f4;
     box-sizing: border-box;
     height: 100%;
-    position: fixed;
+    position: relative;
     top: 0;
     left: 0;
 }
@@ -54,7 +53,29 @@ button {
     height: 1px;
 }
 
-.reports-page-container .reports-list-container{
+.reports-page-container .user-options-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 20px;
+    align-items: start;
+}
+
+.reports-page-container .user-options-grid .hr-div {
+    border: none;
+    width: 100%;
+    background-color: #d6d6d6;
+    margin-bottom: 20px;
+    margin-top: 5px;
+    height: 1px;
+}
+
+.reports-page-container .user-options-grid h2 {
+    margin: 0;
+}
+
+.reports-page-container .book-session-container,
+.reports-page-container .upcoming-sessions-container,
+.reports-page-container .past-sessions-container{
     border: 1px solid #16b9cc;
     border-radius: 12px;
     padding: 20px 20px;

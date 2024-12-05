@@ -1,7 +1,7 @@
 import { auth, db } from '../firebaseConfig';
 import { doc, getDocs, getDoc, collection, query, orderBy, limit, where } from 'firebase/firestore';
 import axios from 'axios';
-import { UserDetails, UserAddress, UserBalance, UserChargers, UpcomingSessionData, PastSessionData, UserTransactions } from './types';
+import { UserDetails, UserAddress, UserBalance, UserCharger, UpcomingSessionData, PastSessionData, UserTransaction } from './types';
 
 /** Fetch user details from Firestore */
 export const fetchUserDetails = async (): Promise<UserDetails | null> => {
@@ -160,7 +160,7 @@ export const fetchChargingSessions = async (status: string): Promise<any[]> => {
 };
 
 /** Fetch user chargers from Firestore */
-export const fetchUserChargers = async (): Promise<UserChargers[]> => {
+export const fetchUserChargers = async (): Promise<UserCharger[]> => {
     const user = auth.currentUser;
     if (!user) {
         console.error("No authenticated user found.");
@@ -172,11 +172,11 @@ export const fetchUserChargers = async (): Promise<UserChargers[]> => {
         const chargersQuery = query(
             userChargersRef,
             where("userID", "==", user.uid),
-            orderBy("id", "desc"),
+            orderBy("id", "asc"),
         );
 
         const querySnapshot = await getDocs(chargersQuery);
-        return querySnapshot.docs.map(doc => doc.data().content || "");
+        return querySnapshot.docs.map(doc => doc.data() as UserCharger);
     } catch (error) {
         console.error("Error fetching user messages:", error);
         return [];
@@ -184,7 +184,7 @@ export const fetchUserChargers = async (): Promise<UserChargers[]> => {
 };
 
 /** Fetch user transactions from Firestore */
-export const fetchUserTransactions = async (): Promise<UserTransactions[]> => {
+export const fetchUserTransactions = async (): Promise<UserTransaction[]> => {
     const user = auth.currentUser;
     if (!user) {
         console.error("No authenticated user found.");
@@ -196,11 +196,11 @@ export const fetchUserTransactions = async (): Promise<UserTransactions[]> => {
         const transactionsQuery = query(
             userTransactionsRef,
             where("userID", "==", user.uid),
-            orderBy("id", "desc"),
+            orderBy("createdAt", "desc"),
         );
 
         const querySnapshot = await getDocs(transactionsQuery);
-        return querySnapshot.docs.map(doc => doc.data().content || "");
+        return querySnapshot.docs.map(doc => doc.data() as UserTransaction);
     } catch (error) {
         console.error("Error fetching user transactions:", error);
         return [];

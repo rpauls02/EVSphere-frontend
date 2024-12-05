@@ -1,6 +1,82 @@
+button {
+    all: unset;
+    display: inline-block;
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    cursor: pointer;
+}
+
 .invoices-page-container {
-    display: flex;
     height: 100vh;
-    padding-left: 250px;
+    display: flex;
+    flex-direction: row;
+}
+
+.invoices-page-container .sidebar-container {
+    width: 230px;
+    background-color: #f4f4f4;
+    box-sizing: border-box;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.invoices-page-container .user-options-container {
+    display: flex;
     flex-direction: column;
+    padding: 2rem;
+    background-color: #ffffff;
+    border-radius: 20px;
+    height: 100vh;
+    max-height: 100vh;
+    margin-left: 230px;
+    align-items: center;
+    gap: 20px;
+    width: 100vw;
+}
+
+.invoices-page-container .user-options-container h1,
+.invoices-page-container .user-options-container p {
+    margin: 0;
+    align-self: flex-start;
+}
+
+.invoices-page-container .user-options-container .hr-div {
+    border: none;
+    width: 100%;
+    background-color: #d6d6d6;
+    margin-bottom: 20px;
+    height: 1px;
+}
+
+.invoices-page-container .user-options-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 20px;
+    align-items: start;
+}
+
+.invoices-page-container .user-options-grid .hr-div {
+    border: none;
+    width: 100%;
+    background-color: #d6d6d6;
+    margin-bottom: 20px;
+    margin-top: 5px;
+    height: 1px;
+}
+
+.invoices-page-container .user-options-grid h2 {
+    margin: 0;
+}
+
+.invoices-page-container .invoices-list-container{
+    border: 1px solid #16b9cc;
+    border-radius: 12px;
+    padding: 20px 20px;
+    box-sizing: border-box;
+    width: auto;
 }

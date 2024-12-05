@@ -3,7 +3,8 @@ import React, { useState, useEffect } from 'react';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { fetchUserBalance, fetchUserTransactions } from '../../utils/UserFetchFunctions';
-import { UserBalance, UserTransactions } from '../../utils/types';
+import { UserBalance, UserTransaction } from '../../utils/types';
+import { Timestamp } from 'firebase/firestore';
 import './Balance.css'
 
 const Balance: React.FC = () => {
@@ -18,7 +19,13 @@ const Balance: React.FC = () => {
     };
 
     const formatDateAndTime = (createdAt: any) => {
+        if (!createdAt || !(createdAt instanceof Timestamp)) {
+            console.error('Invalid or undefined createdAt:', createdAt);
+            return { formattedDate: 'Invalid Date', formattedTime: 'Invalid Time' };
+        }
+    
         const date = createdAt.toDate();
+        console.log(date);
         const formattedDate = `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`;
 
         let hours = date.getHours();
@@ -45,7 +52,7 @@ const Balance: React.FC = () => {
 
     useEffect(() => {
         const loadUserTransactions = async () => {
-            const transactions: UserTransactions[] | null = await fetchUserTransactions();
+            const transactions: UserTransaction[] | null = await fetchUserTransactions();
             if (transactions.length > 0) {
                 setPastTransactions(transactions);
             }
@@ -61,7 +68,7 @@ const Balance: React.FC = () => {
             </div>
             <div className="user-options-container">
                 <h1>Balance</h1>
-                <p>View your balances, add credit, and see previous transactions</p>
+                <p>View your balances and see previous transactions</p>
                 <div className="hr-div"></div>
                 <div className="user-options-grid">
                     <div className="account-balance-container">
@@ -71,6 +78,7 @@ const Balance: React.FC = () => {
                             <div className="balance-pair-container">
                                 <p>Credit:</p>
                                 <label>€{currentCBalance}</label>
+                                <button className="add-credit-button" type="button">Add credit</button>
                             </div>
 
                             <div className="vr-div"></div>
@@ -78,9 +86,6 @@ const Balance: React.FC = () => {
                             <div className="balance-pair-container">
                                 <p>Points:</p>
                                 <label>{currentPBalance}</label>
-                            </div>
-                            <div className="manage-balance-buttons-container">
-                                <button className="add-credit-button" type="button">Add credit</button>
                             </div>
                         </div>
                     </div>

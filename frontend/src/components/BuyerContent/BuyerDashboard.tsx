@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import BuyerSidebar from '../BuyerContent/BuyerSidebar';
 import { fetchUpcomingChargingSessions, fetchUserMessages, fetchUserBalance, fetchUserDetails } from "../../utils/UserFetchFunctions";
+import { updateUserCreditBalance } from '../../utils/UserActionsFunctions';
+import { startChargingSession } from '../../utils/OCPPFunctions';
+import Popup from '../BaseComponents/Popup';
 import './BuyerDashboard.css';
 
 interface UserBalance {
@@ -11,13 +15,21 @@ interface UserBalance {
 const BuyerDashboard: React.FC = () => {
     const [currentFname, setCurrentFname] = useState<string>('');
     const [currentPBalance, setCurrentPBalance] = useState<number>(0);
+    const [newCBalance, setNewCBalance] = useState<number>(0);
     const [currentCBalance, setCurrentCBalance] = useState<number>(0);
     const [userMessages, setUserMessages] = useState<string[]>([]);
     const [upcomingChargingSessions, setUpcomingChargingSessions] = useState<any[]>([]);
-    const [selectedButton, setSelectedButton] = useState(null);
-    const [isSessionStarted, setIsSessionStarted] = useState(false)
+    const [selectedButton, setSelectedButton] = useState("cardPayment");
+    const [isSessionStarted, setIsSessionStarted] = useState(false);
     const [sessionTime, setSessionTime] = useState(0);
-
+    const [pricePerKwh, setPricePerKwh] = useState<number | null>(null);
+    const [currentConsumption, setCurrentConsumption] = useState<number | null>(null);
+    const [totalCost, setTotalCost] = useState<number | null>(null);
+    const [showPopup, setShowPopup] = useState(false);
+    const [popupTitle, setPopupTitle] = useState('');
+    const [popupMessage, setPopupMessage] = useState('');
+    const [popupType, setPopupType] = useState<'error' | 'success'>('success');
+    const navigate = useNavigate();
 
     useEffect(() => {
         const loadUserDetails = async () => {
@@ -60,6 +72,35 @@ const BuyerDashboard: React.FC = () => {
         loadUpcomingChargingSessions();
     }, []);
 
+    useEffect(() => {
+        const handleCreditBalanceUpdate = async () => {
+            try {
+                const success = await updateUserCreditBalance(newCBalance);
+                if (success) {
+                    setPopupTitle('Success');
+                    setPopupMessage('Balance updated successfully!');
+                    setPopupType('success');
+                    setShowPopup(true);
+                } else {
+                    setPopupTitle('Error');
+                    setPopupMessage('Failed to update balance.');
+                    setPopupType('error');
+                    setShowPopup(true);
+                }
+            } catch (error) {
+                console.error('Error updating balance:', error);
+                setPopupTitle('Error');
+                setPopupMessage('An error occurred while updating the balance.');
+                setPopupType('error');
+                setShowPopup(true);
+            }
+        };
+
+        if (newCBalance !== 0) {
+            handleCreditBalanceUpdate();
+        }
+    }, [newCBalance]);
+
     const handleButtonClick = (buttonType: any) => {
         setSelectedButton(buttonType);
     };
@@ -69,6 +110,10 @@ const BuyerDashboard: React.FC = () => {
             setSessionTime(0);
         }
         setIsSessionStarted((prev) => !prev);
+    };
+
+    const handleViewHistory = () => {
+        navigate('/balances');
     };
 
     useEffect(() => {
@@ -125,7 +170,7 @@ const BuyerDashboard: React.FC = () => {
                                 let hours = date.getHours();
                                 const minutes = date.getMinutes().toString().padStart(2, '0');
                                 const ampm = hours >= 12 ? 'PM' : 'AM';
-                                hours = hours % 12 || 12; // Convert to 12-hour format, replacing 0 with 12
+                                hours = hours % 12 || 12;
 
                                 const formattedTime = `${hours}:${minutes}${ampm}`;
 
@@ -158,7 +203,7 @@ const BuyerDashboard: React.FC = () => {
                         </div>
                         <div className="manage-balance-buttons-container">
                             <button className="add-credit-button" type="button">Add credit</button>
-                            <button className="balance-history-button" type="button">View history</button>
+                            <button className="balance-history-button" type="button" onClick={handleViewHistory}>View history</button>
                         </div>
                     </div>
 
@@ -184,10 +229,11 @@ const BuyerDashboard: React.FC = () => {
                             <div className={`session-type-info-container ${selectedButton ? "expanded" : ""}`}>
                                 {selectedButton === "cardPayment" && (
                                     <div className="session-info-container">
-                                        <p className="quick-charge-item">Price per kWh: €</p>
-                                        <p className="quick-charge-item">Current Consumption: </p>
-                                        <p className="quick-charge-item">Session Time: {formatTime(sessionTime)}</p>
-                                        <p className="quick-charge-item">Price: €</p>
+                                        <p className="quick-charge-item">Status: {pricePerKwh !== null ? pricePerKwh.toFixed(2) : 'Waiting...'}</p>
+                                        <p className="quick-charge-item">Price per kWh: €{pricePerKwh !== null ? pricePerKwh.toFixed(2) : 'Loading...'}</p>
+                                        <p className="quick-charge-item">Current Consumption: {currentConsumption !== null ? `${currentConsumption.toFixed(2)} kWh` : 'Loading...'}</p>
+                                        <p className="quick-charge-item">Session Time: {sessionTime !== null ? formatTime(sessionTime) : 'Loading...'}</p>
+                                        <p className="quick-charge-item">Total Price: €{totalCost !== null ? totalCost.toFixed(2) : 'Loading...'}</p>
                                     </div>
                                 )}
                                 {selectedButton === "exchangePayment" && (
@@ -195,7 +241,7 @@ const BuyerDashboard: React.FC = () => {
                                         <p className="quick-charge-item">Points per kWh: </p>
                                         <p className="quick-charge-item">Current Consumption: </p>
                                         <p className="quick-charge-item">Session Time: {formatTime(sessionTime)}</p>
-                                        <p className="quick-charge-item">Points: </p>
+                                        <p className="quick-charge-item">Total Points: </p>
                                     </div>
                                 )}
 

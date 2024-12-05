@@ -58,7 +58,7 @@ const BuyerSidebar: React.FC = () => {
                                 Balance
                             </NavLink>
                         </li>
-                        <li className="sidebar-nav-item">
+                        {/*<li className="sidebar-nav-item">
                             <NavLink to="/invoices" className={({ isActive }) => (isActive ? 'active-link' : '')}>
                                 <ReceiptLongIcon />
                                 Invoices
@@ -69,7 +69,7 @@ const BuyerSidebar: React.FC = () => {
                                 <AssessmentIcon />
                                 Reports
                             </NavLink>
-                        </li>
+                        </li>*/}
                     </ul>
                 </nav>
             </div>
