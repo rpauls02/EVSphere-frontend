@@ -1,0 +1,16 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "docker": "^1.0.0",
+    "firebase": "^11.0.2",
+    "stripe": "^17.4.0"
+  }
+}
