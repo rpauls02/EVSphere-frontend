@@ -1,5 +1,6 @@
 import { auth, db } from '../firebaseConfig';
-import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { sendVerificationEmail } from './UserVerifyFunctions';
 import { doc, setDoc } from 'firebase/firestore';
 
 export const handleSignup = async (
@@ -54,6 +55,11 @@ export const handleSignup = async (
         };
         await setDoc(doc(db, 'balances'), userBalanceData);
 
+        // Send verification email
+        await sendVerificationEmail();
+
+        setPopup("Signup successful. Verification email sent.", "success");
+
         resetForm();
 
     } catch (error) {
@@ -62,4 +68,3 @@ export const handleSignup = async (
         setPopup(`Error: ${errorMessage}`, "error");
     }
 };
-

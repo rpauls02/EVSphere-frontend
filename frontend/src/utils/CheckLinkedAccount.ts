@@ -1,6 +1,6 @@
 import { getAuth, fetchSignInMethodsForEmail, GoogleAuthProvider } from 'firebase/auth';
 
-const checkIfGoogleLinked = async (): Promise<boolean> => {
+export const checkIfGoogleLinked = async (): Promise<boolean> => {
   const auth = getAuth();
   const user = auth.currentUser;
 
