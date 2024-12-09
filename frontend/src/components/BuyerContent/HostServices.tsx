@@ -110,6 +110,7 @@ const HostServices: React.FC = () => {
                 <div className="user-options-grid">
                     <div className="host-services-container">
                         <h2>Host your own services</h2>
+                        <small>If you'd like to host multiple charging points, register each one separately</small>
                         <div className="hr-div"></div>
                         <form className="host-services-form" onSubmit={handleAddChargerSubmission}>
 
@@ -144,7 +145,7 @@ const HostServices: React.FC = () => {
                             <div className="hr-div"></div>
 
                             <div className="host-services-form-item connector-count-input-container">
-                                <label htmlFor="connector-count">How many connectors on the charger?</label>
+                                <label htmlFor="connector-count">How many connectors on your charger?</label>
                                 <input
                                     id="connector-count"
                                     type="number"
