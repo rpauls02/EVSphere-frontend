@@ -4,15 +4,13 @@ import LoginForm from './components/BaseComponents/Login/Login';
 import SignupForm from './components/BaseComponents/Signup/Signup';
 import ResetPasswordForm from './components/BaseComponents/User/ResetPassword'
 import NotFound from './components/BaseComponents/NotFound';
-/*import Help from './components/BaseComponents/User/Help';*/
+import Help from './components/BaseComponents/User/Help';
 import Balance from './components/BuyerContent/Balance';
 import Messages from './components/BaseComponents/User/Messages';
 import Settings from './components/BaseComponents/User/Settings';
 import BuyerDashboard from './components/BuyerContent/BuyerDashboard';
 import Sessions from './components/BuyerContent/Sessions'
 import HostServices from './components/BuyerContent/HostServices';
-import Reports from './components/BuyerContent/Reports';
-import Invoices from './components/BuyerContent/Invoices';
 import SellerDashboard from './components/SellerContent/SellerDashboard';
 import Stations from './components/SellerContent/Stations';
 
@@ -31,7 +29,7 @@ const AppRoutes: React.FC = () => {
 
       {/*User pages routing */}
       <Route path="/messages" element={<Messages />} />
-      {/*<Route path="/help" element={<Help />} />*/}
+      <Route path="/help" element={<Help />} />
       <Route path="/settings" element={<Settings />} />
 
       {/*Buyer pages routing*/}
@@ -39,8 +37,6 @@ const AppRoutes: React.FC = () => {
       <Route path="/sessions" element={<Sessions />} />
       <Route path="/host-services" element={<HostServices />} />
       <Route path="/balances" element={<Balance />} />
-      <Route path="/reports" element={<Reports />} />
-      <Route path="/invoices" element={<Invoices />} />
 
       {/*Seller pages routing*/}
       <Route path="/seller-dashboard" element={<SellerDashboard />} />
