@@ -4,7 +4,9 @@ import BuyerSidebar from '../BuyerContent/BuyerSidebar';
 import { fetchUpcomingChargingSessions, fetchUserMessages, fetchUserBalance, fetchUserDetails } from "../../utils/UserFetchFunctions";
 import { updateUserCreditBalance } from '../../utils/UserActionsFunctions';
 import { startChargingSession } from '../../utils/OCPPFunctions';
+import { verifyEmail } from '../../utils/UserVerifyFunctions';
 import Popup from '../BaseComponents/Popup';
+import VerifyEmail from '../BaseComponents/User/VerifyEmail';
 import './BuyerDashboard.css';
 
 interface UserBalance {
@@ -25,6 +27,7 @@ const BuyerDashboard: React.FC = () => {
     const [pricePerKwh, setPricePerKwh] = useState<number | null>(null);
     const [currentConsumption, setCurrentConsumption] = useState<number | null>(null);
     const [totalCost, setTotalCost] = useState<number | null>(null);
+    const [showNotification, setShowNotification] = useState(false);
     const [showPopup, setShowPopup] = useState(false);
     const [popupTitle, setPopupTitle] = useState('');
     const [popupMessage, setPopupMessage] = useState('');
@@ -38,8 +41,16 @@ const BuyerDashboard: React.FC = () => {
                 setCurrentFname(details.firstName);
             }
         };
-
         loadUserDetails();
+    }, []);
+
+    useEffect(() => {
+        const checkEmailVerification = async () => {
+            if (await verifyEmail()) {
+                setShowNotification(true);
+            }
+        };
+        checkEmailVerification();
     }, []);
 
     useEffect(() => {
@@ -143,6 +154,9 @@ const BuyerDashboard: React.FC = () => {
                 <BuyerSidebar />
             </div>
             <div className="user-options-container">
+                <div className="verify-email-container">
+                    <VerifyEmail />
+                </div>
                 <h1>Welcome back, {currentFname}</h1>
                 <p>Use the sidebar to navigate through your options, or view a quick summary here</p>
                 <div className="hr-div"></div>

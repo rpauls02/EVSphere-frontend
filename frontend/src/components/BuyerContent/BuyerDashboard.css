@@ -12,6 +12,7 @@ button {
 .dashboard-page-container {
     display: flex;
     flex-direction: row;
+    height: 100vh;
 }
 
 .dashboard-page-container .sidebar-container {
@@ -35,6 +36,14 @@ button {
     align-items: center;
     gap: 20px;
     width: 100vw;
+}
+
+.dashboard-page-container .user-options-container .verify-email-container {
+    width: 100%; /* Set the width to 100% of the parent container */
+    top: 0;
+    position: relative;
+    text-align: center; /* Optional: center the text */
+    color: #721c24; /* Optional: text color */
 }
 
 .dashboard-page-container .user-options-container h1,
