@@ -20,15 +20,25 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
 });
 
-app.post('/create-payment-intent', async (req, res) => {
+// Get or create a PaymentIntent and return its client secret
+app.get('/checkout', async (req, res) => {
   try {
+    const amount = req.query.amount; // Retrieve amount from query parameters
+    if (!amount) {
+      return res.status(400).send({ error: 'Amount is required' });
+    }
+
+    // Create a new PaymentIntent
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: req.body.amount, // Amount in cents (e.g., $10.00 is 1000)
+      amount: parseInt(amount, 10), // Ensure the amount is in cents
       currency: 'usd',
+      automatic_payment_methods: {
+        enabled: true,
+      },
     });
-    res.send({
-      clientSecret: paymentIntent.client_secret,
-    });
+
+    // Respond with the client secret
+    res.send({ clientSecret: paymentIntent.client_secret });
   } catch (error) {
     res.status(500).send({ error: error.message });
   }

@@ -1,83 +1,82 @@
-import {useStripe, useElements, PaymentElement} from '@stripe/react-stripe-js';
-import {useState} from 'react';
+import { useStripe, useElements, PaymentElement } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+import { useEffect, useState } from 'react';
 
-export default function CheckoutForm() {
-  const stripe = useStripe();
-  const elements = useElements();
-  const [message, setMessage] = useState(null);
-  const [isProcessing, setIsProcessing] = useState(false);
+const stripePromise = loadStripe(process.env.STRIPE_PUBLISHABLE_KEY || "pk_test_51QSikuP5cm5w1aGd05kHYyoTblPDqmZ2BeTvuTCLentg8hPsFA6ED6hdCGJHTnD2eSHOg3E4qnfp2WqGDcfHrC1a007Zxt3Rzk");
 
-  const handleSubmit = async (event) => {
-    event.preventDefault(); // Prevent the default form submission
-    setIsProcessing(true);  // Disable the button to prevent multiple submissions
+function App() {
+    const [clientSecret, setClientSecret] = useState('');
 
-    // Ensure Stripe and Elements are loaded before proceeding
-    if (!stripe || !elements) {
-      setMessage('Stripe has not loaded yet.');
-      setIsProcessing(false);
-      return;
-    }
+    // Fetch the client secret when the component mounts
+    useEffect(() => {
+        fetch('/checkout?amount=1099') // Update the endpoint and amount as necessary
+            .then((res) => res.json())
+            .then((data) => setClientSecret(data.clientSecret))
+            .catch((error) => console.error('Error fetching client secret:', error));
+    }, []);
 
-    try {
-      // Confirm the payment with Stripe
-      const {error} = await stripe.confirmPayment({
-        elements,
-        confirmParams: {
-          // Redirect URL after successful payment
-          return_url: `${window.location.origin}/success`,
-        },
-      });
+    const options = {
+        clientSecret, // This will dynamically inject the secret
+        appearance: {/* optional appearance settings */ },
+    };
 
-      if (error) {
-        // Display error message if payment fails
-        setMessage(`Payment failed: ${error.message}`);
-      } else {
-        // Successful message (if you want to show it before redirect)
-        setMessage('Payment processing...');
-      }
-    } catch (err) {
-      setMessage('An unexpected error occurred. Please try again.');
-    }
-
-    setIsProcessing(false); // Re-enable the button after processing
-  };
-
-  return (
-    <div>
-      <h1>Checkout</h1>
-      <form id="payment-form" onSubmit={handleSubmit}>
-        {/* Stripe PaymentElement handles the UI */}
-        <PaymentElement />
-
-        {/* Submit Button */}
-        <button
-          disabled={isProcessing || !stripe || !elements}
-          style={{
-            marginTop: '20px',
-            padding: '10px 20px',
-            fontSize: '16px',
-            cursor: isProcessing ? 'not-allowed' : 'pointer',
-          }}
-        >
-          {isProcessing ? 'Processing...' : 'Pay Now'}
-        </button>
-
-        {/* Display payment message */}
-        {message && (
-          <div
-            id="payment-message"
-            style={{
-              marginTop: '20px',
-              padding: '10px',
-              border: '1px solid #ccc',
-              borderRadius: '5px',
-              backgroundColor: '#f9f9f9',
-            }}
-          >
-            {message}
-          </div>
-        )}
-      </form>
-    </div>
-  );
+    return (
+        <div>
+            {clientSecret ? (
+                <Elements stripe={stripePromise} options={options}>
+                    <CheckoutForm />
+                </Elements>
+            ) : (
+                <p>Loading...</p>
+            )}
+        </div>
+    );
 }
+
+const CheckoutForm = () => {
+    const stripe = useStripe();
+    const elements = useElements();
+    const [message, setMessage] = useState('');
+    const [isProcessing, setIsProcessing] = useState(false);
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        setIsProcessing(true);
+
+        if (!stripe || !elements) {
+            setMessage('Stripe has not loaded yet.');
+            setIsProcessing(false);
+            return;
+        }
+
+        const { error } = await stripe.confirmPayment({
+            elements,
+            confirmParams: {
+                return_url: `${window.location.origin}/success`, // Redirect after payment
+            },
+        });
+
+        if (error) {
+            setMessage(`Payment failed: ${error.message}`);
+        } else {
+            setMessage('Payment succeeded!');
+        }
+
+        setIsProcessing(false);
+    };
+
+    return (
+        <form id="payment-form" onSubmit={handleSubmit}>
+            <PaymentElement />
+            <button disabled={isProcessing}>
+                {isProcessing ? 'Processing...' : 'Pay Now'}
+            </button>
+            {message && <div id="payment-message">{message}</div>}
+        </form>
+    );
+};
+
+// Render the App Component
+ReactDOM.render(<App />, document.getElementById('root'));
+
+export default CheckoutForm;
