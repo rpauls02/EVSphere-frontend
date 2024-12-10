@@ -14,6 +14,7 @@ import Reports from './components/BuyerContent/Reports';
 import Invoices from './components/BuyerContent/Invoices';
 import SellerDashboard from './components/SellerContent/SellerDashboard';
 import Stations from './components/SellerContent/Stations';
+import CheckoutForm from './StripePages/CheckoutForm';
 
 
 const AppRoutes: React.FC = () => {
@@ -21,7 +22,6 @@ const AppRoutes: React.FC = () => {
     <Routes>
       {/*Entry page*/}
       <Route path="/" element={<LoginForm />} />
-
       {/*Base pages routing*/}
       <Route path="/login" element={<LoginForm />} />
       <Route path="/signup" element={<SignupForm />} />
@@ -39,6 +39,7 @@ const AppRoutes: React.FC = () => {
       <Route path="/host-services" element={<HostServices />} />
       <Route path="/reports" element={<Reports />} />
       <Route path="/invoices" element={<Invoices />} />
+      <Route path="/checkout" element={<CheckoutForm />} />
 
       {/*Seller pages routing*/}
       <Route path="/seller-dashboard" element={<SellerDashboard />} />
