@@ -1,3 +1,6 @@
 
 
 GET http://localhost:3002/stripe
+
+
+GET http://localhost:3002/stripe
