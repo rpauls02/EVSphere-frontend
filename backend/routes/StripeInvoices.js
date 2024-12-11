@@ -1,9 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const app = express();
-
-app.use(express.json()); // For parsing JSON bodies
 
 // Get all invoices
 router.get('/', async(req, res) => {

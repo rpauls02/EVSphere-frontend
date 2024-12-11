@@ -1,9 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const app = express();
 
-app.use(express.json()); // For parsing JSON bodies
 
 // Get all PaymentIntents
 router.get('/', async (req, res) => {
@@ -43,7 +41,7 @@ router.post('/', async (req, res) => {
         console.error('Error creating PaymentIntent:', error);
         res.status(500).send({ error: error.message });
     }
-
+});
     // Update a PaymentIntent
     router.put('/:id', async (req, res) => {
         try {
@@ -69,4 +67,6 @@ router.post('/', async (req, res) => {
             res.status(500).send({ error: error.message });
         }
     });
-});
+
+    
+module.exports = router;

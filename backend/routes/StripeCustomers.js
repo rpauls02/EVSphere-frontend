@@ -1,9 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const app = express();
-
-app.use(express.json()); // For parsing JSON bodies
 
 // Get all customers
 router.get('/', async (req, res) => {
@@ -41,7 +38,7 @@ router.put('/:id', async (req, res) => {
     } catch (error) {
         res.status(500).send({ error: error.message });
     }
-
+});
     // Delete a customer
     router.delete('/:id', async (req, res) => {
         try {
@@ -71,5 +68,4 @@ router.put('/:id', async (req, res) => {
         }
     });
 
-});
 module.exports = router;
