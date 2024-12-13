@@ -1,6 +1,5 @@
 require('dotenv').config(); // Load .env variables into process.env
 const express = require('express');
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const path = require('path');
 const app = express();
 const port = 3002;
@@ -10,10 +9,14 @@ app.use(express.json()); // For parsing JSON bodies
 const invoiceRoutes = require('./routes/StripeInvoices');
 const customerRoutes = require('./routes/StripeCustomers');
 const paymentIntentRoutes = require('./routes/StripePaymentIntent');
+const stripeCheckoutSessionRoutes = require('./routes/StripeCheckoutSession');
+const priceRoutes = require('./routes/StripePrices');
 
 app.use('/StripeInvoices', invoiceRoutes); 
 app.use('/StripeCustomers', customerRoutes);
 app.use('/StripePaymentIntent', paymentIntentRoutes);
+app.use('/StripeCheckoutSession', stripeCheckoutSessionRoutes);
+app.use('/StripePrices', priceRoutes);
 
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname, '../frontend/build')));

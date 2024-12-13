@@ -1,1 +1,12 @@
-GET http://localhost:3002/StripeCustomers
+
+POST http://localhost:3002/StripePaymentIntent
+Content-Type: application/json
+
+{
+    "customer": "cus_RNMkdIEQTKBlNC", 
+    "amount": 5000,                     
+    "currency": "usd"                 
+}
+
+
+# CUSTOMER ID: cus_RNMkdIEQTKBlNC

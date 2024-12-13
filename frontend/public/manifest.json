@@ -1,0 +1,15 @@
+{
+  "short_name": "SEC",
+  "name": "SolarElectricClub",
+  "icons": [
+    {
+      "src": "logo",
+      "sizes": "1261x301",
+      "type": "image/png"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#16b9cc",
+  "background_color": "#f0f4f8"
+}

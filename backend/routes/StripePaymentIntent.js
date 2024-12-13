@@ -1,6 +1,8 @@
+require('dotenv').config(); // Load .env variables into process.env
 const express = require('express');
 const router = express.Router();
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+// const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY || "sk_test_51QSikuP5cm5w1aGdLgvApcaCT3T7ox0FievRjyAJCi5TjgnZwH9PRpnc71KYRriFtD4f5vctNmGCs0ahqpiNdxAD001BLiJ02A");
 
 
 // Get all PaymentIntents
@@ -29,6 +31,7 @@ router.get('/:id', async (req, res) => {
 
 // Create a PaymentIntent
 router.post('/', async (req, res) => {
+    console.log('Creating PaymentIntent');
     try {
         const { customer, amount, currency } = req.body; // Extract fields from the request body
 
@@ -37,6 +40,7 @@ router.post('/', async (req, res) => {
             currency,
             customer,
         });
+        res.status(200).send(paymentIntent);
     } catch (e) {
         console.error('Error creating PaymentIntent:', error);
         res.status(500).send({ error: error.message });
