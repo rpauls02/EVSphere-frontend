@@ -14,7 +14,9 @@ import Reports from './components/BuyerContent/Reports';
 import Invoices from './components/BuyerContent/Invoices';
 import SellerDashboard from './components/SellerContent/SellerDashboard';
 import Stations from './components/SellerContent/Stations';
-import CheckoutForm from './StripePages/CheckoutForm';
+import GetAllCustomers from './StripePages/getAllCustomers';
+import AddCustomerForm from './StripePages/createCustomer';
+import GetCustomerById from './StripePages/getCustomerByID';
 
 
 const AppRoutes: React.FC = () => {
@@ -39,11 +41,15 @@ const AppRoutes: React.FC = () => {
       <Route path="/host-services" element={<HostServices />} />
       <Route path="/reports" element={<Reports />} />
       <Route path="/invoices" element={<Invoices />} />
-      <Route path="/checkout" element={<CheckoutForm />} />
 
       {/*Seller pages routing*/}
       <Route path="/seller-dashboard" element={<SellerDashboard />} />
       <Route path="/stations" element={<Stations />} />
+
+      {/*Stripe pages routing*/}
+      <Route path="/get-customers" element={<GetAllCustomers />} />
+      <Route path ="/add-customer" element={<AddCustomerForm />} />
+      <Route path="/get-customer/:id" element={<GetCustomerById />} />
     </Routes>
   );
 }

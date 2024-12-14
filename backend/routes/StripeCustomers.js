@@ -1,8 +1,8 @@
 require('dotenv').config(); // Load .env variables into process.env
 const express = require('express');
 const router = express.Router();
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-// const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY || "sk_test_51QSikuP5cm5w1aGdLgvApcaCT3T7ox0FievRjyAJCi5TjgnZwH9PRpnc71KYRriFtD4f5vctNmGCs0ahqpiNdxAD001BLiJ02A");
+// const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY || "sk_test_51QSikuP5cm5w1aGdLgvApcaCT3T7ox0FievRjyAJCi5TjgnZwH9PRpnc71KYRriFtD4f5vctNmGCs0ahqpiNdxAD001BLiJ02A");
 
 // Get all customers
 router.get('/', async (req, res) => {
@@ -10,12 +10,18 @@ router.get('/', async (req, res) => {
         const customers = await stripe.customers.list({
             limit: 10, // Adjust the limit as needed
         });
-        res.status(200).send(customers);
+
+        // Set the Cache-Control header to disable caching
+        res.set('Cache-Control', 'no-store');
+        
+        // Send the customers data
+        res.status(200).json(customers);
     } catch (error) {
         console.error('Error fetching customers:', error);
         res.status(500).send({ error: error.message });
     }
 });
+
 
 // Get a specific customer
 router.get('/:id', async (req, res) => {
@@ -45,7 +51,6 @@ router.put('/:id', async (req, res) => {
     router.delete('/:id', async (req, res) => {
         try {
             const { id } = req.params; // Extract the ID from the request parameters
-
             const deletedCustomer = await stripe.customers.del(id);
             res.status(200).send(deletedCustomer);
         } catch (error) {
@@ -54,7 +59,7 @@ router.put('/:id', async (req, res) => {
     });
 
     // Create a new customer
-    router.post('/', async (req, res) => {
+    router.post('/createCustomer', async (req, res) => {
         try {
             const { name, email } = req.body; // Extract fields from the request body
 
