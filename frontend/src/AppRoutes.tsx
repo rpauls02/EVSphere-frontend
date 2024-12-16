@@ -17,6 +17,11 @@ import Stations from './components/SellerContent/Stations';
 import GetAllCustomers from './StripePages/getAllCustomers';
 import AddCustomerForm from './StripePages/createCustomer';
 import GetCustomerById from './StripePages/getCustomerByID';
+import PaymentPage from './StripePages/checkoutForm';
+import CancelPage from './StripePages/cancel';
+import SuccessPage from './StripePages/success';
+import CheckoutButton from './StripePages/checkoutForm';
+import CheckoutPage from './StripePages/checkoutForm';
 
 
 const AppRoutes: React.FC = () => {
@@ -50,6 +55,9 @@ const AppRoutes: React.FC = () => {
       <Route path="/get-customers" element={<GetAllCustomers />} />
       <Route path ="/add-customer" element={<AddCustomerForm />} />
       <Route path="/get-customer/:id" element={<GetCustomerById />} />
+      <Route path='/checkout' element={<CheckoutPage />} />
+      <Route path='/cancel' element={<CancelPage />} />
+      <Route path='/success' element={<SuccessPage />} />
     </Routes>
   );
 }

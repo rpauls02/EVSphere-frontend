@@ -11,12 +11,14 @@ const customerRoutes = require('./routes/StripeCustomers');
 const paymentIntentRoutes = require('./routes/StripePaymentIntent');
 const stripeCheckoutSessionRoutes = require('./routes/StripeCheckoutSession');
 const priceRoutes = require('./routes/StripePrices');
+const productRoutes = require('./routes/StripeProduct');
 
 app.use('/StripeInvoices', invoiceRoutes); 
 app.use('/StripeCustomers', customerRoutes);
 app.use('/StripePaymentIntent', paymentIntentRoutes);
 app.use('/StripeCheckoutSession', stripeCheckoutSessionRoutes);
 app.use('/StripePrices', priceRoutes);
+app.use('/StripeProduct', productRoutes);
 
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname, '../frontend/build')));

@@ -1,12 +1,33 @@
 
-POST http://localhost:3002/StripePaymentIntent
+# POST http://localhost:3002/StripeProduct/create-product
+# Content-Type: application/json
+
+# {
+#     "name": "Product 1",
+#     "description": "Product 1 description"
+# }
+
+
+
+# POST http://localhost:3002/StripePrices/create-price
+# Content-Type: application/json
+
+# {
+#     "unit_amount": 1000,
+#     "currency": "usd",
+#     "product": "prod_RPE0HIJbw5bnub"
+# }
+
+POST http://localhost:3002/StripeCheckoutSession/create-checkout-session
 Content-Type: application/json
 
 {
-    "customer": "cus_RNMkdIEQTKBlNC", 
-    "amount": 5000,                     
-    "currency": "usd"                 
+    "customer": "cus_RNMkdIEQTKBlNC",
+    "line_items": [{
+    "price": "price_1QWPZ8P5cm5w1aGdcGS9yclj",
+    "quantity": 1
+    }],
+    "mode": "payment"
 }
-
 
 # CUSTOMER ID: cus_RNMkdIEQTKBlNC

@@ -29,27 +29,24 @@ router.get('/:id', async (req, res) => {
 });
 
 // Create a CheckoutSession
-router.post('/', async (req, res) => {
+router.post('/create-checkout-session', async (req, res) => {
     try {
-        const { customer, line_items, mode } = req.body; // Extract fields from the request body
+        const { line_items, mode } = req.body; // Extract fields from the request body
 
         if (!line_items || line_items.length === 0) {
             return res.status(400).send({ error: 'line_items is required and cannot be empty.' });
         }
 
-        if (!mode || (mode !== 'payment' && mode !== 'subscription')) {
-            return res.status(400).send({ error: 'Valid mode ("payment" or "subscription") is required.' });
-        }
-
         const checkoutSession = await stripe.checkout.sessions.create({
-            customer,
+            customer: "cus_RNMkdIEQTKBlNC",
             line_items, // Use line_items from the body dynamically
-            mode, // "payment" for one-time or "subscription" for recurring
+            mode,
             success_url: "http://localhost:3002/success", // Replace with the success page URL
             cancel_url: "http://localhost:3002/cancel", // Replace with the cancel page URL
         });
-
-        res.status(200).send(checkoutSession);
+        console.log('CheckoutSession created with the properties:', req.body);
+        console.log('URL to redirect to Checkout:', checkoutSession.url);
+        res.status(200).send({ url: checkoutSession.url });
     } catch (error) {
         console.error('Error creating CheckoutSession:', error);
         res.status(500).send({ error: error.message });

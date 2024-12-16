@@ -68,15 +68,31 @@ const calculateDynamicPricing = (kWhUsed, location, isPeakTime) => {
     return kWhUsed * baseRate * locationMultiplier;
 };
 
-// REST function for calculating the dynamic price
-router.post('/calculate-price', async (req, res) => {
-    const { kWhUsed, location, isPeakTime } = req.body;
+// REST function for creating the price
+router.post('/create-price', async (req, res) => {
+    const { currency, product, unit_amount } = req.body;
+
+    // Validate that necessary fields are provided
+    if (!currency || !product || !unit_amount) {
+        return res.status(400).send({ error: 'Currency, product ID, and unit_amount are required.' });
+    }
+
     try {
-        const price = calculateDynamicPricing(kWhUsed, location, isPeakTime);
-        res.status(200).send({ price });
+        // Create a new price for the product
+        const price = await stripe.prices.create({
+            unit_amount, // Amount in cents
+            currency,    // e.g., "usd"
+            product,     // The existing product ID
+        });
+
+        // Respond with the created price
+        res.status(200).send(price);
     } catch (error) {
-        res.status(500).send({ error: 'Error calculating price' });
+        // Handle errors and respond with a 500 status code
+        console.error('Error creating price:', error);
+        res.status(500).send({ error: 'Could not create price' });
     }
 });
+
 
 module.exports = router;

@@ -30,19 +30,18 @@ router.get('/:id', async (req, res) => {
 });
 
 // Create a PaymentIntent
-router.post('/', async (req, res) => {
+router.post('/createPayment', async (req, res) => {
     console.log('Creating PaymentIntent');
     try {
         const { customer, amount, currency } = req.body; // Extract fields from the request body
 
         const paymentIntent = await stripe.paymentIntents.create({
-            amount,
-            currency,
             customer,
-            payment_method,
-            payment_method_types
+            currency,
+            amount
         });
-        res.status(200).send(paymentIntent);
+        res.json({ clientSecret: paymentIntent.client_secret });
+        // res.status(200).send(paymentIntent);
     } catch (e) {
         console.error('Error creating PaymentIntent:', error);
         res.status(500).send({ error: error.message });
