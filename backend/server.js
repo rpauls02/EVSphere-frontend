@@ -2,7 +2,10 @@ require('dotenv').config(); // Load .env variables into process.env
 const express = require('express');
 const path = require('path');
 const app = express();
-const port = 3002;
+
+const PORT = process.env.PORT || 3002; // Fallback to 3002 for local testing
+
+
 
 app.use(express.json()); // For parsing JSON bodies
 
@@ -19,15 +22,19 @@ app.use('/StripePaymentIntent', paymentIntentRoutes);
 app.use('/StripeCheckoutSession', stripeCheckoutSessionRoutes);
 app.use('/StripePrices', priceRoutes);
 app.use('/StripeProduct', productRoutes);
+const isProduction = process.env.NODE_ENV === 'production';
 
-// Serve static files from the React app
-app.use(express.static(path.join(__dirname, '../frontend/build')));
+// Serve static files from 'public' folder in production
+const buildPath = isProduction
+  ? path.join(__dirname, 'public')  // When in Docker (production), serve from 'public'
+  : path.join(__dirname, '..', 'frontend', 'build'); // During local development, serve from frontend/build
+app.use(express.static(buildPath));
 
-// Catch-all route to serve the React app for unknown routes
+// Catch-all route to serve the frontend's index.html
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
+    res.sendFile(path.join(buildPath, 'index.html'));
 });
 
-app.listen(port, () => {
-  console.log(`App listening on port ${port}`);
+app.listen(PORT, () => {
+  console.log(`App listening on port ${PORT}`);
 });
