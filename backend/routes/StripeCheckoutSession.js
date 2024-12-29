@@ -53,17 +53,6 @@ router.post('/create-checkout-session', async (req, res) => {
     }
 });
 
-// Retrieve a CheckoutSession's line items
-router.get('/:id/line_items', async (req, res) => {
-    try {
-        const { id } = req.params; // Extract the ID from the request parameters
-        const lineItems = await stripe.checkout.sessions.listLineItems(id);
-        res.status(200).send(lineItems);
-    } catch (error) {
-        res.status(500).send({ error: error.message });
-    }
-});
-
 // Update a CheckoutSession
 router.put('/:id', async (req, res) => {
     try {

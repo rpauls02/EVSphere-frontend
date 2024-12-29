@@ -10,6 +10,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@react-google-maps/api": "^2.20.5",
     "@stripe/react-stripe-js": "^3.0.0",
     "@stripe/stripe-js": "^5.2.0",
     "docker": "^1.0.0",
@@ -17,6 +18,7 @@
     "express": "^4.21.2",
     "firebase": "^11.0.2",
     "nodemon": "^3.1.7",
-    "stripe": "^17.4.0"
+    "stripe": "^17.4.0",
+    "ws": "^8.18.0"
   }
 }

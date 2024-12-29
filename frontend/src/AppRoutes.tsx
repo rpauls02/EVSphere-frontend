@@ -22,6 +22,8 @@ import CancelPage from './StripePages/cancel';
 import SuccessPage from './StripePages/success';
 import CheckoutButton from './StripePages/checkoutForm';
 import CheckoutPage from './StripePages/checkoutForm';
+import ChargingStationList from './OCPP/chargingStationList';
+import ActiveChargingSession from './OCPP/ActiveChargingStation';
 
 
 const AppRoutes: React.FC = () => {
@@ -58,6 +60,10 @@ const AppRoutes: React.FC = () => {
       <Route path='/checkout' element={<CheckoutPage />} />
       <Route path='/cancel' element={<CancelPage />} />
       <Route path='/success' element={<SuccessPage />} />
+
+      {/*OCPP pages routing*/}
+      <Route path="/charging-stations" element={<ChargingStationList />} />
+      <Route path="/active-charging-stations" element={<ActiveChargingSession />} />
     </Routes>
   );
 }
