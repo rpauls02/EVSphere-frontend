@@ -1,41 +1,77 @@
 import React, { useState, useEffect } from 'react';
-import { fetchUpcomingChargingSessions, fetchRecentChargingSessions, fetchUserBalance, } from "../../utils/UserFetchFunctions";
+import { fetchUpcomingChargingSessions, fetchPastChargingSessions } from "../../utils/UserFetchFunctions";
+import { addChargingSession, cancelChargingSession } from '../../utils/UserActionsFunctions';
 import BuyerSidebar from '../BuyerContent/BuyerSidebar';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import './Sessions.css';
 
-interface UserBalance {
-    pointsBalance: number;
-    creditsBalance: number;
-}
-
 const Sessions: React.FC = () => {
-    const [selectedButton, setSelectedButton] = useState(null);
-    const [currentPBalance, setCurrentPBalance] = useState<number>(0);
-    const [currentCBalance, setCurrentCBalance] = useState<number>(0);
-    const [recentChargingSessions, setRecentChargingSessions] = useState<any[]>([]);
+    const [pastChargingSessions, setPastChargingSessions] = useState<any[]>([]);
     const [upcomingChargingSessions, setUpcomingChargingSessions] = useState<any[]>([]);
-    const [selectedSession, setSelectedSession] = useState<any | null>(null);
+    const [isSessionStarted, setIsSessionStarted] = useState(false)
+    const [sessionTimer, setSessionTimer] = useState(0);
+    const [expandedSessionIDs, setExpandedSessionIDs] = useState<Set<string>>(new Set());
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [popupVisible, setPopupVisible] = React.useState(false);
+    const [popupMessage, setPopupMessage] = React.useState({ title: '', message: '', type: 'error' });
 
-    useEffect(() => {
-        const loadUserBalance = async () => {
-            const balance: UserBalance | null = await fetchUserBalance();
-            if (balance) {
-                setCurrentPBalance(balance.pointsBalance);
-                setCurrentCBalance(balance.creditsBalance);
+
+    const handleAddSession = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        setIsSubmitting(true);
+
+        const formData = new FormData(event.currentTarget);
+        const sessionDate = formData.get('session-date') as string;
+        const sessionTime = formData.get('session-time') as string;
+
+        try {
+            const response = await addChargingSession(sessionDate, sessionTime);
+            if (response) {
+                setPopupMessage({ title: 'Success', message: response.message, type: 'success' });
+                setPopupVisible(true);
+            } else {
+                throw new Error('Unexpected error: No response received.');
             }
-        };
+        } catch (error) {
+            setPopupMessage({ title: 'Error', message: (error as Error).message, type: 'error' });
+            setPopupVisible(true);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
 
-        loadUserBalance();
-    }, []);
+    const handleCancelSession = async (sessionId: string) => {
+        try {
+            const session = upcomingChargingSessions.find(session => session.id === sessionId);
+            if (session) {
+                const { formattedDate, formattedTime } = formatDateAndTime(session.bookedAt);
+                await cancelChargingSession(formattedDate, formattedTime);
+                setUpcomingChargingSessions(upcomingChargingSessions.filter(session => session.id !== sessionId));
+                alert('Session cancelled successfully.');
+            } else {
+                alert('Session not found.');
+            }
+        } catch (error) {
+            alert((error as Error).message);
+        }
+    };
 
-    useEffect(() => {
-        const loadRecentChargingSessions = async () => {
-            const sessions = await fetchRecentChargingSessions();
-            setRecentChargingSessions(sessions);
-        };
+    const handleRescheduleSession = async (sessionId: string) => {};
 
-        loadRecentChargingSessions();
-    }, []);
+    const formatDateAndTime = (bookedAt: any) => {
+        const date = bookedAt.toDate();
+        const formattedDate = `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`;
+
+        let hours = date.getHours();
+        const minutes = date.getMinutes().toString().padStart(2, '0');
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12 || 12;
+
+        const formattedTime = `${hours}:${minutes}${ampm}`;
+
+        return { formattedDate, formattedTime };
+    };
 
     useEffect(() => {
         const loadUpcomingChargingSessions = async () => {
@@ -46,70 +82,57 @@ const Sessions: React.FC = () => {
         loadUpcomingChargingSessions();
     }, []);
 
-    const handleButtonClick = (buttonType: any) => {
-        setSelectedButton(buttonType);
+
+
+    const toggleSession = (sessionID: string) => {
+        setExpandedSessionIDs((prevExpanded) => {
+            const newExpanded = new Set(prevExpanded);
+            if (newExpanded.has(sessionID)) {
+                newExpanded.delete(sessionID);
+            } else {
+                newExpanded.add(sessionID);
+            }
+            return newExpanded;
+        });
     };
 
-    const handleSessionSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        const sessionId = event.target.value;
-        const selectedSessionData = recentChargingSessions.find((session) => session.id === sessionId);
-        setSelectedSession(selectedSessionData || null);
+    useEffect(() => {
+        const loadPastChargingSessions = async () => {
+            const sessions = await fetchPastChargingSessions();
+            setPastChargingSessions(sessions);
+        };
+
+        loadPastChargingSessions();
+    }, []);
+
+    const handleViewInvoice = (sessionId: any) => {
+        console.log(`Viewing invoice for session ID: ${sessionId}`);
     };
+
+    const handleViewReport = (sessionId: any) => {
+        console.log(`Viewing report for session ID: ${sessionId}`);
+    };
+
 
     return (
         <div className="sessions-page-container">
             <div className="sidebar-container">
                 <BuyerSidebar />
             </div>
+
+
             <div className="user-options-container">
                 <h1>Sessions</h1>
                 <p>Book a charging session, or view your previous sessions</p>
                 <div className="hr-div"></div>
+
                 <div className="user-options-grid">
-
-                    <div className="account-balance-container">
-                        <h2>Your balance</h2>
-                        <div className="hr-div"></div>
-                        <div className="balance-pairs-container">
-                            <div className="balance-pair-container">
-                                <p>Credit:</p>
-                                <label>€{currentCBalance}</label>
-                            </div>
-
-                            <div className="balance-pair-container">
-                                <p>Points:</p>
-                                <label>{currentPBalance}</label>
-                            </div>
-
-                            <div className="manage-balance-buttons">
-                                <button className="add-credit-button" type="button">Add credit</button>
-                                <button className="balance-history-button" type="button">View history</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="upcoming-sessions-container">
-                        <h2>Upcoming Sessions</h2>
-                        <div className="hr-div"></div>
-                        <ul>
-                            {upcomingChargingSessions.map((session, index) => {
-                                const date = session.bookedAt.toDate();
-                                const formattedDate = `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`;
-                                return (
-                                    <li key={index} className="session-item">
-                                        {formattedDate} | {session.duration} minutes | {session.energyConsumed} kWh
-                                    </li>
-                                );
-                            })}
-                        </ul>
-                    </div>
-
                     <div className="book-session-container">
                         <h2>Book Charging Session</h2>
                         <div className="hr-div"></div>
-                        <form className="booking-form">
-                            <div className="form-group">
-                                <label htmlFor="session-date">Date</label>
+                        <form className="book-session-form" onSubmit={handleAddSession}>
+                            <div className="form-item">
+                                <label htmlFor="session-date">Date:</label>
                                 <input
                                     type="date"
                                     id="session-date"
@@ -118,8 +141,8 @@ const Sessions: React.FC = () => {
                                 />
                             </div>
 
-                            <div className="form-group">
-                                <label htmlFor="session-time">Time</label>
+                            <div className="form-item">
+                                <label htmlFor="session-time">Time:</label>
                                 <input
                                     type="time"
                                     id="session-time"
@@ -131,84 +154,91 @@ const Sessions: React.FC = () => {
                             <button type="submit" className="submit-button">Book Session</button>
                         </form>
                     </div>
+                </div>
 
-                    <div className="quick-session-container">
-                        <h2>Start a charging session now</h2>
+                <div className="hr-div"></div>
+
+                <div className="user-options-grid">
+                    <div className="upcoming-sessions-container">
+                        <h2>Upcoming Sessions</h2>
                         <div className="hr-div"></div>
-                        <div className="create-session-container">
-                            <div className="choose-session-type-container">
-                                <button
-                                    className="session-payment-type-button"
-                                    type="button"
-                                    onClick={() => handleButtonClick('cardPayment')}
-                                >
-                                    Card Payment
-                                </button>
-                                <button
-                                    className="session-payment-type-button"
-                                    type="button"
-                                    onClick={() => handleButtonClick('exchangePayment')}
-                                >
-                                    Exchange Payment
-                                </button>
-                            </div>
+                        <div className="view-upcoming-sessions-container">
+                            {upcomingChargingSessions.map((session, index) => {
+                                const { formattedDate, formattedTime } = formatDateAndTime(session.bookedAt);
 
-                            <div className={`session-type-info-container ${selectedButton ? 'expanded' : ''}`}>
-                                {selectedButton === 'cardPayment' && (
-                                    <div>
-                                        <h3>Card Payment</h3>
-                                        <p>Price per kWh: </p><label></label>
-                                        <p>Current Consumption: </p><label></label>
-                                        <p>Session Time: </p><label></label>
-                                        <p>Price: </p><label></label>
+                                return (
+                                    <div key={index} className="session-wrapper">
+                                        <div className="session-tab-container">
+                                            <div
+                                                className="session-header-container"
+                                                onClick={() => toggleSession(session.id)}
+                                            >
+                                                <h3><strong>{formattedDate} @ {formattedTime}</strong></h3>
+                                            </div>
+                                            <div className="session-actions-buttons-container">
+                                                <button
+                                                    className="cancel-session-button"
+                                                    onClick={() => handleCancelSession(session.id)}
+                                                >
+                                                    Cancel
+                                                </button>
+                                                <button
+                                                    className="reschedule-session-button"
+                                                    onClick={() => handleRescheduleSession(session.id)}
+                                                >
+                                                    Reschedule
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div className="hr-div"></div>
                                     </div>
-                                )}
-                                {selectedButton === 'exchangePayment' && (
-                                    <div>
-                                        <h3>Exchange Payment</h3>
-                                        <p>Points per kWh: </p><label></label>
-                                        <p>Current Consumption: </p><label></label>
-                                        <p>Session Time: </p><label></label>
-                                        <p>Points: </p><label></label>
-                                    </div>
-                                )}
-
-                                <div className="manage-session-buttons">
-                                    <button className="start-session-button">Start Session</button>
-                                    <button className="end-session-button">End Session</button>
-                                </div>
-                            </div>
+                                );
+                            })}
                         </div>
                     </div>
+                </div>
 
+                <div className="hr-div"></div>
+
+                <div className="user-options-grid">
                     <div className="past-sessions-container">
                         <h2>Past Sessions</h2>
                         <div className="hr-div"></div>
-                        <div className="previous-sessions-container">
-                            <select
-                                className="previous-session-select"
-                                onChange={handleSessionSelect}
-                            >
-                                <option value="">Select a session</option>
-                                {recentChargingSessions.map((session) => (
-                                    <option key={session.id} value={session.id}>
-                                        {`${session.date} ${session.time}`}
-                                    </option>
-                                ))}
-                            </select>
-                            <div className="previous-session-info-container">
-                                {selectedSession ? (
-                                    <div>
-                                        <p><strong>Session Date:</strong> {selectedSession.date}</p>
-                                        <p><strong>Session Time:</strong> {selectedSession.time}</p>
-                                        <p><strong>Energy Consumed:</strong> {selectedSession.energy_consumed} kWh</p>
-                                        <p><strong>Duration:</strong> {selectedSession.duration} minutes</p>
-                                        <p><strong>Total:</strong> {selectedSession.total}</p>
+                        <div className="view-past-sessions-container">
+                            {pastChargingSessions.map((session, index) => {
+                                const { formattedDate, formattedTime } = formatDateAndTime(session.bookedAt);
+
+                                return (
+                                    <div key={session.id} className="session-wrapper">
+                                        <div className="session-tab-container">
+                                            <div
+                                                className="session-header-container"
+                                                onClick={() => toggleSession(session.id)}
+                                            >
+                                                <h3><strong>{formattedDate} @ {formattedTime}</strong></h3>
+                                                <button className="toggle-session-button-container">
+                                                    {expandedSessionIDs.has(session.id) ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                                                </button>
+                                            </div>
+
+                                            {expandedSessionIDs.has(session.id) && (
+                                                <div className="session-details-container">
+                                                    <p><strong>Session Date:</strong> {formattedDate}</p>
+                                                    <p><strong>Session Time:</strong> {formattedTime}</p>
+                                                    <p><strong>Energy Consumed:</strong> {session.energy_consumed} kWh</p>
+                                                    <p><strong>Duration:</strong> {session.duration} minutes</p>
+                                                    <p><strong>Total:</strong> {session.total}</p>
+                                                    <div className="session-actions-buttons-container">
+                                                        <button onClick={() => handleViewInvoice(session.id)}>View Invoice</button>
+                                                        <button onClick={() => handleViewReport(session.id)}>View Report</button>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                        <div className="hr-div"></div>
                                     </div>
-                                ) : (
-                                    <p>Select a session to view details</p>
-                                )}
-                            </div>
+                                );
+                            })}
                         </div>
                     </div>
                 </div>

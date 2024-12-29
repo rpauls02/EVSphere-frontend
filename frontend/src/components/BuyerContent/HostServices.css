@@ -1,5 +1,6 @@
-button {
-    all: unset;
+button,
+label,
+select{
     display: inline-block;
     background: none;
     border: none;
@@ -9,8 +10,9 @@ button {
     cursor: pointer;
 }
 
+/* Page styling */
+
 .host-services-page-container {
-    width: 100vw;
     height: 100vh;
     display: flex;
     flex-direction: row;
@@ -54,9 +56,17 @@ button {
     height: 1px;
 }
 
+.host-services-page-container .user-options-container .user-options-hr-div {
+    border: none;
+    width: 70%;
+    background-color: #d6d6d6;
+    margin: 20px;
+    height: 1px;
+}
+
 .host-services-page-container .user-options-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(1, 1fr);
     grid-gap: 20px;
     align-items: start;
 }
@@ -75,10 +85,123 @@ button {
 }
 
 .host-services-page-container .host-services-container,
-.host-services-page-container .current-host-services-container{
+.host-services-page-container .current-hosted-chargers-container{
     border: 1px solid #16b9cc;
     border-radius: 12px;
     padding: 20px 20px;
     box-sizing: border-box;
+    width: 800px;
+}
+
+/* Form styling */
+.host-services-page-container .host-services-form{
+    display: flex;
+    flex-direction: column;
+}
+
+.host-services-page-container .host-services-form .host-services-form-item{
+    display: flex;
+    margin-bottom: 10px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.host-services-page-container .host-services-form .host-services-form-item input,
+.host-services-page-container .host-services-form .host-services-form-item select{
+    background-color: white;
+    border: 1px solid #16b9cc;
+    padding: 8px;
+    border-radius: 4px;
     width: auto;
+    font-size: 16px;
+    justify-content: flex-end;
+}
+
+.host-services-page-container .host-services-form button{
+    background-color: white;
+    border: 1px solid #16b9cc;
+    padding: 8px;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-size: 20px;
+    text-align: center;
+    width: auto;
+    justify-content: center;
+    align-items: center;
+}
+
+.host-services-form-item label {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: bold;
+}
+
+.host-services-form-item small {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    color: rgb(102, 102, 102);
+}
+
+.charger-type-input-container label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.charger-type-input-container small {
+    display: block;
+    color: #666;
+}
+
+
+/* Hosted chargers styling */
+.current-hosted-chargers-container .charger-wrapper {
+    height: auto;
+    width: 690px;
+    grid-column: span 2;
+}
+
+.current-hosted-chargers-container .charger-wrapper .charger-tab-container {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+
+.current-hosted-chargers-container .charger-wrapper .charger-tab-container .hr-div {
+    border: none;
+    width: 100%;
+    background-color: #d6d6d6;
+    margin-bottom: 20px;
+    margin-top: 5px;
+    height: 1px;
+}
+
+.current-hosted-chargers-container .charger-wrapper .charger-tab-container .charger-header-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.current-hosted-chargers-container .charger-wrapper .charger-tab-container .charger-header-container h3 {
+    margin: 0;
+}
+
+.current-hosted-chargers-container .charger-wrapper .charger-tab-container .charger-details-container p {
+    margin-bottom: 10px;
+}
+
+.current-hosted-chargers-container .charger-wrapper .charger-tab-container .charger-details-container .charger-actions-buttons-container {
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+.current-hosted-chargers-container .charger-wrapper .charger-tab-container .charger-details-container .charger-actions-buttons-container button {
+    background-color: white;
+    border: 1px solid #16b9cc;
+    padding: 8px;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-size: 16px;
+    text-align: center;
+    margin-right: 20px;
 }

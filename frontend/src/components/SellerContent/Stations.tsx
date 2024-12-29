@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import React from 'react';
+import SellerSidebar from './SellerSidebar';
 import './Stations.css';
 
 const Stations: React.FC = () => {
-    return(
-        <p></p>
+    return (
+        <div className="settings-page-container">
+            <div className="sidebar-container">
+                <SellerSidebar/>
+            </div>
+        </div>
     );
 }
 

@@ -1,0 +1,179 @@
+.balances-page-container {
+    height: 100vh;
+    display: flex;
+    flex-direction: row;
+}
+
+.balances-page-container .sidebar-container {
+    width: 230px;
+    background-color: #f4f4f4;
+    box-sizing: border-box;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.balances-page-container .user-options-container {
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+    background-color: #ffffff;
+    border-radius: 20px;
+    height: 100vh;
+    max-height: 100vh;
+    margin-left: 230px;
+    align-items: center;
+    gap: 20px;
+    width: 100vw;
+}
+
+.balances-page-container .user-options-container h1,
+.balances-page-container .user-options-container p {
+    margin: 0;
+    align-self: flex-start;
+}
+
+.balances-page-container .user-options-container .hr-div {
+    border: none;
+    width: 100%;
+    background-color: #d6d6d6;
+    margin-bottom: 20px;
+    height: 1px;
+}
+
+.balances-page-container .user-options-container .user-options-hr-div {
+    border: none;
+    width: 70%;
+    background-color: #d6d6d6;
+    margin: 20px;
+    height: 1px;
+}
+
+.balances-page-container .user-options-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    grid-gap: 20px;
+    align-items: start;
+}
+
+.balances-page-container .user-options-grid .hr-div {
+    border: none;
+    width: 100%;
+    background-color: #d6d6d6;
+    margin-top: 5px;
+    margin-bottom: 20px;
+    height: 1px;
+}
+
+.balances-page-container .user-options-grid h2 {
+    margin: 0;
+}
+
+.balances-page-container .account-balance-container,
+.balances-page-container .transaction-history-container{
+    border: 1px solid #16b9cc;
+    border-radius: 12px;
+    padding: 20px 20px;
+    box-sizing: border-box;
+    width: 1000px;
+}
+
+.balances-page-container .account-balance-container .balance-pairs-container {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+}
+
+.balances-page-container .account-balance-container .balance-pairs-container .vr-div{
+    border: none;
+    width: 1px;
+    background-color: #d6d6d6;
+    height: auto;
+}
+
+.balances-page-container .account-balance-container .balance-pair-container {
+    display: flex;
+    gap: 7px;
+}
+
+.balances-page-container .account-balance-container .balance-pairs-container .balance-pair-container p {
+    padding: 8px 0;
+    width: 70px;
+    font-size: 20px;
+    align-items: center;
+}
+
+.balances-page-container .account-balance-container .balance-pairs-container .balance-pair-container label {
+    background-color: white;
+    border: 1px solid #16b9cc;
+    padding: 8px;
+    border-radius: 4px;
+    width: 65px;
+    font-size: 20px;
+    align-items: center;
+    text-align: right;
+}
+
+.balances-page-container .account-balance-container .balance-pairs-container .balance-pair-container button {
+    background-color: white;
+    border: 1px solid #16b9cc;
+    padding: 8px;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-size: 20px;
+    text-align: center;
+}
+
+.balances-page-container .transaction-tab-container {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+
+.balances-page-container .transaction-tab-container .hr-div {
+    border: none;
+    width: 100%;
+    background-color: #d6d6d6;
+    margin-bottom: 20px;
+    margin-top: 5px;
+    height: 1px;
+}
+
+.balances-page-container .transaction-tab-container .transaction-header-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.balances-page-container .transaction-tab-container .transaction-header-container h3 {
+    margin: 0;
+}
+
+.balances-page-container .transaction-tab-container .transaction-header-container h3 {
+    margin: 0;
+}
+
+.balances-page-container .transaction-tab-container .transaction-header-container h3 {
+    margin: 0;
+}
+
+.balances-page-container .transaction-tab-container .transaction-details-container p{
+    margin-bottom: 10px;
+}
+
+.balances-page-container .transaction-tab-container .transaction-details-container .transaction-actions-buttons-container{
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+.balances-page-container .transaction-tab-container .transaction-details-container .transaction-actions-buttons-container button{
+    background-color: white;
+    border: 1px solid #16b9cc;
+    padding: 8px;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-size: 16px;
+    text-align: center;
+    margin-right: 20px;
+}

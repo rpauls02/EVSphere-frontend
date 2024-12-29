@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import { handleEmailChange, handleDeleteAccount } from '../../../utils/UserDetailsFunctions';
+import { handleUpdateEmail, handleDeleteAccount } from '../../../utils/UserDetailsFunctions';
 import { fetchUserDetails } from '../../../utils/UserFetchFunctions';
 import { useNavigate } from 'react-router-dom';
 import BuyerSidebar from '../../BuyerContent/BuyerSidebar'
@@ -12,7 +12,7 @@ const Settings: React.FC = () => {
 
     const [userRole, setUserRole] = useState<string>('');
     const [currentEmail, setCurrentEmail] = useState<string>('');
-    const [newEmail, setNewEmail] = useState<string>('');
+    /*const [newEmail, setNewEmail] = useState<string>('');*/
     const [currentUname, setCurrentUname] = useState<string>('');
     const [currentFname, setCurrentFname] = useState<string>('');
     const [currentLname, setCurrentLname] = useState<string>('');
@@ -43,15 +43,13 @@ const Settings: React.FC = () => {
         loadUserDetails();
     }, []);
 
-    const handleEmailChangeSubmission = () => {
-        handleEmailChange(currentEmail, newEmail, setErrorMessage, setLoading, () => {
-            console.log("Email changed successfully!");
+    /*const handleUpdateEmailSubmission = () => {
+        handleUpdateEmail(currentEmail, newEmail, setErrorMessage, setLoading, () => {
         });
-    };
+    };*/
 
     const handleDeleteAccountSubmission = () => {
         handleDeleteAccount(setErrorMessage, setLoading, () => {
-            console.log("Account deleted successfully!");
             navigate('/');
         });
     };
