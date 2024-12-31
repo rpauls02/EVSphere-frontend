@@ -1,0 +1,79 @@
+.dashboard-container {
+    display: flex;
+    height: 100vh; /* Full-page height */
+  }
+  
+  .sidebar-container {
+    width: 250px; /* Adjust sidebar width */
+    background-color: #f4f4f4;
+    padding: 10px;
+    border-right: 1px solid #ddd;
+  }
+  
+  .page-title-container {
+    flex: 1;
+    margin: 0;
+    padding: 20px;
+  }
+  
+  .seller-dashboard-content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto; /* Add scrolling for long content */
+  }
+  
+  .chargers-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* Space between boxes */
+    justify-content: center; /* Center-align the chargers */
+  }
+  
+  .charger-box {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 16px;
+    width: 300px;
+    background-color: #f9f9f9;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .charger-box.available {
+    border-color: green;
+    background-color: #e6ffe6;
+  }
+  
+  .charger-box.unavailable {
+    border-color: red;
+    background-color: #ffe6e6;
+  }
+  
+  .charger-actions {
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .charger-actions button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .charger-actions button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+  
+  .charger-actions button:first-of-type {
+    background-color: #4caf50;
+    color: white;
+  }
+  
+  .charger-actions button:last-of-type {
+    background-color: #f44336;
+    color: white;
+  }
+  

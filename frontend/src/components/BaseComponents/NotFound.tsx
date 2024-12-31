@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import logo from '../../assets/logo-alt.png'
+import logo from '../../assets/logo.png'
 import './NotFound.css';
 
 const NotFound: React.FC = () => {

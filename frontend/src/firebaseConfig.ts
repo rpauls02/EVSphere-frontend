@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, setPersistence, browserLocalPersistence, onAuthStateChanged } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
+import { getDatabase } from "firebase/database";
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY || "AIzaSyDfPK1NS6i9IA2gbuqhhvHCnhaNLaRWymk",
@@ -9,10 +10,14 @@ const firebaseConfig = {
   storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET || "ev-charging-management-s-74390.appspot.com",
   messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID || "810099698857",
   appId: process.env.REACT_APP_FIREBASE_APP_ID || "1:810099698857:web:3d1c21ccb6ff9434c90db8",
+  databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL || "https://ev-charging-management-s-74390-default-rtdb.europe-west1.firebasedatabase.app",
 };
 
 // Initialize Firebase app
 const app = initializeApp(firebaseConfig);
+
+// Initialize Realtime Database and get a reference to the service
+const database = getDatabase(app);
 
 // Initialize Firebase Auth and Firestore
 const auth = getAuth(app);
@@ -36,4 +41,4 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 
-export { auth, db, app };
+export { auth, db, app, database};

@@ -1,54 +1,48 @@
 import React, { useState, useEffect } from 'react';
-import BuyerSidebar from '../BuyerContent/BuyerSidebar';
+import BuyerSidebar from './BuyerSidebar';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import { fetchUserChargers } from '../../utils/UserFetchFunctions';
-import { addChargingPoint } from '../../utils/UserActionsFunctions';
-import { UserCharger } from '../../utils/types'
+import { getDatabase, ref, set, onValue, push } from 'firebase/database';
+import { getAuth } from 'firebase/auth';
 
 import './HostServices.css';
 
-const HostServices: React.FC = () => {
-    const [userChargers, setUserChargers] = useState<UserCharger[]>([]);
-    const [expandedChargerIDs, setExpandedChargerIDs] = useState<Set<string>>(new Set());
-    const [address, setAddress] = useState<string>('');
-    const [addressAccess, setAddressAccess] = useState<string>('');
-    const [chargerCount, setChargerCount] = useState<number>(0);
-    const [connectorCount, setConnectorCount] = useState<number>(0);
-    const [connectorTypes, setConnectorTypes] = useState<string>('');
-    const [popup, setPopup] = useState<{
-        title: string;
-        message: string;
-        type: 'error' | 'success';
-    } | null>(null);
+const HostServices = () => {
+    const [userChargers, setUserChargers] = useState([]);
+    const [expandedChargerIDs, setExpandedChargerIDs] = useState(new Set());
+    const [address, setAddress] = useState('');
+    const [addressAccess, setAddressAccess] = useState('');
+    const [chargerCount, setChargerCount] = useState(0);
+    const [connectorCount, setConnectorCount] = useState(0);
+    const [connectorTypes, setConnectorTypes] = useState('');
+    const [popup, setPopup] = useState(null);
+   
+    const auth = getAuth();
+    const db = getDatabase();
 
     useEffect(() => {
-        const getUserChargingPoints = async () => {
-            try {
-                const fetchedChargers = await fetchUserChargers();
-                if (Array.isArray(fetchedChargers)) {
-                    setUserChargers(fetchedChargers);
-                } else {
-                    setPopup({
-                        title: 'Error',
-                        message: 'No chargers found for this user.',
-                        type: 'error',
-                    });
-                }
-            } catch (error) {
+        // Fetch hosted chargers from Firebase Realtime Database
+        const chargersRef = ref(db, 'hostedChargers');
+        onValue(chargersRef, (snapshot) => {
+            const chargersData = snapshot.val();
+            if (chargersData) {
+                const chargersList = Object.keys(chargersData).map((key) => ({
+                    id: key,
+                    ...chargersData[key],
+                }));
+                setUserChargers(chargersList);
+            } else {
+                setUserChargers([]);
                 setPopup({
-                    title: 'Error',
-                    message: 'Error retrieving user chargers.',
-                    type: 'error',
+                    title: 'Info',
+                    message: 'No hosted chargers found.',
+                    type: 'info',
                 });
-                console.error('Error retrieving user chargers:', error);
             }
-        };
+        });
+    }, [db]);
 
-        getUserChargingPoints();
-    }, []);
-
-    const toggleCharger = (chargerID: string) => {
+    const toggleCharger = (chargerID) => {
         setExpandedChargerIDs((prevExpanded) => {
             const newExpanded = new Set(prevExpanded);
             if (newExpanded.has(chargerID)) {
@@ -60,44 +54,55 @@ const HostServices: React.FC = () => {
         });
     };
 
-    const handleAddChargerSubmission = async (e: React.FormEvent) => {
+    const handleAddChargerSubmission = async (e) => {
         e.preventDefault();
-
+    
+        if (!address || !addressAccess || !connectorTypes) {
+            setPopup({
+                title: 'Error',
+                message: 'Please fill out all required fields.',
+                type: 'error',
+            });
+            return;
+        }
+    
         try {
-            await addChargingPoint(
+            // Add new charger to Firebase Realtime Database
+            const chargersRef = ref(db, 'hostedChargers');
+            const newChargerRef = push(chargersRef);
+    
+            await set(newChargerRef, {
                 address,
                 addressAccess,
                 connectorCount,
                 connectorTypes,
-                () => {
-                    setPopup({
-                        title: 'Error',
-                        message: 'Failed to add charging points.',
-                        type: 'error',
-                    });
-                },
-                () => {
-                    setPopup({
-                        title: 'Success',
-                        message: 'Charging point added successfully!',
-                        type: 'success',
-                    });
-                    setAddress('');
-                    setAddressAccess('');
-                    setConnectorCount(0);
-                    setConnectorTypes("");
-                }
-            );
+                isAvailable: true, // Initially available
+                currentUsers: 0, // Tracks connected users
+                hostId: auth.currentUser.uid, // Store host's user ID
+              });
+              
+    
+            setPopup({
+                title: 'Success',
+                message: 'Charging point added successfully!',
+                type: 'success',
+            });
+    
+            // Reset form fields
+            setAddress('');
+            setAddressAccess('');
+            setConnectorCount(0);
+            setConnectorTypes('');
         } catch (error) {
             setPopup({
                 title: 'Error',
-                message: 'Unexpected error occurred while adding charging points.',
+                message: 'Failed to add charging point.',
                 type: 'error',
             });
-            console.error('Failed to add charging points:', error);
+            console.error('Error adding charging point:', error);
         }
     };
-
+    
     return (
         <div className="host-services-page-container">
             <div className="sidebar-container">
