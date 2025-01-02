@@ -20,7 +20,23 @@ export interface UserAddress {
     street: string;
     town: string;
     number: string;
-    primary: boolean;
+}
+
+export interface UserMessage {
+    recipient: string;
+    sender: string;
+    content: string;
+    sent: any;
+    received: any;
+    type: string;
+}
+
+export interface UserSession {
+    bookedAt: any;
+    createdAt: any;
+    duration: number;
+    energy_consumed: number;
+    status: string;
 }
 
 export interface UserCharger {
@@ -29,20 +45,6 @@ export interface UserCharger {
     address: string;
     chargerCount: number;
     connector: string;
-}
-
-export interface PastSessionData {
-    bookedAt: any;
-    duration: number;
-    energy_consumed: number;
-}
-
-export interface UpcomingSessionData {
-    bookedAt: any;
-}
-
-export interface ChargerDetails {
-    type: string;
 }
 
 export interface UserTransaction {
@@ -67,6 +69,26 @@ export interface UserInvoice {
     energyConsumed: number;
     pricePerKwh: number;
     invoicePDF: string;
+}
+
+export interface PastSessionData {
+    bookedAt: any;
+    duration: number;
+    energy_consumed: number;
+}
+
+export interface PastMessageData {
+    received: any;
+    content: string;
+    type: string;
+}
+
+export interface UpcomingSessionData {
+    bookedAt: any;
+}
+
+export interface ChargerDetails {
+    type: string;
 }
 
 export interface ChargingPoint {

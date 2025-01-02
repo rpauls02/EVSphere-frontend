@@ -45,14 +45,6 @@ export const createStripeCustomer = async (email: string) => {
     }
 };
 
-interface Invoice {
-    id: string;
-    amount_due: number;
-    currency: string;
-    status: string;
-    energyConsumed: number;
-}
-
 /* Delete Stripe customer by email */
 export const deleteStripeCustomer = async (customerId: string) => {
     try {
@@ -89,8 +81,8 @@ export const fetchUserInvoices = async (stripeCustomerID: string): Promise<UserI
             createdAt: invoice.createdAt ? new Date(invoice.createdAt) : new Date(),
             currency: invoice.currency,
             status: invoice.status,
-            amount_due: invoice.amount_due,
             total: invoice.total,
+            amount_due: invoice.amount_due,
             energyConsumed: invoice.metadata.energyConsumed ? parseFloat(invoice.metadata.energyConsumed) : 0,
             pricePerKwh: invoice.metadata.pricePerKwh ? parseFloat(invoice.metadata.pricePerKwh) : 0,
             invoicePDF: invoice.invoicePDF || '',

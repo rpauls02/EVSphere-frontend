@@ -1,72 +1,51 @@
 import React from 'react';
 
 interface CountryCodeSelectProps {
-    countryCode: string;
-    setCountryCode: (code: string) => void;
+    phoneCode: string;
+    setPhoneCode: (code: string) => void;
 }
 
 const countryCodes = [
-    { countryCode: '(US)', phoneCode: '+1' },
     { countryCode: '(GB)', phoneCode: '+44' },
-    { countryCode: '(IN)', phoneCode: '+91' },
-    { countryCode: '(DE)', phoneCode: '+49' },
-    { countryCode: '(FR)', phoneCode: '+33' },
-    { countryCode: '(JP)', phoneCode: '+81' },
-    { countryCode: '(AU)', phoneCode: '+61' },
-    { countryCode: '(BR)', phoneCode: '+55' },
-    { countryCode: '(RU)', phoneCode: '+7' },
-    { countryCode: '(CN)', phoneCode: '+86' },
-    { countryCode: '(CA)', phoneCode: '+1' },
-    { countryCode: '(IT)', phoneCode: '+39' },
-    { countryCode: '(ES)', phoneCode: '+34' },
-    { countryCode: '(MX)', phoneCode: '+52' },
-    { countryCode: '(ZA)', phoneCode: '+27' },
-    { countryCode: '(KR)', phoneCode: '+82' },
-    { countryCode: '(SG)', phoneCode: '+65' },
-    { countryCode: '(NO)', phoneCode: '+47' },
-    { countryCode: '(SE)', phoneCode: '+46' },
-    { countryCode: '(DK)', phoneCode: '+45' },
-    { countryCode: '(FI)', phoneCode: '+358' },
-    { countryCode: '(NL)', phoneCode: '+31' },
+    { countryCode: '(AD)', phoneCode: '+376' },
+    { countryCode: '(AL)', phoneCode: '+355' },
+    { countryCode: '(AM)', phoneCode: '+374' },
+    { countryCode: '(AT)', phoneCode: '+43' },
+    { countryCode: '(BA)', phoneCode: '+387' },
     { countryCode: '(BE)', phoneCode: '+32' },
+    { countryCode: '(BG)', phoneCode: '+359' },
     { countryCode: '(CH)', phoneCode: '+41' },
-    { countryCode: '(IE)', phoneCode: '+353' },
-    { countryCode: '(PT)', phoneCode: '+351' },
-    { countryCode: '(AR)', phoneCode: '+54' },
-    { countryCode: '(CL)', phoneCode: '+56' },
-    { countryCode: '(CO)', phoneCode: '+57' },
-    { countryCode: '(PE)', phoneCode: '+51' },
-    { countryCode: '(VN)', phoneCode: '+84' },
-    { countryCode: '(TH)', phoneCode: '+66' },
-    { countryCode: '(PH)', phoneCode: '+63' },
-    { countryCode: '(MY)', phoneCode: '+60' },
-    { countryCode: '(HK)', phoneCode: '+852' },
-    { countryCode: '(TW)', phoneCode: '+886' },
-    { countryCode: '(IL)', phoneCode: '+972' },
-    { countryCode: '(EG)', phoneCode: '+20' },
-    { countryCode: '(NG)', phoneCode: '+234' },
-    { countryCode: '(KE)', phoneCode: '+254' },
-    { countryCode: '(TZ)', phoneCode: '+255' },
-    { countryCode: '(UG)', phoneCode: '+256' },
-    { countryCode: '(GH)', phoneCode: '+233' },
-    { countryCode: '(ET)', phoneCode: '+251' },
-    { countryCode: '(DZ)', phoneCode: '+213' },
-    { countryCode: '(MA)', phoneCode: '+212' },
-    { countryCode: '(LY)', phoneCode: '+218' },
-    { countryCode: '(QA)', phoneCode: '+974' },
-    { countryCode: '(AE)', phoneCode: '+971' },
-    { countryCode: '(OM)', phoneCode: '+968' },
-    { countryCode: '(KW)', phoneCode: '+965' },
-    { countryCode: '(BH)', phoneCode: '+973' },
-    { countryCode: '(IS)', phoneCode: '+354' },
-    { countryCode: '(LT)', phoneCode: '+370' },
-    { countryCode: '(LV)', phoneCode: '+371' },
+    { countryCode: '(CY)', phoneCode: '+357' },
+    { countryCode: '(CZ)', phoneCode: '+420' },
+    { countryCode: '(DE)', phoneCode: '+49' },
+    { countryCode: '(DK)', phoneCode: '+45' },
     { countryCode: '(EE)', phoneCode: '+372' },
+    { countryCode: '(ES)', phoneCode: '+34' },
+    { countryCode: '(FI)', phoneCode: '+358' },
+    { countryCode: '(FR)', phoneCode: '+33' },
+    { countryCode: '(GR)', phoneCode: '+30' },
+    { countryCode: '(HR)', phoneCode: '+385' },
+    { countryCode: '(HU)', phoneCode: '+36' },
+    { countryCode: '(IE)', phoneCode: '+353' },
+    { countryCode: '(IS)', phoneCode: '+354' },
+    { countryCode: '(IT)', phoneCode: '+39' },
+    { countryCode: '(LT)', phoneCode: '+370' },
+    { countryCode: '(LU)', phoneCode: '+352' },
+    { countryCode: '(LV)', phoneCode: '+371' },
+    { countryCode: '(MT)', phoneCode: '+356' },
+    { countryCode: '(NL)', phoneCode: '+31' },
+    { countryCode: '(NO)', phoneCode: '+47' },
+    { countryCode: '(PL)', phoneCode: '+48' },
+    { countryCode: '(PT)', phoneCode: '+351' },
+    { countryCode: '(RO)', phoneCode: '+40' },
+    { countryCode: '(SE)', phoneCode: '+46' },
+    { countryCode: '(SI)', phoneCode: '+386' },
+    { countryCode: '(SK)', phoneCode: '+421' },
 ];
 
-const CountryCodeSelect: React.FC<CountryCodeSelectProps> = ({ countryCode, setCountryCode }) => {
+const CountryCodeSelect: React.FC<CountryCodeSelectProps> = ({ phoneCode, setPhoneCode }) => {
     return (
-        <select className="country-code-select" value={countryCode} onChange={(e) => setCountryCode(e.target.value)}>
+        <select className="country-code-select" value={phoneCode} onChange={(e) => setPhoneCode(e.target.value)}>
             {countryCodes.map(({ countryCode, phoneCode }) => (
                 <option key={phoneCode} value={countryCode}>
                     {phoneCode} {countryCode}

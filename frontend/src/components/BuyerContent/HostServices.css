@@ -42,6 +42,14 @@ select{
     width: 100vw;
 }
 
+.host-services-page-container .user-options-container .verify-email-container {
+    width: 100%;
+    top: 0;
+    position: fixed;
+    text-align: center;
+    z-index: 1;
+}
+
 .host-services-page-container .user-options-container h1,
 .host-services-page-container .user-options-container p {
     margin: 0;
@@ -52,7 +60,7 @@ select{
     border: none;
     width: 100%;
     background-color: #d6d6d6;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     height: 1px;
 }
 

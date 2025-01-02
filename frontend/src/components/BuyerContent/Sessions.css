@@ -49,8 +49,16 @@ button {
     border: none;
     width: 100%;
     background-color: #d6d6d6;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     height: 1px;
+}
+
+.sessions-page-container .user-options-container .user-options-hr-div {
+    border: none;
+    width: 70%;
+    background-color: #d6d6d6;
+    height: 1px;
+    margin: 10px;
 }
 
 .sessions-page-container .user-options-grid {
@@ -64,14 +72,15 @@ button {
     border: none;
     width: 100%;
     background-color: #d6d6d6;
-    margin-bottom: 20px;
-    margin-top: 5px;
+    margin-bottom: 10px;
+    margin-top: 10px;
     height: 1px;
 }
 
 .sessions-page-container .user-options-grid h2 {
     margin: 0;
 }
+
 
 .sessions-page-container .book-session-container,
 .sessions-page-container .upcoming-sessions-container,
@@ -187,7 +196,6 @@ button {
 }
 
 .sessions-page-container .past-sessions-container .session-tab-container .session-details-container .session-actions-buttons-container{
-    margin-top: 10px;
     margin-bottom: 5px;
 }
 

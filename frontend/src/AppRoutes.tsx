@@ -10,9 +10,8 @@ import Messages from './components/BaseComponents/User/Messages';
 import Settings from './components/BaseComponents/User/Settings';
 import BuyerDashboard from './components/BuyerContent/BuyerDashboard';
 import Sessions from './components/BuyerContent/Sessions'
+import Chargers from './components/BuyerContent/Chargers'
 import HostServices from './components/BuyerContent/HostServices';
-import SellerDashboard from './components/SellerContent/SellerDashboard';
-import Stations from './components/SellerContent/Stations';
 
 
 const AppRoutes: React.FC = () => {
@@ -27,20 +26,17 @@ const AppRoutes: React.FC = () => {
       <Route path="/reset-password" element={<ResetPasswordForm />} />
       <Route path="*" element={<NotFound />} />
 
-      {/*User pages routing */}
-      <Route path="/messages" element={<Messages />} />
-      <Route path="/help" element={<Help />} />
-      <Route path="/settings" element={<Settings />} />
-
       {/*Buyer pages routing*/}
-      <Route path="/buyer-dashboard" element={<BuyerDashboard />} />
+      <Route path="/dashboard" element={<BuyerDashboard />} />
       <Route path="/sessions" element={<Sessions />} />
       <Route path="/host-services" element={<HostServices />} />
       <Route path="/balances" element={<Balance />} />
+      <Route path="/chargers" element={<Chargers />} />
 
-      {/*Seller pages routing*/}
-      <Route path="/seller-dashboard" element={<SellerDashboard />} />
-      <Route path="/stations" element={<Stations />} />
+      {/*Misc pages routing */}
+      <Route path="/messages" element={<Messages />} />
+      <Route path="/help" element={<Help />} />
+      <Route path="/settings" element={<Settings />} />
     </Routes>
   );
 }

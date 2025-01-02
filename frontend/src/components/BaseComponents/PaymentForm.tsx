@@ -2,8 +2,7 @@ import React from 'react';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 
-// Load your Stripe public key
-const stripePromise = loadStripe('pk_test_51QS6QYCOqnnRhi6jQVQdv2bFbs8zDEYiNhI8oCqFlW4yMAMpyoyuATagWetkI2XuHw6UAzwPgh6W4ba4L0zLBJSM00eji4LKgF'); // Replace with your actual public key
+const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
 
 const PaymentForm: React.FC = () => {
   const stripe = useStripe();
@@ -21,7 +20,6 @@ const PaymentForm: React.FC = () => {
   );
 };
 
-// Wrap the PaymentForm component in the Elements provider
 const PaymentPage: React.FC = () => (
   <Elements stripe={stripePromise}>
     <PaymentForm />

@@ -1,22 +1,5 @@
-import { RecaptchaVerifier, ConfirmationResult, signInWithPhoneNumber, sendEmailVerification, getAuth } from 'firebase/auth';
+import { RecaptchaVerifier, ConfirmationResult, signInWithPhoneNumber, getAuth } from 'firebase/auth';
 import { auth } from '../firebaseConfig';
-
-export async function sendVerificationEmail(): Promise<void> {
-  const auth = getAuth();
-  const user = auth.currentUser;
-
-  if (!user) {
-      throw new Error("No user is currently logged in.");
-  }
-
-  try {
-      await sendEmailVerification(user);
-      console.log("Verification email sent successfully.");
-  } catch (error) {
-      console.error("Error sending verification email:", error);
-      throw error;
-  }
-}
 
 export const verifyEmail = () => {
   const user = auth.currentUser;

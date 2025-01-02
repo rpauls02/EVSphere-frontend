@@ -1,7 +1,7 @@
 import { auth, db } from '../firebaseConfig';
 import { doc, getDocs, getDoc, collection, query, orderBy, limit, where } from 'firebase/firestore';
 import axios from 'axios';
-import { UserDetails, UserAddress, UserBalance, UserCharger, UpcomingSessionData, PastSessionData, UserTransaction } from './types';
+import { UserDetails, UserMessage, UserAddress, UserBalance, UserCharger, UpcomingSessionData, PastSessionData, PastMessageData, UserTransaction } from './types';
 
 /** Fetch user details from Firestore */
 export const fetchUserDetails = async (): Promise<UserDetails | null> => {
@@ -57,8 +57,7 @@ export const fetchUserAddresses = async (): Promise<UserAddress[] | null> => {
                 street: userData.street || '',
                 town: userData.town || '',
                 postcode: userData.postcode || '',
-                other: userData.other || '',
-                primary: userData.primary || false
+                other: userData.other || ''
             };
         });
 
@@ -98,8 +97,12 @@ export const fetchUserBalance = async (): Promise<UserBalance | null> => {
     }
 };
 
-/** Fetch recent messages for the user */
-export const fetchUserMessages = async (): Promise<string[]> => {
+export const fetchRecentSystemMessages = async (): Promise<PastMessageData[]> => {
+    return fetchUserMessages(true, "System");
+}
+
+/** Helper to fetch all user messages */
+export const fetchUserMessages = async (limitCount: boolean, sender?: string): Promise<UserMessage[]> => {
     const user = auth.currentUser;
     if (!user) {
         console.error("No authenticated user found.");
@@ -108,15 +111,22 @@ export const fetchUserMessages = async (): Promise<string[]> => {
 
     try {
         const userMessagesRef = collection(db, "messages");
-        const messagesQuery = query(
+        let messagesQuery = query(
             userMessagesRef,
             where("recipient", "==", user.uid),
             orderBy("received", "desc"),
-            limit(5)
         );
 
+        if (sender) {
+            messagesQuery = query(messagesQuery, where("sender", "==", sender));
+        }
+
+        if (limitCount == true) {
+            messagesQuery = query(messagesQuery, limit(5));
+        }
+
         const querySnapshot = await getDocs(messagesQuery);
-        return querySnapshot.docs.map(doc => doc.data().content || "");
+        return querySnapshot.docs.map(doc => doc.data() as UserMessage);
     } catch (error) {
         console.error("Error fetching user messages:", error);
         return [];
@@ -125,7 +135,8 @@ export const fetchUserMessages = async (): Promise<string[]> => {
 
 /** Fetch recent charging sessions */
 export const fetchPastChargingSessions = async (): Promise<PastSessionData[]> => {
-    return fetchChargingSessions("complete");
+    const limitCount = 5;
+    return fetchChargingSessions("complete", limitCount);
 };
 
 /** Fetch upcoming charging sessions */
@@ -134,7 +145,7 @@ export const fetchUpcomingChargingSessions = async (): Promise<UpcomingSessionDa
 };
 
 /** Helper to fetch charging sessions based on status */
-export const fetchChargingSessions = async (status: string): Promise<any[]> => {
+export const fetchChargingSessions = async (status: string, limitCount?: any): Promise<any[]> => {
     const user = auth.currentUser;
     if (!user) {
         console.warn("No user is currently logged in.");
@@ -148,7 +159,7 @@ export const fetchChargingSessions = async (status: string): Promise<any[]> => {
             where("userID", "==", user.uid),
             where("status", "==", status),
             orderBy("bookedAt", "desc"),
-            limit(5)
+            limit(limitCount)
         );
 
         const querySnapshot = await getDocs(sessionsQuery);

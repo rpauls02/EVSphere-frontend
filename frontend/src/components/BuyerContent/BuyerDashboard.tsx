@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import BuyerSidebar from '../BuyerContent/BuyerSidebar';
-import { fetchUpcomingChargingSessions, fetchUserMessages, fetchUserBalance, fetchUserDetails } from "../../utils/UserFetchFunctions";
+import Sidebar from '../BaseComponents/Sidebar';
+import { fetchUpcomingChargingSessions, fetchRecentSystemMessages, fetchUserBalance, fetchUserDetails } from "../../utils/UserFetchFunctions";
 import { updateUserCreditBalance } from '../../utils/UserActionsFunctions';
 import { startChargingSession } from '../../utils/OCPPFunctions';
 import { verifyEmail } from '../../utils/UserVerifyFunctions';
-import Popup from '../BaseComponents/Popup';
 import VerifyEmail from '../BaseComponents/User/VerifyEmail';
 import './BuyerDashboard.css';
+import { PastMessageData } from '../../utils/types';
 
 interface UserBalance {
     pointsBalance: number;
@@ -19,7 +19,7 @@ const BuyerDashboard: React.FC = () => {
     const [currentPBalance, setCurrentPBalance] = useState<number>(0);
     const [newCBalance, setNewCBalance] = useState<number>(0);
     const [currentCBalance, setCurrentCBalance] = useState<number>(0);
-    const [userMessages, setUserMessages] = useState<string[]>([]);
+    const [userMessages, setUserMessages] = useState<PastMessageData[]>([]);
     const [upcomingChargingSessions, setUpcomingChargingSessions] = useState<any[]>([]);
     const [selectedButton, setSelectedButton] = useState("cardPayment");
     const [isSessionStarted, setIsSessionStarted] = useState(false);
@@ -33,6 +33,28 @@ const BuyerDashboard: React.FC = () => {
     const [popupMessage, setPopupMessage] = useState('');
     const [popupType, setPopupType] = useState<'error' | 'success'>('success');
     const navigate = useNavigate();
+
+    const handleButtonClick = (buttonType: any) => {
+        setSelectedButton(buttonType);
+    };
+
+    const handleSessionToggle = () => {
+        if (!isSessionStarted) {
+            setSessionTime(0);
+        }
+        setIsSessionStarted((prev) => !prev);
+    };
+
+    const handleViewHistory = () => {
+        navigate('/balances');
+    };
+
+    const formatTime = (seconds: number) => {
+        const hours = Math.floor(seconds / 3600);
+        const minutes = Math.floor((seconds % 3600) / 60);
+        const secs = seconds % 60;
+        return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+    };
 
     useEffect(() => {
         const loadUserDetails = async () => {
@@ -66,12 +88,11 @@ const BuyerDashboard: React.FC = () => {
     }, []);
 
     useEffect(() => {
-        const loadUserMessages = async () => {
-            const messages = await fetchUserMessages();
+        const loadRecentMessages = async () => {
+            const messages = await fetchRecentSystemMessages();
             setUserMessages(messages);
         };
-
-        loadUserMessages();
+        loadRecentMessages();
     }, []);
 
     useEffect(() => {
@@ -79,7 +100,6 @@ const BuyerDashboard: React.FC = () => {
             const sessions = await fetchUpcomingChargingSessions();
             setUpcomingChargingSessions(sessions);
         };
-
         loadUpcomingChargingSessions();
     }, []);
 
@@ -112,21 +132,6 @@ const BuyerDashboard: React.FC = () => {
         }
     }, [newCBalance]);
 
-    const handleButtonClick = (buttonType: any) => {
-        setSelectedButton(buttonType);
-    };
-
-    const handleSessionToggle = () => {
-        if (!isSessionStarted) {
-            setSessionTime(0);
-        }
-        setIsSessionStarted((prev) => !prev);
-    };
-
-    const handleViewHistory = () => {
-        navigate('/balances');
-    };
-
     useEffect(() => {
         let timer: NodeJS.Timeout;
 
@@ -141,60 +146,62 @@ const BuyerDashboard: React.FC = () => {
         };
     }, [isSessionStarted]);
 
-    const formatTime = (seconds: number) => {
-        const hours = Math.floor(seconds / 3600);
-        const minutes = Math.floor((seconds % 3600) / 60);
-        const secs = seconds % 60;
-        return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
-    };
-
     return (
         <div className="dashboard-page-container">
             <div className="sidebar-container">
-                <BuyerSidebar />
+                <Sidebar />
             </div>
             <div className="user-options-container">
-                <div className="verify-email-container">
-                    <VerifyEmail />
-                </div>
                 <h1>Welcome back, {currentFname}</h1>
                 <p>Use the sidebar to navigate through your options, or view a quick summary here</p>
                 <div className="hr-div"></div>
                 <div className="user-options-grid">
                     <div className="user-messages-container">
-                        <h2>Messages</h2>
-                        <div className="hr-div"></div>
-                        <ul>
-                            {userMessages.map((message, index) => (
-                                <li key={index}>{message}</li>
-                            ))}
+                        <div className="container-header">
+                            <h2>System Messages</h2>
+                        </div>
 
-                        </ul>
+                        <div className="hr-div"></div>
+
+                        <div className="container-content">
+                            <ul>
+                                {userMessages.map((message, index) => (
+                                    <li key={index} className="message-item">
+                                        {message.content}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
                     </div>
 
                     <div className="upcoming-sessions-container">
-                        <h2>Upcoming Sessions</h2>
+                        <div className="container-header">
+                            <h2>Upcoming Sessions</h2>
+                        </div>
+
                         <div className="hr-div"></div>
-                        <ul>
-                            {upcomingChargingSessions.map((session, index) => {
-                                const date = session.bookedAt.toDate();
-                                const formattedDate = `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`;
 
-                                // Extract time with AM/PM
-                                let hours = date.getHours();
-                                const minutes = date.getMinutes().toString().padStart(2, '0');
-                                const ampm = hours >= 12 ? 'PM' : 'AM';
-                                hours = hours % 12 || 12;
+                        <div className="container-content">
+                            <ul>
+                                {upcomingChargingSessions.map((session, index) => {
+                                    const date = session.bookedAt.toDate();
+                                    const formattedDate = `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`;
 
-                                const formattedTime = `${hours}:${minutes}${ampm}`;
+                                    let hours = date.getHours();
+                                    const minutes = date.getMinutes().toString().padStart(2, '0');
+                                    const ampm = hours >= 12 ? 'PM' : 'AM';
+                                    hours = hours % 12 || 12;
 
-                                return (
-                                    <li key={index} className="session-item">
-                                        {formattedDate} @ {formattedTime}
-                                    </li>
-                                );
-                            })}
-                        </ul>
+                                    const formattedTime = `${hours}:${minutes}${ampm}`;
+
+                                    return (
+                                        <li key={index} className="session-item">
+                                            {formattedDate} @ {formattedTime}
+                                        </li>
+                                    );
+                                })}
+                            </ul>
+                        </div>
                     </div>
                 </div>
 
@@ -202,9 +209,11 @@ const BuyerDashboard: React.FC = () => {
 
                 <div className="user-options-grid">
                     <div className="account-balance-container">
-                        <h2>Your balance</h2>
+                        <div className="container-header">
+                            <h2>Your Balances</h2>
+                        </div>
                         <div className="hr-div"></div>
-                        <div className="balance-pairs-container">
+                        <div className="container-content">
                             <div className="balance-pair-container">
                                 <p>Credit:</p>
                                 <label>€{currentCBalance}</label>
@@ -222,9 +231,11 @@ const BuyerDashboard: React.FC = () => {
                     </div>
 
                     <div className="quick-session-container">
-                        <h2>Start session now</h2>
+                        <div className="container-header">
+                            <h2>Quick Session</h2>
+                        </div>
                         <div className="hr-div"></div>
-                        <div className="create-session-container">
+                        <div className="container-content">
                             <div className="session-payment-type-container">
                                 <button
                                     className={`session-payment-type-button card-payment-type ${selectedButton === "cardPayment" ? "active" : ""}`}
@@ -252,9 +263,10 @@ const BuyerDashboard: React.FC = () => {
                                 )}
                                 {selectedButton === "exchangePayment" && (
                                     <div className="session-info-container">
+                                        <p className="quick-charge-item">Status: {pricePerKwh !== null ? pricePerKwh.toFixed(2) : 'Waiting...'}</p>
                                         <p className="quick-charge-item">Points per kWh: </p>
                                         <p className="quick-charge-item">Current Consumption: </p>
-                                        <p className="quick-charge-item">Session Time: {formatTime(sessionTime)}</p>
+                                        <p className="quick-charge-item">Session Time: {sessionTime !== null ? formatTime(sessionTime) : 'Loading...'}</p>
                                         <p className="quick-charge-item">Total Points: </p>
                                     </div>
                                 )}

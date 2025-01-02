@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import CountryCodeSelect from './CountryCodeSelect';
 import { handleSignup } from '../../../utils/SignupHandler';
 import CheckIcon from '@mui/icons-material/Check';
@@ -9,27 +9,25 @@ import logo from '../../../assets/logo.png';
 import './Signup.css';
 
 const SignupForm: React.FC = () => {
-    const [currentPhase, setCurrentPhase] = useState<'roleSelection' | 'form'>('roleSelection');
-    const [role, setUserRole] = useState<'buyer' | 'seller'>('buyer');
-    const [companyName, setCompanyName] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [countryCode, setCountryCode] = useState('+44');
+    const [phoneCode, setPhoneCode] = useState('+44');
     const [mobile, setMobileNumber] = useState('');
-    const [popup, setPopup] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+    const [showPasswordRequirements, setShowPasswordRequirements] = useState(false);
+    const [passwordRequirementsClass, setPasswordRequirementsClass] = useState('');
     const passwordsMatch = password === confirmPassword;
+    const navigate = useNavigate();
 
     const resetForm = () => {
-        setCompanyName('');
         setFirstName('');
         setLastName('');
         setEmail('');
         setPassword('');
         setConfirmPassword('');
-        setCountryCode('+44');
+        setPhoneCode('+44');
         setMobileNumber('');
     };
 
@@ -42,6 +40,16 @@ const SignupForm: React.FC = () => {
         maxLength: password.length <= 64,
     };
 
+    const handleRequirementsShow = () => {
+        setShowPasswordRequirements(true);
+        setPasswordRequirementsClass('expanded');
+    };
+
+    const handleRequirementsHide = () => {
+        setShowPasswordRequirements(false);
+        setPasswordRequirementsClass('');
+    };
+
     const renderIcon = (condition: boolean) => {
         return condition ? <CheckIcon style={{ color: 'green' }} /> : <CloseIcon style={{ color: 'red' }} />;
     };
@@ -50,62 +58,27 @@ const SignupForm: React.FC = () => {
         return condition ? <RadioButtonUncheckedIcon style={{ color: 'gray' }} /> : <CheckIcon style={{ color: 'green' }} />;
     };
 
+    const verifyPasswordMatch = () => {
+        return password === confirmPassword;
+    };
+
     const handleSignupSubmission = async (event: React.FormEvent<HTMLFormElement>) => {
         await handleSignup(
             event,
-            role,
             firstName,
             lastName,
             email,
-            countryCode,
+            phoneCode,
             mobile,
-            password,
-            confirmPassword,
-            companyName,
-            (message, type) => setPopup({ message, type }),
-            resetForm
+            password
         );
+        navigate('/dashboard');
     };
-
-    if (currentPhase === 'roleSelection') {
-        return (
-            <div className="signup-page-container">
-                <div className="signup-form-container">
-                    <div className="logo-container">
-                        <img src={logo} alt="sec-logo" />
-                    </div>
-                    <h1>Select your role</h1>
-                    <div className="user-role-select-container">
-                        <button
-                            className="role-button"
-                            onClick={() => {
-                                setUserRole('buyer');
-                                setCurrentPhase('form');
-                            }}
-                        >
-                            Buyer
-                        </button>
-                        <button
-                            className="role-button"
-                            onClick={() => {
-                                setUserRole('seller');
-                                setCurrentPhase('form');
-                            }}
-                        >
-                            Seller
-                        </button>
-                    </div>
-                </div>
-            </div>
-        );
-    }
 
     return (
         <div className="signup-page-container">
             <div className="signup-form-container">
-                <div className="logo-container">
-                    <img src={logo} alt="sec-logo" />
-                </div>
+                <h1>Create your account</h1>
                 <div className="existing-user-option-container">
                     <p>
                         <strong>Already have an account?</strong>{' '}
@@ -114,25 +87,8 @@ const SignupForm: React.FC = () => {
                         </Link>
                     </p>
                 </div>
-                <h1>Create your {role === 'seller' ? 'Seller' : 'Buyer'} Account</h1>
-
-                {popup && (
-                    <div className={`popup ${popup.type}`}>
-                        {popup.message}
-                    </div>
-                )}
 
                 <form onSubmit={handleSignupSubmission} className="signup-form">
-                    {role === 'seller' && (
-                        <input
-                            type="text"
-                            placeholder="Company Name"
-                            value={companyName}
-                            onChange={(e) => setCompanyName(e.target.value)}
-                            required
-                            className="input-field company-name-input"
-                        />
-                    )}
                     <input
                         type="text"
                         placeholder="First Name*"
@@ -159,7 +115,7 @@ const SignupForm: React.FC = () => {
                     />
                     <div className="mobile-input-container">
                         <div className="input-group">
-                            <CountryCodeSelect countryCode={countryCode} setCountryCode={setCountryCode} />
+                            <CountryCodeSelect phoneCode={phoneCode} setPhoneCode={setPhoneCode} />
                             <input
                                 type="tel"
                                 placeholder="Mobile Number*"
@@ -176,9 +132,25 @@ const SignupForm: React.FC = () => {
                             placeholder="Password*"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
+                            onFocus={handleRequirementsShow}
+                            onBlur={handleRequirementsHide}
                             required
                             className={`input-field password-input ${!passwordsMatch && confirmPassword ? 'error' : ''}`}
                         />
+                        {showPasswordRequirements && (
+                            <div className={`password-requirements-container ${passwordRequirementsClass}`}>
+                                <div className="left-col">
+                                    <p className="password-requirements-item">{renderIcon(requirements.uppercase)}One uppercase letter</p>
+                                    <p className="password-requirements-item">{renderIcon(requirements.lowercase)}One lowercase letter</p>
+                                    <p className="password-requirements-item">{renderIcon(requirements.specialCharacter)}One special character</p>
+                                </div>
+                                <div className="right-col">
+                                    <p className="password-requirements-item">{renderIcon(requirements.numerics)}One numeric character</p>
+                                    <p className="password-requirements-item">{renderIcon(requirements.minLength)} Minimum length: 12 characters</p>
+                                    <p className="password-requirements-item">{renderOptionalIcon(requirements.maxLength)} Maximum length: 64 characters</p>
+                                </div>
+                            </div>
+                        )}
                         <input
                             type="password"
                             placeholder="Confirm password*"
@@ -187,18 +159,6 @@ const SignupForm: React.FC = () => {
                             required
                             className={`input-field confirm-password-input ${!passwordsMatch && confirmPassword ? 'error' : ''}`}
                         />
-                        <div className="password-requirements-container">
-                            <div className="left-col">
-                                <p className="password-requirements-item">{renderIcon(requirements.uppercase)}One uppercase letter</p>
-                                <p className="password-requirements-item">{renderIcon(requirements.lowercase)}One lowercase letter</p>
-                                <p className="password-requirements-item">{renderIcon(requirements.specialCharacter)}One special character</p>
-                            </div>
-                            <div className="right-col">
-                                <p className="password-requirements-item">{renderIcon(requirements.numerics)}One numeric character</p>
-                                <p className="password-requirements-item">{renderIcon(requirements.minLength)} Minimum length: 12 characters</p>
-                                <p className="password-requirements-item">{renderOptionalIcon(requirements.maxLength)} Maximum length: 64 characters</p>
-                            </div>
-                        </div>
                     </div>
                     <div id="recaptcha-container"></div>
                     <button className="submit-signup-button" type="submit">

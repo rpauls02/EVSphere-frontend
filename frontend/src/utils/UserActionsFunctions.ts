@@ -114,7 +114,7 @@ export const addChargingPoint = async (
 
             for (let j = 0; j < connector_count; j++) {
                 const connector_data = {
-                    id: `cntr_${String(j + 1).padStart(3, '0')}`,
+                    id: `conn_${String(j + 1).padStart(3, '0')}`,
                     type: connector_type,
                     status: 'available',
                 }

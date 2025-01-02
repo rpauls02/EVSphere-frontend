@@ -1,38 +1,27 @@
 import { auth, db } from '../firebaseConfig';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { sendVerificationEmail } from './UserVerifyFunctions';
+import { createUserWithEmailAndPassword, signOut, sendEmailVerification } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 
 export const handleSignup = async (
     event: React.FormEvent,
-    role: 'buyer' | 'seller',
     firstName: string,
     lastName: string,
     email: string,
-    countryCode: string,
+    phoneCode: string,
     mobile: string,
     password: string,
-    confirmPassword: string,
-    companyName: string,
-    setPopup: (message: string, type: 'success' | 'error') => void,
-    resetForm: () => void
 ) => {
     event.preventDefault();
-    const mobileNumber = `${countryCode}${mobile}`;
-
-    if (password !== confirmPassword) {
-        setPopup("Passwords do not match.", "error");
-        return;
-    }
+    const mobileNumber = `${phoneCode}${mobile}`;
 
     try {
         // Create user with email and password
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        const userId = userCredential.user.uid;
+        const user = userCredential.user
+        const userId = user.uid;
 
         // Prepare user document data
         const userDocData: any = {
-            role,
             userName: `${firstName.charAt(0).toLowerCase()}${lastName.slice(0, 5).toLowerCase()}${mobile.slice(-4)}`,
             firstName,
             lastName,
@@ -40,31 +29,22 @@ export const handleSignup = async (
             mobile: mobileNumber,
         };
 
-        if (role === 'seller') {
-            userDocData.companyName = companyName;
-        }
-
         // Set user document in 'users' collection
         await setDoc(doc(db, 'users', userId), userDocData);
 
         // Set user balance to 0 in 'balances' collection
-        const userBalanceData = {
-            userID: userId,
+        const userBalanceData: any = {
+            userID: user.uid,
             points_balance: 0,
             credit_balance: 0
         };
         await setDoc(doc(db, 'balances'), userBalanceData);
 
         // Send verification email
-        await sendVerificationEmail();
-
-        setPopup("Signup successful. Verification email sent.", "success");
-
-        resetForm();
+        await sendEmailVerification(user);
 
     } catch (error) {
         const errorMessage = (error as Error).message || "An unknown error occurred.";
         console.error("Error signing up:", error);
-        setPopup(`Error: ${errorMessage}`, "error");
     }
 };

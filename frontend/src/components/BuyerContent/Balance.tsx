@@ -1,4 +1,4 @@
-import BuyerSidebar from '../BuyerContent/BuyerSidebar';
+import Sidebar from '../BaseComponents/Sidebar'
 import React, { useState, useEffect } from 'react';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
@@ -64,7 +64,7 @@ const Balance: React.FC = () => {
     return (
         <div className="balances-page-container">
             <div className="sidebar-container">
-                <BuyerSidebar />
+                <Sidebar />
             </div>
             <div className="user-options-container">
                 <h1>Balance</h1>

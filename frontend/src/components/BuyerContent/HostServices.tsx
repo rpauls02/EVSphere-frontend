@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import BuyerSidebar from '../BuyerContent/BuyerSidebar';
+import Sidebar from '../BaseComponents/Sidebar'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { fetchUserChargers } from '../../utils/UserFetchFunctions';
 import { addChargingPoint } from '../../utils/UserActionsFunctions';
 import { UserCharger } from '../../utils/types'
-
+import { verifyEmail } from '../../utils/UserVerifyFunctions';
+import VerifyEmail from '../BaseComponents/User/VerifyEmail';
 import './HostServices.css';
 
 const HostServices: React.FC = () => {
@@ -16,6 +17,7 @@ const HostServices: React.FC = () => {
     const [chargerCount, setChargerCount] = useState<number>(0);
     const [connectorCount, setConnectorCount] = useState<number>(0);
     const [connectorTypes, setConnectorTypes] = useState<string>('');
+    const [showNotification, setShowNotification] = useState(false);
     const [popup, setPopup] = useState<{
         title: string;
         message: string;
@@ -60,6 +62,15 @@ const HostServices: React.FC = () => {
         });
     };
 
+    useEffect(() => {
+        const checkEmailVerification = async () => {
+            if (await verifyEmail()) {
+                setShowNotification(true);
+            }
+        };
+        checkEmailVerification();
+    }, []);
+
     const handleAddChargerSubmission = async (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -101,16 +112,17 @@ const HostServices: React.FC = () => {
     return (
         <div className="host-services-page-container">
             <div className="sidebar-container">
-                <BuyerSidebar />
+                <Sidebar />
             </div>
             <div className="user-options-container">
                 <h1>Host Services</h1>
-                <p>Host your own EV charging services.</p>
+                <p>Host and manage your own EV charging services.</p>
                 <div className="hr-div"></div>
                 <div className="user-options-grid">
                     <div className="host-services-container">
-                        <h2>Host your own services</h2>
-                        <small>If you'd like to host multiple charging points, register each one separately</small>
+                        <h2>Host your Charger</h2>
+                        <small>Fill in the form below to enter your EV charger into the system<br/>
+                        If you'd like to host multiple charging points, register each one separately</small>
                         <div className="hr-div"></div>
                         <form className="host-services-form" onSubmit={handleAddChargerSubmission}>
 

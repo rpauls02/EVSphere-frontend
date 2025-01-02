@@ -38,7 +38,7 @@
     border: none;
     width: 100%;
     background-color: #d6d6d6;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     height: 1px;
 }
 
@@ -76,7 +76,7 @@
     border-radius: 12px;
     padding: 20px 20px;
     box-sizing: border-box;
-    width: 1000px;
+    width: 800px;
 }
 
 .balances-page-container .account-balance-container .balance-pairs-container {

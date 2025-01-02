@@ -1,33 +1,68 @@
-import { signInWithEmailAndPassword, signInWithPhoneNumber, GoogleAuthProvider, linkWithPopup } from 'firebase/auth';
+import { signInWithEmailAndPassword, signInWithPhoneNumber, GoogleAuthProvider, linkWithPopup, RecaptchaVerifier } from 'firebase/auth';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
-import { auth } from '../firebaseConfig';
+import { auth, db } from '../firebaseConfig';
 
 export const handleLogin = async (
-  email: string,
-  password: string
+  identifier: string,
+  password?: string
 ): Promise<{ success: boolean; message: string; role?: string }> => {
-
   try {
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
 
-    const db = getFirestore();
-    const userDocRef = doc(db, 'users', user.uid);
-    const userDoc = await getDoc(userDocRef);
+    // Check if the identifier is an email
+    const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identifier);
 
-    if (userDoc.exists()) {
-      const userData = userDoc.data();
-      return { success: true, message: 'Login successful', role: userData.role };
+    if (isEmail) {
+      // Email-based login
+      if (!password) {
+        return { success: false, message: 'Password is required for email login.' };
+      }
+
+      const userCredential = await signInWithEmailAndPassword(auth, identifier, password);
+      const user = userCredential.user;
+
+      const userDocRef = doc(db, 'users', user.uid);
+      const userDoc = await getDoc(userDocRef);
+
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        return { success: true, message: 'Login successful', role: userData.role };
+      }
+
+      return { success: false, message: 'User data not found.' };
+    } else {
+      // Phone-based login
+      const phoneNumber = identifier;
+
+      // Ensure the client-side setup for reCAPTCHA
+      if (!window.recaptchaVerifier) {
+        window.recaptchaVerifier = new RecaptchaVerifier(
+          auth,
+          "recaptcha-container",
+          { size: "invisible" },
+        );
+      }
+
+      try {
+        // Trigger OTP
+        const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, window.recaptchaVerifier);
+
+        // Store `confirmationResult` for OTP verification
+        window.confirmationResult = confirmationResult;
+
+        return { success: true, message: 'OTP sent. Please verify.' };
+      } catch (error) {
+        console.error('Error sending OTP:', error);
+        return { success: false, message: 'Failed to send OTP. Please check the phone number.' };
+      }
     }
-
-    return { success: false, message: 'User data not found' };
   } catch (error) {
     console.error('Login error:', error);
     return { success: false, message: 'Login failed. Please check the credentials you\'ve entered.' };
   }
 };
 
-export const handleGoogleAuth = async (): Promise<{ success: boolean; message: string }> => {
+
+export const handleGoogleAuth = async (): Promise<{ success: boolean; message: string, role?: string }> => {
   try {
     const user = auth.currentUser;
 

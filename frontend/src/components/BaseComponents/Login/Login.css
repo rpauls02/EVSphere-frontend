@@ -41,6 +41,18 @@
     color: white;
 }
 
+.login-page-container .login-error-popup-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+    background-color: rgb(255, 50, 50);
+    border-radius: 5px;
+    padding-left: 10px;
+    max-height: 44.8864px;
+}
+
 .login-page-container .login-options-container{
     display: flex;
     flex-direction: column;
@@ -88,11 +100,12 @@
     padding: 12px;
     border: none;
     border-radius: 5px;
-    width: 93%;
+    width: 94%;
     font-size: 16px;
     cursor: pointer;
     transition: background-color 0.3s ease;
     margin-bottom: 12px;
+    justify-content: center;
 }
 
 .login-page-container .login-button:hover {
@@ -148,16 +161,6 @@
 
 .login-page-container .popup {
     position: fixed;
-    top: 70px;
-    right: 20px;
-    padding: 8px 12px;
-    background-color: #4caf50;
-    color: white;
-    border-radius: 5px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-    animation: fadeOut 3s forwards;
-    z-index: 1000;
-    font-size: 14px;
 }
 
 .login-page-container .popup-error {

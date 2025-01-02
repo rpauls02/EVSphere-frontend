@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { fetchUpcomingChargingSessions, fetchPastChargingSessions } from "../../utils/UserFetchFunctions";
 import { addChargingSession, cancelChargingSession } from '../../utils/UserActionsFunctions';
-import BuyerSidebar from '../BuyerContent/BuyerSidebar';
+import Sidebar from '../BaseComponents/Sidebar'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import './Sessions.css';
@@ -117,7 +117,7 @@ const Sessions: React.FC = () => {
     return (
         <div className="sessions-page-container">
             <div className="sidebar-container">
-                <BuyerSidebar />
+                <Sidebar />
             </div>
 
 
@@ -156,7 +156,7 @@ const Sessions: React.FC = () => {
                     </div>
                 </div>
 
-                <div className="hr-div"></div>
+                <div className="user-options-hr-div"></div>
 
                 <div className="user-options-grid">
                     <div className="upcoming-sessions-container">
@@ -198,7 +198,7 @@ const Sessions: React.FC = () => {
                     </div>
                 </div>
 
-                <div className="hr-div"></div>
+                <div className="user-options-hr-div"></div>
 
                 <div className="user-options-grid">
                     <div className="past-sessions-container">
