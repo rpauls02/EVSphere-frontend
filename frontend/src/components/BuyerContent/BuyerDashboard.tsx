@@ -5,7 +5,6 @@ import { fetchUpcomingChargingSessions, fetchRecentSystemMessages, fetchUserBala
 import { updateUserCreditBalance } from '../../utils/UserActionsFunctions';
 import { startChargingSession } from '../../utils/OCPPFunctions';
 import { verifyEmail } from '../../utils/UserVerifyFunctions';
-import VerifyEmail from '../BaseComponents/User/VerifyEmail';
 import './BuyerDashboard.css';
 import { PastMessageData } from '../../utils/types';
 

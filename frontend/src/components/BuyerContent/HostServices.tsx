@@ -6,7 +6,6 @@ import { fetchUserChargers } from '../../utils/UserFetchFunctions';
 import { addChargingPoint } from '../../utils/UserActionsFunctions';
 import { UserCharger } from '../../utils/types'
 import { verifyEmail } from '../../utils/UserVerifyFunctions';
-import VerifyEmail from '../BaseComponents/User/VerifyEmail';
 import './HostServices.css';
 
 const HostServices: React.FC = () => {
