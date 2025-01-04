@@ -27,6 +27,25 @@ router.get('/:id', async(req, res) => {
     }
 });
 
+router.get('/invoices/:stripeCustomerId', async (req, res) => {
+  const { stripeCustomerId } = req.params; // Get from params
+
+  try {
+      if (!stripeCustomerId) {
+          return res.status(400).send({ error: 'Stripe Customer ID is required.' });
+      }
+
+      const invoices = await stripe.invoices.list({
+          customer: stripeCustomerId,
+          limit: 10,
+      });
+
+      res.status(200).send(invoices);
+  } catch (error) {
+      console.error('Error fetching invoices:', error);
+      res.status(500).send({ error: error.message });
+  }
+});
 // Update an invoice
 router.put('/:id', async(req, res) => {
     try {

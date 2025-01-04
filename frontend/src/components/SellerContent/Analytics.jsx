@@ -43,8 +43,6 @@ const ChargingAnalytics = () => {
           <thead>
             <tr>
               <th>Charger ID</th>
-              <th>kWh Used</th>
-              <th>Cost</th>
               <th>Status</th>
               <th>Start Time</th>
               <th>End Time</th>
@@ -54,8 +52,6 @@ const ChargingAnalytics = () => {
             {sessions.map((session) => (
               <tr key={session.sessionId}>
                 <td>{session.chargerId}</td>
-                <td>{session.kWhSoFar.toFixed(2)}</td>
-                <td>£{session.costSoFar.toFixed(2)}</td>
                 <td>{session.status}</td>
                 <td>{new Date(session.startTime).toLocaleString()}</td>
                 <td>{session.endTime ? new Date(session.endTime).toLocaleString() : "In Progress"}</td>

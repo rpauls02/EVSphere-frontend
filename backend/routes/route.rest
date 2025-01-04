@@ -38,12 +38,30 @@
 #     "currency": "usd",
 #     "product": "prod_RWHq5SCg7tLGgo"
 # }
-POST http://localhost:3002/StripeInvoices/createInvoiceWithItem
+### Create Stripe Checkout Session
+POST http://localhost:3002/StripeCheckoutSession/create-checkout-session
 Content-Type: application/json
 
 {
-    "customer": "cus_RWGmHdnnQwcbES",
-    "priceId": "price_1QdOH5P5cm5w1aGdnIrD4gBn"
+  "line_items": [
+    {
+      "price_data": {
+        "currency": "gbp",
+        "product_data": {
+          "name": "Invoice Payment",
+          "description": "Payment for Invoice #12345"
+        },
+        "unit_amount": 5000
+      },
+      "quantity": 1
+    }
+  ],
+  "mode": "payment",
+  "success_url": "http://localhost:3002/success",
+  "cancel_url": "http://localhost:3002/cancel"
 }
+
+
+
 
 # invoice item id: ii_1QdPe1P5cm5w1aGdhyeXjBM1

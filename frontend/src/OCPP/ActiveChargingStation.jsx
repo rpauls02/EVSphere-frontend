@@ -17,10 +17,9 @@ const ActiveChargingSession = () => {
 
   // Variables to track during charging
   const [pricePerKWh] = useState(0.45); // £0.45 per kWh
-  const [kWhSoFar, setKWhSoFar] = useState(0);
   const [currentKW, setCurrentKW] = useState(0);
   const [timeSoFar, setTimeSoFar] = useState(0); // Seconds
-  const [costSoFar, setCostSoFar] = useState(0);
+  const [remainingTime, setRemainingTime] = useState("Calculating...");
 
   useEffect(() => {
     const fetchUserAndStripeCustomerId = async () => {
@@ -53,93 +52,91 @@ const ActiveChargingSession = () => {
     fetchUserAndStripeCustomerId();
   }, []);
 
-  const handleStartCharging = async () => {
-    const db = getDatabase();
-
-    if (!userId) {
-      console.error("User ID is not set. Cannot start charging.");
-      return;
-    }
-
-    // Create a unique session ID and save it
-    const newSessionId = `${chargerId}_${userId}_${Date.now()}`;
-    setSessionId(newSessionId);
-
-    const sessionRef = ref(db, `ChargeSessionAnalytics/${newSessionId}`);
-
-    try {
-      // Create the session document
-      await set(sessionRef, {
-        userId,
-        chargerId,
-        pricePerKWh,
-        chargingPercentage: 0,
-        kWhSoFar: 0,
-        currentKW: 0,
-        timeSoFar: 0,
-        costSoFar: 0,
-        status: "active",
-        startTime: new Date().toISOString(),
-      });
-
-      console.log("Session started in database:", newSessionId);
-      setStatus("Charging session started");
-      setIsCharging(true);
-
-      // Simulate charging progress
-      const interval = setInterval(() => {
-        setChargingPercentage((prev) => {
-          if (prev >= 100) {
-            clearInterval(interval);
-            setStatus("Charging session completed");
-            setIsCharging(false);
-
-            // Mark session as complete in the database
-            update(sessionRef, { status: "completed" });
-
-            // Post the invoice
-            postCombinedInvoice();
-
-            return 100;
-          }
-
-          // Update local variables
-          const newKW = Math.random() * 4 + 6; // Simulate 6-10 kW draw
-          const timeIncrement = 1; // 1 second interval
-          const energyIncrement = (newKW * timeIncrement) / 3600; // kWh in 1 second
-
-          const roundedKW = parseFloat(newKW.toFixed(2));
-          const roundedEnergyIncrement = parseFloat(energyIncrement.toFixed(4));
-
-          setCurrentKW(roundedKW);
-          setKWhSoFar((prevKWh) => {
-            const updatedKWh = parseFloat((prevKWh + roundedEnergyIncrement).toFixed(2));
-            return updatedKWh;
-          });
-          setTimeSoFar((prevTime) => prevTime + timeIncrement);
-          setCostSoFar((prevCost) => {
-            const updatedCost = parseFloat(
-              (prevCost + roundedEnergyIncrement * pricePerKWh).toFixed(2)
-            );
-            return updatedCost;
-          });
-
-          // Update database
-          update(sessionRef, {
-            chargingPercentage: prev + 10,
-            kWhSoFar: parseFloat((kWhSoFar + roundedEnergyIncrement).toFixed(2)),
-            currentKW: roundedKW,
-            timeSoFar: timeSoFar + timeIncrement,
-            costSoFar: parseFloat((costSoFar + roundedEnergyIncrement * pricePerKWh).toFixed(2)),
-          });
-
-          return prev + 10; // Increment by 10%
+    // Load and parse the CSV file
+    useEffect(() => {
+      const fetchCsvData = async () => {
+        try {
+          const response = await fetch("/output_0.csv");
+          const text = await response.text();
+  
+          // Parse the first line of the CSV
+          const firstLine = text.split("\n")[0];
+          setRemainingTime(firstLine || "Unable to fetch remaining time");
+        } catch (error) {
+          console.error("Error fetching CSV file:", error);
+          setRemainingTime("Error fetching data");
+        }
+      };
+  
+      fetchCsvData();
+    }, []);
+  
+    const handleStartCharging = async () => {
+      const db = getDatabase();
+  
+      if (!userId) {
+        console.error("User ID is not set. Cannot start charging.");
+        return;
+      }
+  
+      // Create a unique session ID and save it
+      const newSessionId = `${chargerId}_${userId}_${Date.now()}`;
+      setSessionId(newSessionId);
+  
+      const sessionRef = ref(db, `ChargeSessionAnalytics/${newSessionId}`);
+  
+      try {
+        // Create the session document
+        await set(sessionRef, {
+          userId,
+          chargerId,
+          chargingPercentage: 0,
+          currentKW: 0,
+          timeSoFar: 0,
+          status: "active",
+          startTime: new Date().toISOString(),
         });
-      }, 1000); // Update every second
-    } catch (error) {
-      console.error("Failed to start session in database:", error);
-    }
-  };
+  
+        console.log("Session started in database:", newSessionId);
+        setStatus("Charging session started");
+        setIsCharging(true);
+  
+        // Simulate charging progress
+        const interval = setInterval(() => {
+          setChargingPercentage((prev) => {
+            if (prev >= 100) {
+              clearInterval(interval);
+              setStatus("Charging session completed");
+              setIsCharging(false);
+  
+              // Mark session as complete in the database
+              update(sessionRef, { status: "completed" });
+              postCombinedInvoice();
+              return 100;
+            }
+  
+            // Update local variables
+            const newKW = Math.random() * 4 + 6; // Simulate 6-10 kW draw
+            const timeIncrement = 1; // 1 second interval
+  
+            const roundedKW = parseFloat(newKW.toFixed(2));
+            setCurrentKW(roundedKW);
+            setTimeSoFar((prevTime) => prevTime + timeIncrement);
+  
+            // Update database
+            update(sessionRef, {
+              chargingPercentage: prev + 10,
+              currentKW: roundedKW,
+              timeSoFar: timeSoFar + timeIncrement,
+            });
+  
+            return prev + 10; // Increment by 10%
+          });
+        }, 1000); // Update every second
+      } catch (error) {
+        console.error("Failed to start session in database:", error);
+      }
+    };
 
     const postCombinedInvoice = async () => {
       try {
@@ -194,10 +191,9 @@ const ActiveChargingSession = () => {
       {isCharging && (
         <div>
           <p><strong>Price per kWh:</strong> £{pricePerKWh}</p>
-          <p><strong>kWh So Far:</strong> {kWhSoFar.toFixed(2)} kWh</p>
           <p><strong>Current KW Usage:</strong> {currentKW} kW</p>
           <p><strong>Time So Far:</strong> {`${Math.floor(timeSoFar / 60)}m ${timeSoFar % 60}s`}</p>
-          <p><strong>£ So Far:</strong> £{costSoFar.toFixed(2)}</p>
+          <p><strong>Time taken for full charge:</strong> {remainingTime}</p>
         </div>
       )}
 
@@ -212,41 +208,5 @@ const ActiveChargingSession = () => {
 
 export default ActiveChargingSession;
 
-// // State to store CSV data
-// const [csvData, setCsvData] = useState([]);
-
-// // Load and parse the CSV file
-// useEffect(() => {
-//   const fetchCsvData = async () => {
-//     try {
-//       const response = await fetch("/output_0.csv"); 
-//       const text = await response.text();
-
-//       // Parse the CSV text into rows
-//       const rows = text.split("\n").map((row) => row.split(","));
-//       setCsvData(rows);
-//     } catch (error) {
-//       console.error("Error fetching CSV file:", error);
-//     }
-//   };
-
-//   fetchCsvData();
-// }, []);
-
-{/* Render CSV data
-      <div>
-        <h3>CSV Data</h3>
-        <table>
-          <tbody>
-            {csvData.map((row, rowIndex) => (
-              <tr key={rowIndex}>
-                {row.map((cell, cellIndex) => (
-                  <td key={cellIndex}>{cell}</td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div> */}
 
 

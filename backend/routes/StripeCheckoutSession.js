@@ -28,27 +28,25 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// Create a CheckoutSession
-router.post('/create-checkout-session', async (req, res) => {
+router.post("/create-checkout-session", async (req, res) => {
+    const { line_items, mode, success_url, cancel_url } = req.body;
+
+    if (!line_items || !mode || !success_url || !cancel_url) {
+        return res.status(400).send({ error: "Missing required parameters" });
+    }
+
     try {
-        const { line_items, mode } = req.body; // Extract fields from the request body
-
-        if (!line_items || line_items.length === 0) {
-            return res.status(400).send({ error: 'line_items is required and cannot be empty.' });
-        }
-
-        const checkoutSession = await stripe.checkout.sessions.create({
-            customer: "cus_RNMkdIEQTKBlNC",
-            line_items, // Use line_items from the body dynamically
+        const session = await stripe.checkout.sessions.create({
+            payment_method_types: ["card"], // Adjust if you want to add more payment methods
+            line_items,
             mode,
-            success_url: "http://localhost:3002/success", // Replace with the success page URL
-            cancel_url: "http://localhost:3002/cancel", // Replace with the cancel page URL
+            success_url,
+            cancel_url,
         });
-        console.log('CheckoutSession created with the properties:', req.body);
-        console.log('URL to redirect to Checkout:', checkoutSession.url);
-        res.status(200).send({ url: checkoutSession.url });
+
+        res.status(200).send({ url: session.url });
     } catch (error) {
-        console.error('Error creating CheckoutSession:', error);
+        console.error("Error creating checkout session:", error);
         res.status(500).send({ error: error.message });
     }
 });

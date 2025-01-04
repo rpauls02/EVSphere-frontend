@@ -22,7 +22,8 @@ const SellerSidebar: React.FC = () => {
                     <ul>
                         <li><HomeIcon /><NavLink to="/seller-dashboard" className={({ isActive }) => isActive ? 'active-link' : ''}>Home</NavLink></li>
                         <li><EvStationIcon /><NavLink to="/stations" className={({ isActive }) => isActive ? 'active-link' : ''}>Stations</NavLink></li>
-                        <li><AnalyticsIcon /><NavLink to="/stations" className={({ isActive }) => isActive ? 'active-link' : ''}>Analytics</NavLink></li>
+                        <li><AnalyticsIcon /><NavLink to="/analytics/:userId" className={({ isActive }) => isActive ? 'active-link' : ''}>Analytics</NavLink></li>
+                        <li><AnalyticsIcon /><NavLink to="/userInvoices" className={({ isActive }) => isActive ? 'active-link' : ''}>Invoices</NavLink></li>
                     </ul>
                 </nav>
             </div>

@@ -24,6 +24,7 @@ import CheckoutButton from './StripePages/checkoutForm';
 import CheckoutPage from './StripePages/checkoutForm';
 import ActiveChargingSession from './OCPP/ActiveChargingStation';
 import ChargingAnalytics from './components/SellerContent/Analytics';
+import UserInvoices from './components/SellerContent/Invoices';
 
 
 const AppRoutes: React.FC = () => {
@@ -64,6 +65,7 @@ const AppRoutes: React.FC = () => {
       {/*OCPP pages routing*/}
       <Route path="/active-charging-stations/:chargerId" element={<ActiveChargingSession />} />
       <Route path="/analytics/:userId" element={<ChargingAnalytics />} />
+      <Route path="/userInvoices" element={<UserInvoices />} />
     </Routes>
   );
 }
