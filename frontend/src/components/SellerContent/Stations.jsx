@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { getDatabase, ref, onValue, update } from "firebase/database";
 import { getAuth } from "firebase/auth";
 import SellerSidebar from "./SellerSidebar";
-import "./stations.css";
+import "./Stations.css";
 import { useNavigate } from "react-router-dom";
 
 const Stations = () => {

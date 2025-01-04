@@ -60,14 +60,6 @@ router.get('/search', async (req, res) => {
     }
 });
 
-// Dynamic pricing function
-const calculateDynamicPricing = (kWhUsed, location, isPeakTime) => {
-    let baseRate = 0.25; // Base rate per kWh
-    if (isPeakTime) baseRate += 0.10; // Add surcharge for peak time
-    const locationMultiplier = location === 'urban' ? 1.2 : 1.0; // Adjust rate for location
-    return kWhUsed * baseRate * locationMultiplier;
-};
-
 // REST function for creating the price
 router.post('/create-price', async (req, res) => {
     const { currency, product, unit_amount } = req.body;
@@ -80,8 +72,8 @@ router.post('/create-price', async (req, res) => {
     try {
         // Create a new price for the product
         const price = await stripe.prices.create({
-            unit_amount, // Amount in cents
-            currency,    // e.g., "usd"
+            unit_amount: 5025, // Amount in cents
+            currency: "gbp",    // e.g., "usd"
             product,     // The existing product ID
         });
 

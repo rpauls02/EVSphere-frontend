@@ -13,7 +13,7 @@ export default function AddCustomerForm() {
     setErrorMessage("");
 
     try {
-      const response = await axios.post("/StripeCustomers/CreateCustomer", {
+      const response = await axios.post("/StripeCustomers/createCustomer", {
         name,
         email,
       });

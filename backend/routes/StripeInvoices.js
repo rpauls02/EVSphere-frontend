@@ -52,18 +52,107 @@ router.delete('/:id', async(req, res) => {
     }
 });
 
-// Create a new invoice
-router.post('/', async(req, res) => {
-    try {
-      const { customer } = req.body; // Extract fields from the request body
+router.post('/createInvoice', async (req, res) => {
+  try {
+      const { customer, price } = req.body;
 
-      const invoice = await stripe.invoices.create({
-        customer // Replace with the ID of your customer
+      // Validate inputs
+      if (!customer || !price) {
+          return res.status(400).send({ error: 'Customer and price are required.' });
+      }
+
+      // Step 1: Create the Invoice Item
+      const invoiceItem = await stripe.invoiceItems.create({
+          customer,
+          price, // Price ID
       });
+      console.log('Invoice Item created:', invoiceItem.id);
+
+      // Step 2: Create the Invoice
+      const invoice = await stripe.invoices.create({
+          customer,
+          auto_advance: true, // Automatically finalize the invoice
+      });
+
       res.status(200).send(invoice);
-    } catch (error) {
+  } catch (error) {
+      console.error('Error creating invoice:', error);
       res.status(500).send({ error: error.message });
-    }
+  }
 });
+
+router.post('/createInvoiceWithItem', async (req, res) => {
+  try {
+    const { customer, priceId } = req.body;
+
+    if (!customer || !priceId) {
+      return res.status(400).send({ error: 'Customer and priceId are required.' });
+    }
+
+    // Step 1: Add Invoice Item
+    const invoiceItem = await stripe.invoiceItems.create({
+      customer,
+      price: priceId,
+    });
+    console.log("Invoice Item Created:", invoiceItem);
+
+    // Step 2: Fetch Pending Invoice Items
+    const pendingItems = await stripe.invoiceItems.list({
+      customer,
+      pending: true,
+    });
+    console.log("Pending Invoice Items for Customer:", pendingItems.data);
+
+    if (pendingItems.data.length === 0) {
+      return res.status(400).send({
+        error: 'No pending invoice items found for the customer. Cannot create an invoice.',
+      });
+    }
+
+    // Step 3: Create the Draft Invoice
+    const draftInvoice = await stripe.invoices.create({
+      customer,
+      auto_advance: false,
+      pending_invoice_items_behavior: 'include', // Explicitly include pending items
+    });
+    console.log("Draft Invoice Created:", draftInvoice);
+
+    // Step 4: Finalize the Invoice
+    const finalizedInvoice = await stripe.invoices.finalizeInvoice(draftInvoice.id);
+    console.log("Finalized Invoice:", finalizedInvoice);
+
+    res.status(200).send({ invoiceItem, finalizedInvoice });
+  } catch (error) {
+    console.error('Error creating invoice with item:', error);
+    res.status(500).send({ error: error.message });
+  }
+});
+
+// router.post('/createInvoiceWithItem', async (req, res) => {
+//   try {
+//       const { customer, priceId } = req.body;
+
+//       // Step 1: Add Invoice Item
+//       const invoiceItem = await stripe.invoiceItems.create({
+//           customer,
+//           price: priceId, // Ensure priceId is valid and exists
+//       });
+//       console.log("Invoice Item Created:", invoiceItem); // Debug log for invoice item
+      
+//       // Step 2: Create the Invoice
+//       const invoice = await stripe.invoices.create({
+//           customer,
+//           auto_advance: true, // Automatically finalize the invoice
+//       });
+//       console.log("Invoice Created:", invoice); // Debug log for invoice
+
+//       res.status(200).send({ invoiceItem, invoice }); // Return both objects
+//   } catch (error) {
+//       console.error('Error creating invoice with item:', error);
+//       res.status(500).send({ error: error.message });
+//   }
+// });
+
+
 
 module.exports = router;

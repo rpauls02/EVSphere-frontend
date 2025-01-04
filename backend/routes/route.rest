@@ -18,16 +18,32 @@
 #     "product": "prod_RPE0HIJbw5bnub"
 # }
 
-POST http://localhost:3002/StripeCheckoutSession/create-checkout-session
+# POST http://localhost:3002/StripeCheckoutSession/create-checkout-session
+# Content-Type: application/json
+
+# {
+#     "customer": "cus_RNMkdIEQTKBlNC",
+#     "line_items": [{
+#     "price": "price_1QWPZ8P5cm5w1aGdcGS9yclj",
+#     "quantity": 1
+#     }],
+#     "mode": "payment"
+# }
+
+# POST http://localhost:3002/StripePrices/create-price
+# Content-Type: application/json
+
+# {
+#     "unit_amount": 5025,
+#     "currency": "usd",
+#     "product": "prod_RWHq5SCg7tLGgo"
+# }
+POST http://localhost:3002/StripeInvoices/createInvoiceWithItem
 Content-Type: application/json
 
 {
-    "customer": "cus_RNMkdIEQTKBlNC",
-    "line_items": [{
-    "price": "price_1QWPZ8P5cm5w1aGdcGS9yclj",
-    "quantity": 1
-    }],
-    "mode": "payment"
+    "customer": "cus_RWGmHdnnQwcbES",
+    "priceId": "price_1QdOH5P5cm5w1aGdnIrD4gBn"
 }
 
-# CUSTOMER ID: cus_RNMkdIEQTKBlNC
+# invoice item id: ii_1QdPe1P5cm5w1aGdhyeXjBM1

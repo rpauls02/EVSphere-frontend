@@ -1,11 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useParams } from "react-router-dom";
+import { getDatabase, ref, set, update } from "firebase/database";
+import { getAuth } from "firebase/auth";
+import { db } from "../firebaseConfig";
+import { getDoc, doc } from "firebase/firestore";
 
 const ActiveChargingSession = () => {
-  const { chargerId } = useParams(); // Get chargerId from the route
-  const [status, setStatus] = useState('Waiting to start...');
-  const [chargingPercentage, setChargingPercentage] = useState(0);
-  const [sessionActive, setSessionActive] = useState(false);
+  const { chargerId } = useParams();
+  const [chargingPercentage, setChargingPercentage] = useState(0); // % Charged
+  const [isCharging, setIsCharging] = useState(false);
+  const [status, setStatus] = useState("Waiting to start...");
+  const [sessionId, setSessionId] = useState(null);
+  const [userId, setUserId] = useState(null);
+  const [stripeCustomerId, setStripeCustomerId] = useState(null);
 
   // Variables to track during charging
   const [pricePerKWh] = useState(0.45); // £0.45 per kWh
@@ -14,110 +22,231 @@ const ActiveChargingSession = () => {
   const [timeSoFar, setTimeSoFar] = useState(0); // Seconds
   const [costSoFar, setCostSoFar] = useState(0);
 
-  const startCharging = () => {
-    setStatus('Initializing...');
-    const ws = new WebSocket('ws://localhost:9000');
+  useEffect(() => {
+    const fetchUserAndStripeCustomerId = async () => {
+      const auth = getAuth();
+      const user = auth.currentUser;
 
-    ws.onopen = () => {
-      console.log('Connected to OCPP server');
-      setStatus('Connected to OCPP server');
+      if (user) {
+        const fetchedUserId = user.uid;
+        setUserId(fetchedUserId);
+        console.log("User ID:", fetchedUserId);
 
-      // Send a StartTransaction message
-      ws.send(
-        JSON.stringify({
-          id: 'StartTransaction',
-          connectorId: chargerId,
-          meterStart: 0,
-          timestamp: new Date().toISOString(),
-        })
-      );
-    };
-
-    ws.onmessage = (event) => {
-      const response = JSON.parse(event.data);
-      console.log('Server response:', response);
-
-      if (response.id === 'StartTransaction' && response.status === 'Accepted') {
-        setStatus('Charging session started');
-        setSessionActive(true);
-
-        // Simulate charging progress
-        const interval = setInterval(() => {
-          setChargingPercentage((prev) => {
-            if (prev >= 100) {
-              clearInterval(interval);
-
-              // Send StopTransaction when charging is complete
-              ws.send(
-                JSON.stringify({
-                  id: 'StopTransaction',
-                  connectorId: chargerId,
-                  meterStop: kWhSoFar,
-                  timestamp: new Date().toISOString(),
-                })
-              );
-              setStatus('Charging session completed');
-              setSessionActive(false);
-              return 100;
-            }
-
-            // Update session variables
-            const newKW = Math.random() * 7 + 3; // Simulate 3-10 kW draw
-            const timeIncrement = 1; // 1 second interval
-            const energyIncrement = newKW * (timeIncrement / 3600); // kWh in 1 second
-
-            setCurrentKW(newKW.toFixed(2));
-            setKWhSoFar((prevKWh) => prevKWh + energyIncrement);
-            setTimeSoFar((prevTime) => prevTime + timeIncrement);
-            setCostSoFar((prevCost) => prevCost + energyIncrement * pricePerKWh);
-
-            return prev + 1;
-          });
-        }, 1000); // Update every second
-      } else if (response.id === 'StopTransaction' && response.status === 'Accepted') {
-        setStatus('Charging session terminated');
-        ws.close();
+        // Fetch Stripe customer ID
+        try {
+          const userDoc = await getDoc(doc(db, "users", fetchedUserId));
+          if (userDoc.exists()) {
+            const stripeId = userDoc.data().stripeCustomerId;
+            setStripeCustomerId(stripeId);
+            console.log("Stripe Customer ID:", stripeId);
+          } else {
+            console.error("User document not found for ID:", fetchedUserId);
+          }
+        } catch (error) {
+          console.error("Error fetching Stripe customer ID:", error);
+        }
       } else {
-        setStatus(`Server response: ${response.status}`);
+        console.error("No user is signed in.");
       }
     };
 
-    ws.onclose = () => {
-      console.log('Disconnected from OCPP server');
-      setStatus('Disconnected from OCPP server');
-    };
+    fetchUserAndStripeCustomerId();
+  }, []);
 
-    return () => ws.close();
+  const handleStartCharging = async () => {
+    const db = getDatabase();
+
+    if (!userId) {
+      console.error("User ID is not set. Cannot start charging.");
+      return;
+    }
+
+    // Create a unique session ID and save it
+    const newSessionId = `${chargerId}_${userId}_${Date.now()}`;
+    setSessionId(newSessionId);
+
+    const sessionRef = ref(db, `ChargeSessionAnalytics/${newSessionId}`);
+
+    try {
+      // Create the session document
+      await set(sessionRef, {
+        userId,
+        chargerId,
+        pricePerKWh,
+        chargingPercentage: 0,
+        kWhSoFar: 0,
+        currentKW: 0,
+        timeSoFar: 0,
+        costSoFar: 0,
+        status: "active",
+        startTime: new Date().toISOString(),
+      });
+
+      console.log("Session started in database:", newSessionId);
+      setStatus("Charging session started");
+      setIsCharging(true);
+
+      // Simulate charging progress
+      const interval = setInterval(() => {
+        setChargingPercentage((prev) => {
+          if (prev >= 100) {
+            clearInterval(interval);
+            setStatus("Charging session completed");
+            setIsCharging(false);
+
+            // Mark session as complete in the database
+            update(sessionRef, { status: "completed" });
+
+            // Post the invoice
+            postCombinedInvoice();
+
+            return 100;
+          }
+
+          // Update local variables
+          const newKW = Math.random() * 4 + 6; // Simulate 6-10 kW draw
+          const timeIncrement = 1; // 1 second interval
+          const energyIncrement = (newKW * timeIncrement) / 3600; // kWh in 1 second
+
+          const roundedKW = parseFloat(newKW.toFixed(2));
+          const roundedEnergyIncrement = parseFloat(energyIncrement.toFixed(4));
+
+          setCurrentKW(roundedKW);
+          setKWhSoFar((prevKWh) => {
+            const updatedKWh = parseFloat((prevKWh + roundedEnergyIncrement).toFixed(2));
+            return updatedKWh;
+          });
+          setTimeSoFar((prevTime) => prevTime + timeIncrement);
+          setCostSoFar((prevCost) => {
+            const updatedCost = parseFloat(
+              (prevCost + roundedEnergyIncrement * pricePerKWh).toFixed(2)
+            );
+            return updatedCost;
+          });
+
+          // Update database
+          update(sessionRef, {
+            chargingPercentage: prev + 10,
+            kWhSoFar: parseFloat((kWhSoFar + roundedEnergyIncrement).toFixed(2)),
+            currentKW: roundedKW,
+            timeSoFar: timeSoFar + timeIncrement,
+            costSoFar: parseFloat((costSoFar + roundedEnergyIncrement * pricePerKWh).toFixed(2)),
+          });
+
+          return prev + 10; // Increment by 10%
+        });
+      }, 1000); // Update every second
+    } catch (error) {
+      console.error("Failed to start session in database:", error);
+    }
   };
 
-  const formatTime = (seconds) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}m ${secs}s`;
+    const postCombinedInvoice = async () => {
+      try {
+          if (!stripeCustomerId) {
+              console.error("Stripe Customer ID is not set. Cannot create invoice.");
+              return;
+          }
+
+          // Step 1: Create the Product
+          const productResponse = await axios.post('http://localhost:3002/StripeProduct/createProduct', {
+              description: "EV Charging Session",
+          });
+          const productId = productResponse.data.productId;
+          console.log("Product created successfully:", productId);
+
+          // Step 2: Create the Price
+          const priceResponse = await axios.post('http://localhost:3002/StripePrices/create-price', {
+              currency: 'gbp',
+              product: productId,
+              unit_amount: Math.round(50.25 * 100), // Example: £50.25 in pence
+          });
+          const priceId = priceResponse.data.id;
+          console.log("Price created successfully:", priceId);
+
+          console.log("Stripe Customer ID:", stripeCustomerId);
+          console.log("Price ID:", priceId); 
+          // Step 3: Call the Combined Invoice API
+          const invoiceResponse = await axios.post('http://localhost:3002/StripeInvoices/createInvoiceWithItem', {
+              customer: stripeCustomerId,
+              priceId,
+          });
+          console.log("invoice item:", invoiceResponse); // Debug for invoice item
+          console.log("Invoice Item Details:", invoiceResponse.data.invoiceItem); // Debug for invoice item
+          console.log("Invoice Created Successfully:", invoiceResponse.data.invoice); // Debug for invoice
+      } catch (error) {
+          console.error("Error creating price or invoice with item:", error.response?.data || error.message);
+      }
   };
 
   return (
     <div>
-      <h2>Active Charging Session</h2>
-      <p><strong>Charger ID:</strong> {chargerId}</p>
+      <h1>Charging Point: {chargerId}</h1>
       <p><strong>Status:</strong> {status}</p>
       <p><strong>Charging Progress:</strong> {chargingPercentage}%</p>
 
-      {!sessionActive && (
-        <button onClick={startCharging}>Start Charging</button>
+      {!isCharging && (
+        <button onClick={handleStartCharging} disabled={isCharging || chargingPercentage >= 100}>
+          Start Charging
+        </button>
       )}
 
-      {sessionActive && (
+      {isCharging && (
         <div>
           <p><strong>Price per kWh:</strong> £{pricePerKWh}</p>
           <p><strong>kWh So Far:</strong> {kWhSoFar.toFixed(2)} kWh</p>
-          <p><strong>Current kW:</strong> {currentKW} kW</p>
-          <p><strong>Time So Far:</strong> {formatTime(timeSoFar)}</p>
+          <p><strong>Current KW Usage:</strong> {currentKW} kW</p>
+          <p><strong>Time So Far:</strong> {`${Math.floor(timeSoFar / 60)}m ${timeSoFar % 60}s`}</p>
           <p><strong>£ So Far:</strong> £{costSoFar.toFixed(2)}</p>
         </div>
+      )}
+
+      {sessionId && (
+        <a href={`/analytics/${userId}`} target="_blank" rel="noopener noreferrer">
+          View Charging Analytics
+        </a>
       )}
     </div>
   );
 };
 
 export default ActiveChargingSession;
+
+// // State to store CSV data
+// const [csvData, setCsvData] = useState([]);
+
+// // Load and parse the CSV file
+// useEffect(() => {
+//   const fetchCsvData = async () => {
+//     try {
+//       const response = await fetch("/output_0.csv"); 
+//       const text = await response.text();
+
+//       // Parse the CSV text into rows
+//       const rows = text.split("\n").map((row) => row.split(","));
+//       setCsvData(rows);
+//     } catch (error) {
+//       console.error("Error fetching CSV file:", error);
+//     }
+//   };
+
+//   fetchCsvData();
+// }, []);
+
+{/* Render CSV data
+      <div>
+        <h3>CSV Data</h3>
+        <table>
+          <tbody>
+            {csvData.map((row, rowIndex) => (
+              <tr key={rowIndex}>
+                {row.map((cell, cellIndex) => (
+                  <td key={cellIndex}>{cell}</td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div> */}
+
+

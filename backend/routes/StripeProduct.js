@@ -32,24 +32,27 @@ router.get('/get-products', async (req, res) => {
 
 
 // Create a product
-router.post('/create-product', async (req, res) => {
-    const { name, description, images } = req.body;
-
-    if (!name || !description) {
-        return res.status(400).send({ error: 'Name and description are required.' });
-    }
-
+router.post('/createProduct', async (req, res) => {
     try {
+        const { description } = req.body;
+
+        // Step 1: Create the Product
         const product = await stripe.products.create({
-            name,
-            description,
-            images: images || [],  // Optional: add image URLs if needed
+            name: "EV Charging Session",
+            description
         });
-        
-        res.status(200).send(product);
+
+        // // Step 2: Create a Price for the Product
+        // const price = await stripe.prices.create({
+        //     unit_amount: amount, // Amount in cents (e.g., 5025 for £50.25)
+        //     currency: 'gbp',
+        //     product: product.id,
+        // });
+
+        res.status(200).send({ productId: product.id});
     } catch (error) {
         console.error('Error creating product:', error);
-        res.status(500).send({ error: 'Error creating product' });
+        res.status(500).send({ error: error.message });
     }
 });
 

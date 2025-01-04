@@ -18,6 +18,7 @@ const paymentIntentRoutes = require('./routes/StripePaymentIntent');
 const stripeCheckoutSessionRoutes = require('./routes/StripeCheckoutSession');
 const priceRoutes = require('./routes/StripePrices');
 const productRoutes = require('./routes/StripeProduct');
+const invoiceItemRoutes = require('./routes/StripeInvoiceItems');
 
 app.use('/StripeInvoices', invoiceRoutes); 
 app.use('/StripeCustomers', customerRoutes);
@@ -25,6 +26,8 @@ app.use('/StripePaymentIntent', paymentIntentRoutes);
 app.use('/StripeCheckoutSession', stripeCheckoutSessionRoutes);
 app.use('/StripePrices', priceRoutes);
 app.use('/StripeProduct', productRoutes);
+app.use('/StripeInvoiceItems', invoiceItemRoutes);
+
 const isProduction = process.env.NODE_ENV === 'production';
 
 const stations = [

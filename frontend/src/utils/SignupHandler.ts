@@ -1,11 +1,14 @@
+import axios from 'axios';
 import { auth, db } from '../firebaseConfig';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { sendVerificationEmail } from './UserVerifyFunctions';
+import { createUserWithEmailAndPassword, UserCredential } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
+
+type Role = 'buyer' | 'seller';
+type PopupFunction = (message: string, type: 'success' | 'error') => void;
 
 export const handleSignup = async (
     event: React.FormEvent,
-    role: 'buyer' | 'seller',
+    role: Role,
     firstName: string,
     lastName: string,
     email: string,
@@ -14,9 +17,9 @@ export const handleSignup = async (
     password: string,
     confirmPassword: string,
     companyName: string,
-    setPopup: (message: string, type: 'success' | 'error') => void,
+    setPopup: PopupFunction,
     resetForm: () => void
-) => {
+): Promise<void> => {
     event.preventDefault();
     const mobileNumber = `${countryCode}${mobile}`;
 
@@ -26,45 +29,50 @@ export const handleSignup = async (
     }
 
     try {
-        // Create user with email and password
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        const userId = userCredential.user.uid;
+        const userCredential: UserCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const userId: string = userCredential.user.uid;
 
-        // Prepare user document data
-        const userDocData: any = {
+        // Create a Stripe customer
+        const response = await axios.post('/StripeCustomers/createCustomer', {
+            name: `${firstName} ${lastName}`,
+            email,
+        });
+
+        const stripeCustomerId: string = response.data.id;
+
+        // Save the Stripe customer ID to Firestore
+        const stripeCustomerRef = doc(db, 'stripeCustomers', userId);
+        await setDoc(stripeCustomerRef, { stripeCustomerId, userId });
+
+        // Save user details in Firestore
+        const userDocData: {
+            role: Role;
+            firstName: string;
+            lastName: string;
+            email: string;
+            mobile: string;
+            stripeCustomerId: string;
+            companyName?: string;
+        } = {
             role,
-            userName: `${firstName.charAt(0).toLowerCase()}${lastName.slice(0, 5).toLowerCase()}${mobile.slice(-4)}`,
             firstName,
             lastName,
             email,
             mobile: mobileNumber,
+            stripeCustomerId,
         };
 
         if (role === 'seller') {
             userDocData.companyName = companyName;
         }
 
-        // Set user document in 'users' collection
         await setDoc(doc(db, 'users', userId), userDocData);
 
-        // Set user balance to 0 in 'balances' collection
-        const userBalanceData = {
-            userID: userId,
-            points_balance: 0,
-            credit_balance: 0
-        };
-        await setDoc(doc(db, 'balances'), userBalanceData);
-
-        // Send verification email
-        await sendVerificationEmail();
-
         setPopup("Signup successful. Verification email sent.", "success");
-
         resetForm();
-
-    } catch (error) {
-        const errorMessage = (error as Error).message || "An unknown error occurred.";
+    } catch (error: any) {
         console.error("Error signing up:", error);
+        const errorMessage = error.response?.data?.message || error.message || "An unknown error occurred.";
         setPopup(`Error: ${errorMessage}`, "error");
     }
 };
