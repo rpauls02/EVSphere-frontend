@@ -125,12 +125,12 @@ const ActiveChargingSession = () => {
   
             // Update database
             update(sessionRef, {
-              chargingPercentage: prev + 10,
+              chargingPercentage: prev + 1,
               currentKW: roundedKW,
               timeSoFar: timeSoFar + timeIncrement,
             });
   
-            return prev + 10; // Increment by 10%
+            return prev + 1; 
           });
         }, 1000); // Update every second
       } catch (error) {

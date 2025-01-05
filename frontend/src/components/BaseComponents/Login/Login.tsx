@@ -1,59 +1,54 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { handleLogin, handleGoogleAuth } from '../../../utils/LoginHandler';
-import { FaGoogle } from 'react-icons/fa';
-import Popup from '../../BaseComponents/Popup';
+import GoogleIcon from '@mui/icons-material/Google';
+import ErrorIcon from '@mui/icons-material/Error';
 import logo from '../../../assets/logo.png';
 import './Login.css';
 
 const LoginForm: React.FC = () => {
-  const [email, setEmail] = useState('');
+  const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
-  const [popupData, setPopupData] = useState<{ title: string; message: string; type: 'error' | 'success'; visible: boolean }>({
-    title: '',
-    message: '',
-    type: 'success',
-    visible: false,
-  });
   const [loading, setLoading] = useState(false);
+  const [popup, showPopup] = useState<string | null>(null);
   const navigate = useNavigate();
-
-  const showPopup = (title: string, message: string, type: 'error' | 'success') => {
-    setPopupData({ title, message, type, visible: true });
-    setTimeout(() => {
-      setPopupData((prev) => ({ ...prev, visible: false }));
-    }, 3000);
-  };
 
   const handleLoginSubmission = async (event: React.FormEvent) => {
     event.preventDefault();
-    const result = await handleLogin(email, password);
+    setLoading(true);
+    showPopup(null);
 
-    if (result.success) {
-      if (result.role === 'buyer') {
-        navigate('/buyer-dashboard');
-      } else if (result.role === 'seller') {
-        navigate('/seller-dashboard');
+    try {
+      const result = await handleLogin(identifier, password);
+
+      if (result.success) {
+        navigate('/dashboard');
       } else {
-        navigate('/user-dashboard');
+        showPopup(result.message || 'Invalid user credentials entered. Try again.');
       }
-    } else {
-      showPopup('Login Error', result.message, 'error');
+    } catch (error) {
+      showPopup('An unexpected error occurred. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleGoogleAuthSubmission = async () => {
     setLoading(true);
-    const response = await handleGoogleAuth();
+    showPopup(null);
+    try {
+      const googleAuthResult = await handleGoogleAuth();
 
-    if (response.success) {
-      showPopup('Login Success', response.message, 'success');
-      navigate('/signup');
-    } else {
-      showPopup('Login Error', response.message, 'error');
+      if (googleAuthResult.success) {
+        navigate('/buyer-dashboard');
+      } else {
+        showPopup(googleAuthResult.message || 'Invalid user credentials entered. Try again.');
+      }
+    } catch (error) {
+      showPopup('An unexpected error occurred. Please try again.');
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (
@@ -67,6 +62,18 @@ const LoginForm: React.FC = () => {
             <strong>New to us?</strong> <Link className="react-link" to="/signup"><strong>Create an account</strong></Link>
           </p>
         </div>
+
+        {popup && (
+          <div className="login-error-popup-container">
+            <div className="error-popup-icon">
+              <ErrorIcon />
+            </div>
+            <div className="error-popup-message">
+              <p>{popup}</p>
+            </div>
+          </div>
+        )}
+
         <div className="login-options-container">
           <div className="email-login-container">
             <form onSubmit={handleLoginSubmission}>
@@ -74,9 +81,11 @@ const LoginForm: React.FC = () => {
                 <input
                   className="input-field"
                   type="email"
-                  placeholder="Email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Email or Phone"
+                  value={identifier}
+                  onChange={(e) => setIdentifier(e.target.value)}
+                  inputMode="email"
+                  pattern="^(\+?\d{1,3}[-.\s]?\(?\d{1,4}\)?[-.\s]?\d{1,4}[-.\s]?\d{1,9}|[\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,})$"
                   required
                 />
                 <input
@@ -94,11 +103,9 @@ const LoginForm: React.FC = () => {
                 <label htmlFor="remember">Remember me</label>
               </div>
 
-              <button className="login-button" type="submit">Login</button>
+              <div className="recaptcha-container"></div>
 
-              <div className="forgot-password-option-container">
-                <Link className="forgot-password-link" to="/reset-password">Forgot password?</Link>
-              </div>
+              <button className="login-button" type="submit">Login</button>
             </form>
           </div>
 
@@ -107,22 +114,13 @@ const LoginForm: React.FC = () => {
           <div className="social-login-container">
             <div className="social-login-buttons">
               <button className="social-button google-auth-button" onClick={handleGoogleAuthSubmission} disabled={loading}>
-                <div className="social-icon"><FaGoogle size={24} /></div>
+                <div className="social-icon"><GoogleIcon /></div>
                 <span>{loading ? 'Loading...' : 'Login with Google'}</span>
               </button>
             </div>
           </div>
         </div>
       </div>
-
-      {popupData.visible && (
-        <Popup
-          title={popupData.title}
-          message={popupData.message}
-          type={popupData.type}
-          onClose={() => setPopupData((prev) => ({ ...prev, visible: false }))}
-        />
-      )}
     </div>
   );
 };
